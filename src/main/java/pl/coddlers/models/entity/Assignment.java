@@ -1,5 +1,7 @@
 package pl.coddlers.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -24,6 +26,10 @@ public class Assignment {
 
     @OneToMany(mappedBy = "assignment", targetEntity = Task.class)
     private List<Task> taskList = new ArrayList<>();
+
+    @ManyToOne(targetEntity = Course.class)
+    @JsonIgnore
+    private Course course;
 
     public Assignment(String title, String description, Date startDate, Date dueDate) {
         this.title = title;
@@ -81,5 +87,13 @@ public class Assignment {
 
     public void setTaskList(List<Task> taskList) {
         this.taskList = taskList;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 }
