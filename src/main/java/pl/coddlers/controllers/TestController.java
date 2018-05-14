@@ -1,11 +1,11 @@
-package pl.coddlers.rest;
+package pl.coddlers.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController()
+@RestController
 @RequestMapping(path="/api")
 public class TestController {
     @GetMapping(path = "/hello-world")

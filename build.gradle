@@ -36,6 +36,7 @@ dependencies {
 	runtime('com.h2database:h2')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile('org.postgresql:postgresql:9.4-1206-jdbc42')
 }
 
 def webappDir = "$projectDir/src/main/webapp"
