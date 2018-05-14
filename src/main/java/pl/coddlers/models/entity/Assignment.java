@@ -1,7 +1,9 @@
 package pl.coddlers.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,15 +19,19 @@ public class Assignment {
     private String description;
 
     @Column(nullable=false)
-    private Date startDate;
+    private Timestamp startDate;
 
     @Column(nullable=false)
-    private Date dueDate;
+    private Timestamp dueDate;
 
     @OneToMany(mappedBy = "assignment", targetEntity = Task.class)
     private List<Task> taskList = new ArrayList<>();
 
-    public Assignment(String title, String description, Date startDate, Date dueDate) {
+    @JsonIgnore
+    @ManyToOne(targetEntity = Course.class)
+    private Course course;
+
+    public Assignment(String title, String description, Timestamp startDate, Timestamp dueDate) {
         this.title = title;
         this.description = description;
         this.startDate = startDate;
@@ -59,19 +65,19 @@ public class Assignment {
         this.description = description;
     }
 
-    public Date getStartDate() {
+    public Timestamp getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 
-    public Date getDueDate() {
+    public Timestamp getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(Timestamp dueDate) {
         this.dueDate = dueDate;
     }
 

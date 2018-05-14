@@ -21,8 +21,8 @@ public class Task {
     @Column(nullable=false)
     private double weight;
 
-    @ManyToOne(targetEntity = Assignment.class)
     @JsonIgnore
+    @ManyToOne(targetEntity = Assignment.class)
     private Assignment assignment;
 
     @Column(nullable=false)
