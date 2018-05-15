@@ -14,8 +14,8 @@ export class AppComponent {
 
   private sayHello(): void {
     this.result = 'loading...';
-    this.http.get('/api/hello-world').subscribe((response: any) => {
-      this.result = response.message;
+    this.http.get('/api/courses?startsAt&number').subscribe((response: any) => {
+      console.log(response);
     });
   }
 }
