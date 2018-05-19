@@ -9,13 +9,16 @@ import {ROUTES} from "./app.routes";
 import {CourseService} from "./services/course.service";
 import {CoursesComponent} from "./components/courses/courses.component";
 import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.component";
+import {CourseFilterPipe} from "./filters/course-filter.pipe";
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
   declarations: [
     AppComponent,
     CoursesComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    CourseFilterPipe
   ],
   imports: [
     BrowserModule,
@@ -27,7 +30,8 @@ import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.
         enableTracing: true, // debug
         useHash: false
       }
-    )
+    ),
+    FormsModule
   ],
   providers: [
     CourseService
