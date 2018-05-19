@@ -1,14 +1,14 @@
 package pl.coddlers.models.dto;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class AssignmentDto {
 	private Long id;
 	private Long courseId;
 	private String title;
 	private String description;
-	private Date startDate;
-	private Date dueDate;
+	private Timestamp startDate;
+	private Timestamp dueDate;
 
 	public AssignmentDto() {
 	}
@@ -45,19 +45,19 @@ public class AssignmentDto {
 		this.description = description;
 	}
 
-	public Date getStartDate() {
+	public Timestamp getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getDueDate() {
+	public Timestamp getDueDate() {
 		return dueDate;
 	}
 
-	public void setDueDate(Date dueDate) {
+	public void setDueDate(Timestamp dueDate) {
 		this.dueDate = dueDate;
 	}
 }

@@ -3,16 +3,38 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { RouterModule } from '@angular/router';
+import {ROUTES} from "./app.routes";
+import {CourseService} from "./services/course.service";
+import {CoursesComponent} from "./components/courses/courses.component";
+import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.component";
+import {CourseFilterPipe} from "./filters/course-filter.pipe";
+import {FormsModule} from "@angular/forms";
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CoursesComponent,
+    PageNotFoundComponent,
+    CourseFilterPipe
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule.forRoot(),
+    RouterModule.forRoot(
+      ROUTES,
+      {
+        enableTracing: true, // debug
+        useHash: false
+      }
+    ),
+    FormsModule
   ],
   providers: [
+    CourseService
   ],
   bootstrap: [AppComponent]
 })

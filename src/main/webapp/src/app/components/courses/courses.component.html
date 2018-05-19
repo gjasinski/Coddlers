@@ -1,0 +1,22 @@
+<div class="container course-container">
+  <h2>Courses</h2>
+  <div class="row">
+    <div class="col-md-10">
+      <input [(ngModel)]="searchText" class="search-input" type="text">
+    </div>
+    <div class="col-md-2">
+      <button class="btn">Add new course</button>
+    </div>
+  </div>
+  <div class="row">
+    <ul class="course-list col-md-10">
+      <li class="course-item card" *ngFor="let course of courses | courseFilter : searchText">
+        <a class="card-body" href="/courses/{{course.id}}">
+          <h3>{{ course.title }}</h3>
+          <p>{{ course.description }}</p>
+          <span>{{course.startDate}} - {{course.endDate}}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -3,7 +3,7 @@ package pl.coddlers.models.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,16 +19,16 @@ public class Course {
     private String description;
 
     @Column(nullable=false)
-    private Date startDate;
+    private Timestamp startDate;
 
     @Column(nullable=false)
-    private Date endDate;
+    private Timestamp endDate;
 
     @JsonIgnore
     @OneToMany(mappedBy = "course", targetEntity = Assignment.class)
     private List<Assignment> assignmentList = new ArrayList<>();
 
-    public Course(String title, String description, Date startDate, Date endDate) {
+    public Course(String title, String description, Timestamp startDate, Timestamp endDate) {
         this.title = title;
         this.description = description;
         this.startDate = startDate;
@@ -62,19 +62,19 @@ public class Course {
         this.description = description;
     }
 
-    public Date getStartDate() {
+    public Timestamp getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public Timestamp getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Timestamp endDate) {
         this.endDate = endDate;
     }
 
