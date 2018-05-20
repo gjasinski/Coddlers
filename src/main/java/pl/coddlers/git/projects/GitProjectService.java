@@ -39,12 +39,7 @@ public class GitProjectService {
 				HttpMethod.POST,
 				entity,
 				String.class);
-		long id = extractId(exchange);
-
-		createBranch(id, "task1-develop");
-		createBranch(id, "task1-master");
-		createBranch(id, "task2-develop");
-		createBranch(id, "task2-master");
+		new Thread(new BranchCreator(exchange)).start();
 		return exchange;
 	}
 
@@ -61,7 +56,6 @@ public class GitProjectService {
 				.queryParam("ref", "master");
 
 
-
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
 		return restTemplate.exchange(
@@ -71,12 +65,29 @@ public class GitProjectService {
 				String.class);
 	}
 
-	private long extractId(ResponseEntity<String> exchange) {
-		String body = exchange.getBody();
-		System.out.println(body);
-		String id = body.substring(body.indexOf("id") + 4, body.indexOf(","));
-		return Long.valueOf(id);
+
+	private class BranchCreator implements Runnable {
+		private final ResponseEntity<String> exchange;
+
+		BranchCreator(ResponseEntity<String> exchange) {
+			this.exchange = exchange;
+		}
+
+		@Override
+		public void run() {
+			long id = extractId(exchange);
+
+			createBranch(id, "task1-develop");
+			createBranch(id, "task1-master");
+			createBranch(id, "task2-develop");
+			createBranch(id, "task2-master");
+		}
+
+		private long extractId(ResponseEntity<String> exchange) {
+			String body = exchange.getBody();
+			System.out.println(body);
+			String id = body.substring(body.indexOf("id") + 4, body.indexOf(","));
+			return Long.valueOf(id);
+		}
 	}
-
-
 }
