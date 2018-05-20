@@ -10,10 +10,9 @@ export class CourseService {
   constructor(private http: HttpClient) { }
 
   public getCourses(): Observable<Course[]> {
-    return this.http.get('api/courses?startsAt&number')
+    return this.http.get<Course[]>('api/courses?startsAt&number')
       .pipe(
-         map((objArray: any[]) => objArray.map(obj => Course.fromJSON(obj))
-         )
+         map((objArray: any[]) => objArray.map(obj => Course.fromJSON(obj)))
       );
   }
 

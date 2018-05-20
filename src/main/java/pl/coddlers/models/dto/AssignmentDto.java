@@ -1,13 +1,22 @@
 package pl.coddlers.models.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 
 public class AssignmentDto {
 	private Long id;
 	private Long courseId;
+
+	@NotNull
+	@Size(min = 3, max = 100)
 	private String title;
 	private String description;
+
+	@NotNull
 	private Timestamp startDate;
+
+	@NotNull
 	private Timestamp dueDate;
 
 	public AssignmentDto() {

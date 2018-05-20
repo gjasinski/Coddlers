@@ -1,11 +1,13 @@
 package pl.coddlers.models.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pl.coddlers.models.dto.AssignmentDto;
 import pl.coddlers.models.entity.Assignment;
 import pl.coddlers.models.entity.Course;
 import pl.coddlers.repositories.CourseRepository;
 
+@Component
 public class AssignmentConverter implements BaseConverter<Assignment, AssignmentDto> {
 	@Autowired
 	CourseRepository courseRepository;

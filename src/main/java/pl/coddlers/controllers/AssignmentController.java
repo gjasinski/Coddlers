@@ -8,9 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.models.dto.AssignmentDto;
 import pl.coddlers.services.AssignmentService;
 
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -26,13 +30,18 @@ public class AssignmentController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Long> createAssignment(@PathVariable Long courseId,
-	                                             @RequestBody AssignmentDto assignment) {
+	                                             @Valid @RequestBody AssignmentDto assignment) {
+		Long id = assignmentService.createAssignment(courseId, assignment);
 
-		return new ResponseEntity<>(assignmentService.createAssignment(courseId, assignment), HttpStatus.CREATED);
+		URI location = ServletUriComponentsBuilder
+				.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(id).toUri();
+
+		return ResponseEntity.created(location).build();
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<AssignmentDto>> getAssignments(@PathVariable Long courseId) {
-		return new ResponseEntity<>(assignmentService.getAllCoursesAssignments(courseId), HttpStatus.OK);
+	public ResponseEntity<Collection<AssignmentDto>> getAssignments(@PathVariable Long courseId) {
+		return ResponseEntity.ok(assignmentService.getAllCoursesAssignments(courseId));
 	}
 }
