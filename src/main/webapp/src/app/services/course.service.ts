@@ -16,4 +16,11 @@ export class CourseService {
       );
   }
 
+  public getCourse(courseId: number): Observable<Course> {
+    return this.http.get<Course>(`api/courses/${courseId}`)
+      .pipe(
+        map(obj => Course.fromJSON(obj))
+      )
+  }
+
 }

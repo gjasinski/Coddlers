@@ -6,6 +6,8 @@ import java.sql.Timestamp;
 
 public class AssignmentDto {
 	private Long id;
+
+	@NotNull
 	private Long courseId;
 
 	@NotNull

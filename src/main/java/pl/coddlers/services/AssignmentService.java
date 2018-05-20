@@ -34,8 +34,7 @@ public class AssignmentService {
 		return Collections.emptyList();
 	}
 
-	public Long createAssignment(Long courseId, AssignmentDto assignmentDto) {
-		assignmentDto.setCourseId(courseId);
+	public Long createAssignment(AssignmentDto assignmentDto) {
 		Assignment assignment = assignmentConverter.convertFromDto(assignmentDto);
 		assignmentRepository.save(assignment);
 		return assignment.getId();

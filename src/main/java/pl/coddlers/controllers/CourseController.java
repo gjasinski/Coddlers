@@ -35,4 +35,9 @@ public class CourseController {
                                                          @RequestParam(value = "number", required = false) Long number) {
         return ResponseEntity.ok(courseService.getCourses(startsAt, number));
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    public ResponseEntity<CourseDto> getCourse(@PathVariable Long id) {
+        return ResponseEntity.ok(courseService.getCourseById(id));
+    }
 }

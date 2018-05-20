@@ -34,7 +34,7 @@ export class Course {
   }
 
   public static fromJSON(jsonObj: any): Course {
-    return new Course(jsonObj.id, jsonObj.title, jsonObj.description,
+    return new Course(+jsonObj.id, jsonObj.title, jsonObj.description,
       jsonObj.startDate, jsonObj.endDate);
   }
 }

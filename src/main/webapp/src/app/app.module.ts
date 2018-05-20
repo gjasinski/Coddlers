@@ -11,6 +11,9 @@ import {CoursesComponent} from "./components/courses/courses.component";
 import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.component";
 import {CourseFilterPipe} from "./filters/course-filter.pipe";
 import {FormsModule} from "@angular/forms";
+import {NavbarComponent} from "./components/navbar/navbar.component";
+import {CoursePageComponent} from "./components/course-page/course-page.component";
+import {AssignmentService} from "./services/assignment.service";
 
 
 @NgModule({
@@ -18,7 +21,9 @@ import {FormsModule} from "@angular/forms";
     AppComponent,
     CoursesComponent,
     PageNotFoundComponent,
-    CourseFilterPipe
+    CourseFilterPipe,
+    NavbarComponent,
+    CoursePageComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +39,8 @@ import {FormsModule} from "@angular/forms";
     FormsModule
   ],
   providers: [
-    CourseService
+    CourseService,
+    AssignmentService
   ],
   bootstrap: [AppComponent]
 })
