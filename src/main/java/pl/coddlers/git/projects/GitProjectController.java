@@ -25,4 +25,10 @@ class GitProjectController {
 		return this.gitProjectService.createUser(userId, name);
 	}
 
+	@PostMapping("/projects/fork")
+	public HttpEntity<String> forkProject(@RequestParam("repository") String repository,
+	                                      @RequestParam("namespace") String namespace) {
+		return this.gitProjectService.forkProject(repository, namespace);
+	}
+
 }

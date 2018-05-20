@@ -65,6 +65,29 @@ public class GitProjectService {
 				String.class);
 	}
 
+	public HttpEntity<String> forkProject(String repository, String namespace) {
+		repository = repository.replace("/", "%2F");
+		String resourceUrl = gitlabApi + "/projects/" + repository + "/fork";
+		System.out.println(resourceUrl);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(resourceUrl)
+				.queryParam("private_token", private_token)
+				.queryParam("namespace", namespace);
+
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		return restTemplate.exchange(
+				builder.build().toUriString(),
+				HttpMethod.POST,
+				entity,
+				String.class);
+	}
+
+
+
 
 	private class BranchCreator implements Runnable {
 		private final ResponseEntity<String> exchange;
