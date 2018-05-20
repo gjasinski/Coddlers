@@ -31,7 +31,8 @@ class GitUserService {
 				.queryParam("email", email)
 				.queryParam("password", password)
 				.queryParam("username", username)
-				.queryParam("name", name);
+				.queryParam("name", name)
+				.queryParam("skip_confirmation", "true");
 
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
