@@ -31,4 +31,10 @@ class GitProjectController {
 		return this.gitProjectService.forkProject(repository, namespace);
 	}
 
+	@PostMapping("/projects/hooks")
+	public HttpEntity<String> forkProject(@RequestParam("repository") String repository) {
+		return this.gitProjectService.createHook(repository);
+	}
+
+
 }

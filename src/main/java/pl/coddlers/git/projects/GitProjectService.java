@@ -86,7 +86,26 @@ public class GitProjectService {
 				String.class);
 	}
 
+	public HttpEntity<String> createHook(String repository) {
+		String resourceUrl = gitlabApi + "/projects/" + repository + "/hooks";
+		System.out.println(resourceUrl);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(resourceUrl)
+				.queryParam("private_token", private_token)
+				.queryParam("url", "http://coddlers.pl:8080/api/git/hooks")
+				.queryParam("merge_requests_events", "true");
+
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		return restTemplate.exchange(
+				builder.build().toUriString(),
+				HttpMethod.POST,
+				entity,
+				String.class);
+	}
 
 
 	private class BranchCreator implements Runnable {
