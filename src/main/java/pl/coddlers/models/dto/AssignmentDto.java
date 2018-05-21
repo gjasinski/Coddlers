@@ -16,6 +16,9 @@ public class AssignmentDto {
 	private String description;
 
 	@NotNull
+	private Integer weight;
+
+	@NotNull
 	private Timestamp startDate;
 
 	@NotNull
@@ -54,6 +57,14 @@ public class AssignmentDto {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 
 	public Timestamp getStartDate() {

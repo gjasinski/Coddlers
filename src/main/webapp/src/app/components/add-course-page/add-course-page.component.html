@@ -1,0 +1,41 @@
+<div class="content-container">
+  <form [formGroup]="formGroup" (ngSubmit)="addCourse(formGroup.value)">
+    <div class="form-group">
+      <label for="course-title">Email address</label>
+      <input formControlName="title" type="text" class="form-control"
+             id="course-title" placeholder="Enter title">
+    </div>
+    <div class="form-group">
+      <label for="course-description">Email address</label>
+      <textarea formControlName="description" type="text" class="form-control"
+                id="course-description" placeholder="Enter description"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="course-start-date">Email address</label>
+      <div class="input-group">
+        <input id="course-start-date" class="form-control" placeholder="yyyy-mm-dd"
+               name="dp" formControlName="startDate" ngbDatepicker #d1="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
+            <img src="assets/img/calendar.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="course-end-date">Email address</label>
+      <div class="input-group">
+        <input id="course-end-date" class="form-control" placeholder="yyyy-mm-dd"
+               name="dp" formControlName="endDate" ngbDatepicker #d2="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
+            <img src="assets/img/calendar.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Save" [disabled]="!formGroup.valid">
+    <button class="btn btn-secondary back-btn">Back</button>
+  </form>
+</div>

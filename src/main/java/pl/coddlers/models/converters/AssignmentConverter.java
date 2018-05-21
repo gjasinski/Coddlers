@@ -18,6 +18,7 @@ public class AssignmentConverter implements BaseConverter<Assignment, Assignment
 		assignmentDto.setId(entity.getId());
 		assignmentDto.setCourseId(entity.getCourse().getId());
 		assignmentDto.setDescription(entity.getDescription());
+		assignmentDto.setWeight(entity.getWeight());
 		assignmentDto.setDueDate(entity.getDueDate());
 		assignmentDto.setStartDate(entity.getStartDate());
 		assignmentDto.setTitle(entity.getTitle());
@@ -30,6 +31,7 @@ public class AssignmentConverter implements BaseConverter<Assignment, Assignment
 				.orElseThrow(() -> new IllegalArgumentException("Course does not exist"));
 		Assignment assignment = new Assignment();
 		assignment.setDescription(dto.getDescription());
+		assignment.setWeight(dto.getWeight());
 		assignment.setDueDate(dto.getDueDate());
 		assignment.setStartDate(dto.getStartDate());
 		assignment.setTitle(dto.getTitle());

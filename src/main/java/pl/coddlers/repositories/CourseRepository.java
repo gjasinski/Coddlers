@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<Course, Long> {
     Optional<Course> getById(Long id);
 
+    // TODO fix this, getting courses by id range is not good idea
     @Query("SELECT c FROM Course c WHERE c.id >= :startsAt")
     List<Course> getCoursesWithIdGreaterEqThan(@Param("startsAt") Long startsAt);
 
