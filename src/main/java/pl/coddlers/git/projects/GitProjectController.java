@@ -22,7 +22,7 @@ class GitProjectController {
 	@PostMapping("/projects")
 	public HttpEntity<String> createUser(@RequestParam("userId") long userId,
 	                                     @RequestParam("name") String name) {
-		return this.gitProjectService.createUser(userId, name);
+		return this.gitProjectService.createProject(userId, name);
 	}
 
 	@PostMapping("/projects/fork")

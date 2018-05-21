@@ -20,7 +20,7 @@ public class GitProjectService {
 	@Value("${gitlab.api.apiuser.private_token}")
 	private String private_token;
 
-	HttpEntity<String> createUser(long userId, String name) {
+	HttpEntity<String> createProject(long userId, String name) {
 		String resourceUrl = gitlabApi + "/projects/user/" + userId;
 
 		HttpHeaders headers = new HttpHeaders();
