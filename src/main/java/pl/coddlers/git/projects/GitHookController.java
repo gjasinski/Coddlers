@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 public class GitHookController {
 
 	@PostMapping
-	public void someHook(@RequestParam("object_attributes") String str){
-		System.out.println("RECEIVED HOOK" +  str);
+	public void someHook(@RequestBody Object o){
+		System.out.println("RECEIVED HOOK" +  o.toString());
 	}
 
 
