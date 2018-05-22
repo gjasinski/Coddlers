@@ -13,7 +13,12 @@ public class AssignmentDto {
 	@NotNull
 	@Size(min = 3, max = 100)
 	private String title;
+
+	@Size(max = 255)
 	private String description;
+
+	@NotNull
+	private Integer weight;
 
 	@NotNull
 	private Timestamp startDate;
@@ -54,6 +59,14 @@ public class AssignmentDto {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 
 	public Timestamp getStartDate() {

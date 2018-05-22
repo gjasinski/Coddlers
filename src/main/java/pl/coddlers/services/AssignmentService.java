@@ -2,6 +2,7 @@ package pl.coddlers.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coddlers.exceptions.AssignmentNotFoundException;
 import pl.coddlers.models.converters.AssignmentConverter;
 import pl.coddlers.models.dto.AssignmentDto;
 import pl.coddlers.models.entity.Assignment;
@@ -38,5 +39,17 @@ public class AssignmentService {
 		Assignment assignment = assignmentConverter.convertFromDto(assignmentDto);
 		assignmentRepository.save(assignment);
 		return assignment.getId();
+	}
+
+	public AssignmentDto getAssignmentById(Long id) {
+		validateAssignment(id);
+
+		return assignmentConverter.convertFromEntity(assignmentRepository.findById(id).get());
+	}
+
+	private void validateAssignment(Long id) throws AssignmentNotFoundException {
+		assignmentRepository.findById(id).orElseThrow(
+				() -> new AssignmentNotFoundException(id)
+		);
 	}
 }

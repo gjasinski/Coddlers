@@ -39,4 +39,9 @@ public class AssignmentController {
 	public ResponseEntity<Collection<AssignmentDto>> getAssignments(@RequestParam(value = "courseId") Long courseId) {
 		return ResponseEntity.ok(assignmentService.getAllCoursesAssignments(courseId));
 	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "{id}")
+	public ResponseEntity<AssignmentDto> getAssignment(@PathVariable Long id) {
+		return ResponseEntity.ok(assignmentService.getAssignmentById(id));
+	}
 }

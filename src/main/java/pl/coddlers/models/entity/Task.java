@@ -18,9 +18,6 @@ public class Task {
     @Column(nullable=false)
     private int maxPoints;
 
-    @Column(nullable=false)
-    private double weight;
-
     @JsonIgnore
     @ManyToOne(targetEntity = Assignment.class)
     private Assignment assignment;
@@ -28,11 +25,10 @@ public class Task {
     @Column(nullable=false)
     private TaskStatus taskStatus;
 
-    public Task(String title, String description, int maxPoints, double weight, Assignment assignment, TaskStatus taskStatus) {
+    public Task(String title, String description, int maxPoints, Assignment assignment, TaskStatus taskStatus) {
         this.title = title;
         this.description = description;
         this.maxPoints = maxPoints;
-        this.weight = weight;
         this.assignment = assignment;
         this.taskStatus = taskStatus;
     }
@@ -70,14 +66,6 @@ public class Task {
 
     public void setMaxPoints(int maxPoints) {
         this.maxPoints = maxPoints;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
     }
 
     public Assignment getAssignment() {

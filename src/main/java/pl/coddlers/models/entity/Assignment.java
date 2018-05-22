@@ -3,6 +3,7 @@ package pl.coddlers.models.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ public class Assignment {
 
     private String description;
 
+    private Integer weight;
+
     @Column(nullable=false)
     private Timestamp startDate;
 
@@ -31,11 +34,12 @@ public class Assignment {
     @ManyToOne(targetEntity = Course.class)
     private Course course;
 
-    public Assignment(String title, String description, Timestamp startDate, Timestamp dueDate) {
+    public Assignment(String title, String description, Integer weight, Timestamp startDate, Timestamp dueDate) {
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.dueDate = dueDate;
+        this.weight = weight;
     }
 
     public Assignment() {
@@ -63,6 +67,14 @@ public class Assignment {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 
     public Timestamp getStartDate() {

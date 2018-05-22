@@ -1,6 +1,7 @@
 package pl.coddlers.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.coddlers.exceptions.CourseNotFoundException;
 import pl.coddlers.exceptions.WrongDateException;
@@ -27,7 +28,7 @@ public class CourseService {
         return courseConverter.convertFromEntity(courseRepository.getById(id).get());
     }
 
-    public Collection<CourseDto> getCourses(Long startsAt, Long number) throws WrongDateException {
+    public Collection<CourseDto> getCourses(Integer startsAt, Integer number) throws WrongDateException {
         List<Course> courseList;
 
         if (startsAt == null && number == null) {
@@ -37,19 +38,19 @@ public class CourseService {
                 throw new WrongParametersException("startsAt <= 1 ");
             }
 
-            courseList = courseRepository.getCoursesWithIdGreaterEqThan(startsAt);
+            courseList = courseRepository.getPaginatedCourses(PageRequest.of((startsAt-1), Integer.MAX_VALUE));
         } else if (startsAt == null) {
             if (number < 0) {
                 throw new WrongParametersException("number < 0");
             }
 
-            courseList = courseRepository.getCoursesWithIdFromInclusiveRange(1l, number);
+            courseList = courseRepository.getPaginatedCourses(PageRequest.of(0, number));
         } else {
             if (startsAt < 1 || number < 0) {
                 throw new WrongParametersException("startsAt <= 1 || number < 0");
             }
 
-            courseList = courseRepository.getCoursesWithIdFromInclusiveRange(startsAt, startsAt+number-1);
+            courseList = courseRepository.getPaginatedCourses(PageRequest.of(startsAt-1, number));
         }
 
         return courseConverter.convertFromEntities(courseList);

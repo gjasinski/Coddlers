@@ -11,6 +11,7 @@ public class CourseDto {
     @Size(min = 3, max = 100)
     private String title;
 
+    @Size(max = 255)
     private String description;
 
     @NotNull
