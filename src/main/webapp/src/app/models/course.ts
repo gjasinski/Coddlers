@@ -37,4 +37,14 @@ export class Course {
     return new Course(+jsonObj.id, jsonObj.title, jsonObj.description,
       jsonObj.startDate, jsonObj.endDate);
   }
+
+  public toJSON() {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      startDate: this.startDate,
+      endDate: this.endDate
+    }
+  }
 }

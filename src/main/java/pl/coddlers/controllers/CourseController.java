@@ -31,8 +31,8 @@ public class CourseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"startsAt", "number"})
-    public ResponseEntity<Collection<CourseDto>> getCourses(@RequestParam(value = "startsAt", required = false) Long startsAt,
-                                                         @RequestParam(value = "number", required = false) Long number) {
+    public ResponseEntity<Collection<CourseDto>> getCourses(@RequestParam(value = "startsAt", required = false) Integer startsAt,
+                                                         @RequestParam(value = "number", required = false) Integer number) {
         return ResponseEntity.ok(courseService.getCourses(startsAt, number));
     }
 

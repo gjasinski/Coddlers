@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {CourseService} from "../../services/course.service";
 import {Course} from "../../models/course";
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'cod-add-course-page',
@@ -12,7 +13,8 @@ export class AddCoursePageComponent implements OnInit {
   private formGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-              private courseService: CourseService) {}
+              private courseService: CourseService,
+              private _location: Location) {}
 
   ngOnInit(): void {
     this.formGroup = this.formBuilder.group({
@@ -32,9 +34,14 @@ export class AddCoursePageComponent implements OnInit {
       course.description,
       new Date(course.startDate.year, course.startDate.month-1, course.startDate.day),
       new Date(course.endDate.year, course.endDate.month-1, course.endDate.day)
-    )).subscribe(obj => {
-      console.log(obj);
+    ).toJSON()).subscribe(obj => {
+      this._location.back();
     });
+  }
+
+  back(e):void {
+    e.preventDefault();
+    this._location.back();
   }
 
 }

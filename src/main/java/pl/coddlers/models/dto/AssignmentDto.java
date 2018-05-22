@@ -13,6 +13,8 @@ public class AssignmentDto {
 	@NotNull
 	@Size(min = 3, max = 100)
 	private String title;
+
+	@Size(max = 255)
 	private String description;
 
 	@NotNull
