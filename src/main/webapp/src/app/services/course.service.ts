@@ -29,7 +29,7 @@ export class CourseService {
   }
 
   public createCourse(course: Course): Observable<any> {
-    return this.http.post('api/courses', course, this.httpOptions);
+    return this.http.post('api/courses', course.toJSON(), this.httpOptions);
   }
 
 }

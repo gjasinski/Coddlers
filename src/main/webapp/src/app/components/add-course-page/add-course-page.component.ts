@@ -34,7 +34,8 @@ export class AddCoursePageComponent implements OnInit {
       course.description,
       new Date(course.startDate.year, course.startDate.month-1, course.startDate.day),
       new Date(course.endDate.year, course.endDate.month-1, course.endDate.day)
-    ).toJSON()).subscribe(obj => {
+      )
+    ).subscribe(obj => {
       this._location.back();
     });
   }
