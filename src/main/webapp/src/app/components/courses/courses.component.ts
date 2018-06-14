@@ -5,12 +5,14 @@ import {Course} from "../../models/course";
 @Component({
   selector: 'cod-courses',
   templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.scss']
+  styleUrls: ['./courses.component.scss',
+    './../../app.component.scss']
 })
 export class CoursesComponent implements OnInit {
   private courses: Course[];
 
-  constructor(private courseService: CourseService) {}
+  constructor(private courseService: CourseService) {
+  }
 
   ngOnInit(): void {
     this.courseService.getCourses().subscribe((courses: Course[]) => {

@@ -8,7 +8,8 @@ import {AssignmentService} from "../../services/assignment.service";
 @Component({
   selector: 'cod-course-page',
   templateUrl: './course-page.component.html',
-  styleUrls: ['./course-page.component.scss']
+  styleUrls: ['./course-page.component.scss',
+    './../../app.component.scss']
 })
 export class CoursePageComponent implements OnInit {
   private course: Course;
