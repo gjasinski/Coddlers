@@ -19,6 +19,7 @@ import {TaskPageComponent as TeacherTaskPageComponent} from "./components/teache
 import {TaskPageComponent as StudentTaskPageComponent} from "./components/student-components/task-page/task-page.component";
 import {AddTaskPageComponent} from "./components/add-task-page/add-task-page.component";
 import {TaskService} from "./services/task.service";
+import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.component";
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import {TaskService} from "./services/task.service";
     AddCoursePageComponent,
     TeacherTaskPageComponent,
     StudentTaskPageComponent,
-    AddTaskPageComponent
+    AddTaskPageComponent,
+    EditTaskPageComponent
   ],
   imports: [
     BrowserModule,

@@ -43,4 +43,11 @@ public class TaskController {
     public ResponseEntity<TaskDto> getTask(@PathVariable Long id) {
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/save")
+    public ResponseEntity<Void> saveTask(@Valid @RequestBody TaskDto taskDto) {
+        taskService.editTask(taskDto);
+
+        return ResponseEntity.ok().build();
+    }
 }

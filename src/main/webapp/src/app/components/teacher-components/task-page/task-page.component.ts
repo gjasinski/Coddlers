@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TaskService} from "../../../services/task.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Task} from "../../../models/task";
 import {Location} from "@angular/common";
 
@@ -15,7 +15,8 @@ export class TaskPageComponent implements OnInit {
 
   constructor(private taskService: TaskService,
               private route: ActivatedRoute,
-              private _location: Location) {
+              private _location: Location,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -32,6 +33,10 @@ export class TaskPageComponent implements OnInit {
   back(e): void {
     e.preventDefault();
     this._location.back();
+  }
+
+  routeToEdit() {
+    this.router.navigate(['edit-task/' + this.task.id]);
   }
 
 }

@@ -6,6 +6,7 @@ import {AddCoursePageComponent} from "./components/add-course-page/add-course-pa
 import {TaskPageComponent as TeacherTaskPageComponent} from "./components/teacher-components/task-page/task-page.component";
 import {TaskPageComponent as StudentTaskPageComponent} from "./components/student-components/task-page/task-page.component";
 import {AddTaskPageComponent} from "./components/add-task-page/add-task-page.component";
+import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.component";
 
 export const ROUTES: Routes = [
   { path: '',
@@ -20,5 +21,6 @@ export const ROUTES: Routes = [
   { path: 'teacher/task/:taskId', component: TeacherTaskPageComponent },
   { path: 'student/task/:taskId', component: StudentTaskPageComponent },
   { path: 'add-task', component: AddTaskPageComponent },
+  { path: 'edit-task/:taskId', component: EditTaskPageComponent },
   { path: '**', component: PageNotFoundComponent }
 ];

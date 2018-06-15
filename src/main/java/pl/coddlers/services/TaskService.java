@@ -43,6 +43,14 @@ public class TaskService {
         return task.getId();
     }
 
+    public void editTask(final TaskDto taskDto) {
+        Task task = taskConverter.convertFromDto(taskDto);
+        task.setId(taskDto.getId());
+        if (task.getTaskStatus() == null)
+            task.setTaskStatus(TaskStatus.NOT_SUBMITTED);
+        taskRepository.save(task);
+    }
+
     public TaskDto getTaskById(Long id) {
         Task task = validateTask(id);
 
