@@ -42,13 +42,13 @@ public class AssignmentService {
 	}
 
 	public AssignmentDto getAssignmentById(Long id) {
-		validateAssignment(id);
+		Assignment assignment = validateAssignment(id);
 
-		return assignmentConverter.convertFromEntity(assignmentRepository.findById(id).get());
+		return assignmentConverter.convertFromEntity(assignment);
 	}
 
-	private void validateAssignment(Long id) throws AssignmentNotFoundException {
-		assignmentRepository.findById(id).orElseThrow(
+	private Assignment validateAssignment(Long id) throws AssignmentNotFoundException {
+		return assignmentRepository.findById(id).orElseThrow(
 				() -> new AssignmentNotFoundException(id)
 		);
 	}

@@ -23,9 +23,9 @@ public class CourseService {
     private CourseConverter courseConverter;
 
     public CourseDto getCourseById(Long id) {
-        validateCourse(id);
+        Course course = validateCourse(id);
 
-        return courseConverter.convertFromEntity(courseRepository.getById(id).get());
+        return courseConverter.convertFromEntity(course);
     }
 
     public Collection<CourseDto> getCourses(Integer startsAt, Integer number) throws WrongDateException {
@@ -62,8 +62,8 @@ public class CourseService {
         return courseRepository.save(courseConverter.convertFromDto(courseDto));
     }
 
-    private void validateCourse(Long id) throws CourseNotFoundException {
-        courseRepository.findById(id).orElseThrow(
+    private Course validateCourse(Long id) throws CourseNotFoundException {
+        return courseRepository.findById(id).orElseThrow(
                 () -> new CourseNotFoundException(id)
         );
     }

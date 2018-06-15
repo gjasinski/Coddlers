@@ -15,6 +15,8 @@ public class Task {
 
     private String description;
 
+    private Integer weight;
+
     @Column(nullable=false)
     private int maxPoints;
 
@@ -25,15 +27,24 @@ public class Task {
     @Column(nullable=false)
     private TaskStatus taskStatus;
 
-    public Task(String title, String description, int maxPoints, Assignment assignment, TaskStatus taskStatus) {
+    public Task(String title, String description, int weight, int maxPoints, Assignment assignment, TaskStatus taskStatus) {
         this.title = title;
         this.description = description;
+        this.weight = weight;
         this.maxPoints = maxPoints;
         this.assignment = assignment;
         this.taskStatus = taskStatus;
     }
 
     public Task() {
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 
     public long getId() {
