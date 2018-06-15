@@ -1,0 +1,32 @@
+<div class="content-container">
+  <div class="row">
+    <div class="col-md-10">
+      <h2>{{task?.title}}</h2>
+
+      <div class="line"></div>
+      <br>
+
+      <h3>Description</h3>
+      <p>{{task?.description}}</p>
+    </div>
+
+    <div class="col-md-2">
+      <button class="btn btn-secondary back-btn">Edit task</button>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-10">
+      <h3> Weight: {{task?.weight}}</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <h3>Max points: {{task?.maxPoints}}</h3>
+    </div>
+  </div>
+
+  <button class="btn btn-secondary back-btn" (click)="back($event)">Back</button>
+
+</div>
