@@ -7,7 +7,6 @@ import pl.coddlers.models.converters.TaskConverter;
 import pl.coddlers.models.dto.TaskDto;
 import pl.coddlers.models.entity.Assignment;
 import pl.coddlers.models.entity.Task;
-import pl.coddlers.models.entity.TaskStatus;
 import pl.coddlers.repositories.AssignmentRepository;
 import pl.coddlers.repositories.TaskRepository;
 

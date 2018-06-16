@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TaskService} from "../../services/task.service";
 import {Location} from '@angular/common';
 import {Task} from "../../models/task";
@@ -57,9 +57,7 @@ export class EditTaskPageComponent implements OnInit {
     });
   }
 
-  back(e)
-    :
-    void {
+  back(e) {
     e.preventDefault();
     this._location.back();
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
@@ -30,6 +30,10 @@ export class CourseService {
 
   public createCourse(course: Course): Observable<any> {
     return this.http.post('api/courses', course.toJSON(), this.httpOptions);
+  }
+
+  public saveCourse(course: Course): Observable<any> {
+    return this.http.post('api/courses/save', course.toJSON(), this.httpOptions);
   }
 
 }

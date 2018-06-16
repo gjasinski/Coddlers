@@ -32,12 +32,19 @@ public class CourseController {
 
     @RequestMapping(method = RequestMethod.GET, params = {"startsAt", "number"})
     public ResponseEntity<Collection<CourseDto>> getCourses(@RequestParam(value = "startsAt", required = false) Integer startsAt,
-                                                         @RequestParam(value = "number", required = false) Integer number) {
+                                                            @RequestParam(value = "number", required = false) Integer number) {
         return ResponseEntity.ok(courseService.getCourses(startsAt, number));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<CourseDto> getCourse(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/save")
+    public ResponseEntity<Void> saveCourse(@Valid @RequestBody CourseDto courseDto) {
+        courseService.editCourse(courseDto);
+
+        return ResponseEntity.ok().build();
     }
 }

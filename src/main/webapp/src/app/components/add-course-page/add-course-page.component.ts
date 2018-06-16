@@ -42,7 +42,7 @@ export class AddCoursePageComponent implements OnInit {
     });
   }
 
-  back(e): void {
+  back(e) {
     e.preventDefault();
     this._location.back();
   }

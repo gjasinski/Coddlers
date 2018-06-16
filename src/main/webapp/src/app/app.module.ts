@@ -20,6 +20,8 @@ import {TaskPageComponent as StudentTaskPageComponent} from "./components/studen
 import {AddTaskPageComponent} from "./components/add-task-page/add-task-page.component";
 import {TaskService} from "./services/task.service";
 import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.component";
+import {EditCoursePageComponent} from "./components/edit-course-page/edit-course-page.component";
+import {DatePipe} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.
     TeacherTaskPageComponent,
     StudentTaskPageComponent,
     AddTaskPageComponent,
-    EditTaskPageComponent
+    EditTaskPageComponent,
+    EditCoursePageComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +55,8 @@ import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.
   providers: [
     CourseService,
     AssignmentService,
-    TaskService
+    TaskService,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

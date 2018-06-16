@@ -1,19 +1,18 @@
 <div class="content-container">
-  <h2>Add course</h2>
+  <h2>Edit course</h2>
 
   <div class="line"></div>
   <br>
 
-  <form [formGroup]="formGroup" (ngSubmit)="addCourse(formGroup.value)">
+  <form [formGroup]="formGroup" (ngSubmit)="saveCourse(formGroup.value)">
     <div class="form-group col-md-12">
       <label for="course-title">Course title</label>
-      <input formControlName="title" type="text" class="form-control"
-             id="course-title" placeholder="Enter title">
+      <input formControlName="title" type="text" class="form-control" id="course-title" placeholder="Enter title">
     </div>
     <div class="form-group col-md-12">
       <label for="course-description">Description</label>
-      <textarea formControlName="description" type="text" class="form-control"
-                id="course-description" placeholder="Enter description"></textarea>
+      <textarea formControlName="description" type="text" class="form-control" id="course-description"
+                placeholder="Enter description"></textarea>
     </div>
     <div class="form-group col-md-3">
       <label for="course-start-date">Start date</label>
@@ -40,7 +39,8 @@
       </div>
     </div>
 
-    <input type="submit" class="btn btn-primary" value="Create" [disabled]="!formGroup.valid">
+    <input type="submit" class="btn btn-primary" value="Save" [disabled]="!formGroup.valid">
     <button class="btn btn-secondary back-btn" (click)="back($event)">Back</button>
+
   </form>
 </div>
