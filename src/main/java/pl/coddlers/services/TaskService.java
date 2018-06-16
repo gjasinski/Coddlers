@@ -38,7 +38,6 @@ public class TaskService {
 
     public Long createTask(final TaskDto taskDto) {
         Task task = taskConverter.convertFromDto(taskDto);
-        task.setTaskStatus(TaskStatus.NOT_SUBMITTED);
         taskRepository.save(task);
         return task.getId();
     }
@@ -46,8 +45,6 @@ public class TaskService {
     public void editTask(final TaskDto taskDto) {
         Task task = taskConverter.convertFromDto(taskDto);
         task.setId(taskDto.getId());
-        if (task.getTaskStatus() == null)
-            task.setTaskStatus(TaskStatus.NOT_SUBMITTED);
         taskRepository.save(task);
     }
 

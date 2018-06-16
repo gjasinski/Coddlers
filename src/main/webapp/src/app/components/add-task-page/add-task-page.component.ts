@@ -25,13 +25,14 @@ export class AddTaskPageComponent implements OnInit {
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(100)])],
       'description': '',
-      'weight': '',
-      'maxPoints': ''
+      'weight': '1',
+      'maxPoints': '0'
     });
   }
 
-  addTask(task): void {
+  addTask(task) {
     console.log(task);
+
     this.taskService.createTask(new Task(null, task.assignmentId,
       task.title, task.description, task.weight, task.maxPoints, "NOT SUBMITTED")
     ).subscribe(obj => {

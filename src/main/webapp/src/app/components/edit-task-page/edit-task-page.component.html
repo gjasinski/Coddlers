@@ -7,25 +7,25 @@
   <form [formGroup]="formGroup" (ngSubmit)="saveTask(formGroup.value)">
     <div class="form-group col-md-12">
       <label for="task-title">Task title</label>
-      <input formControlName="title" type="text" class="form-control" id="task-title" placeholder="Enter title" value="{{task?.title}}">
+      <input formControlName="title" type="text" class="form-control" id="task-title" placeholder="Enter title">
     </div>
     <div class="form-group col-md-12">
       <label for="task-description">Description</label>
       <textarea formControlName="description" type="text" class="form-control" id="task-description"
-                placeholder="Enter description" value="{{task?.description}}"></textarea>
+                placeholder="Enter description"></textarea>
     </div>
     <div class="form-group col-md-2">
       <label for="task-weight">Weight for task</label>
       <div class="input-group">
         <input formControlName="weight" class="form-control" type="number" id="task-weight"
-               placeholder="Enter weight for task" value="{{task?.weight}}" min="0">
+               placeholder="Enter weight for task" min="0">
       </div>
     </div>
     <div class="form-group col-md-2">
       <label for="task-maxPoints">Max points for task</label>
       <div class="input-group">
         <input formControlName="maxPoints" class="form-control" type="number" id="task-maxPoints"
-               placeholder="Enter max points for task" value="{{task?.maxPoints}}" min="0">
+               placeholder="Enter max points for task" min="0">
       </div>
     </div>
 
