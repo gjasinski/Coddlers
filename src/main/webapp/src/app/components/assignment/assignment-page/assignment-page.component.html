@@ -1,0 +1,19 @@
+<div class="content-container">
+  <div class="row">
+    <div class="col-md-10">
+      <h2>{{course?.title}}</h2>
+      <h3>{{assignment?.title}}</h3>
+
+      <div class="line"></div>
+      <br>
+
+      <span>{{assignment?.dueDate}}</span>
+
+      <h4>Description</h4>
+      <p>{{assignment?.description}}</p>
+    </div>
+    <div class="col-md-2">
+      <button routerLink="edit-assignment" class="btn float-md-right" role="button">Edit assignment</button>
+    </div>
+  </div>
+</div>

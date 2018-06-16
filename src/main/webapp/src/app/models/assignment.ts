@@ -50,4 +50,16 @@ export class Assignment {
     return new Assignment(+jsonObj.id, +jsonObj.courseId, jsonObj.title, jsonObj.description,
       +jsonObj.weight, jsonObj.startDate, jsonObj.dueDate);
   }
+
+  public toJSON() {
+    return {
+      id: this.id,
+      courseId: this.courseId,
+      title: this.title,
+      description: this.description,
+      weight: this.weight,
+      startDate: this.startDate,
+      dueDate: this.dueDate
+    };
+  }
 }

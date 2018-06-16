@@ -1,21 +1,21 @@
 import {Component, OnInit} from '@angular/core';
-import {CourseService} from "../../services/course.service";
-import {Course} from "../../models/course";
+import {CourseService} from "../../../services/course.service";
+import {Course} from "../../../models/course";
 import {ActivatedRoute} from "@angular/router";
-import {Assignment} from "../../models/assignment";
-import {AssignmentService} from "../../services/assignment.service";
+import {Assignment} from "../../../models/assignment";
+import {AssignmentService} from "../../../services/assignment.service";
 
 @Component({
   selector: 'cod-course-page',
   templateUrl: './course-page.component.html',
-  styleUrls: ['./course-page.component.scss',
-    './../../app.component.scss']
+  styleUrls: ['./course-page.component.scss']
 })
 export class CoursePageComponent implements OnInit {
   private course: Course;
   private assignments: Assignment[] = [];
 
-  constructor(private courseService: CourseService, private route: ActivatedRoute,
+  constructor(private courseService: CourseService,
+              private route: ActivatedRoute,
               private assignmentService: AssignmentService) {}
 
   ngOnInit(): void {
