@@ -7,11 +7,16 @@ import pl.coddlers.models.entity.Assignment;
 import pl.coddlers.models.entity.Task;
 import pl.coddlers.models.entity.TaskStatus;
 import pl.coddlers.repositories.AssignmentRepository;
+import pl.coddlers.repositories.TaskRepository;
 
 @Component
-public class TaskConverter implements BaseConverter<Task, TaskDto> {
+public class TaskConverter implements BaseConverter<Task, TaskDto> { ;
+
     @Autowired
-    AssignmentRepository assignmentRepository;
+    private AssignmentRepository assignmentRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Override
     public TaskDto convertFromEntity(Task entity) {
@@ -20,26 +25,34 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
         taskDto.setAssignmentId(entity.getAssignment().getId());
         taskDto.setTitle(entity.getTitle());
         taskDto.setDescription(entity.getDescription());
-        taskDto.setWeight(entity.getWeight());
         taskDto.setMaxPoints(entity.getMaxPoints());
         taskDto.setTaskStatus(entity.getTaskStatus());
+
         return taskDto;
     }
 
     @Override
     public Task convertFromDto(TaskDto dto) {
+        Task task = new Task();
+
+        if (dto.getId() != null && taskRepository.existsById(dto.getId())) {
+            task.setId(dto.getId());
+        }
+
         Assignment assignment = assignmentRepository.findById(dto.getAssignmentId())
                 .orElseThrow(() -> new IllegalArgumentException("Assignment does not exist"));
-        Task task = new Task();
+
         task.setTitle(dto.getTitle());
-        task.setAssignment(assignment);
         task.setDescription(dto.getDescription());
-        task.setWeight(dto.getWeight());
         task.setMaxPoints(dto.getMaxPoints());
-        if (dto.getTaskStatus() == null)
+        task.setAssignment(assignment);
+
+        if (dto.getTaskStatus() == null) {
             task.setTaskStatus(TaskStatus.NOT_SUBMITTED);
-        else
+        } else {
             task.setTaskStatus(dto.getTaskStatus());
+        }
+
         return task;
     }
 }

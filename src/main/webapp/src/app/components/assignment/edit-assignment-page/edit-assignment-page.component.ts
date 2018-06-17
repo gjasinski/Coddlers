@@ -56,9 +56,7 @@ export class EditAssignmentPageComponent implements OnInit {
   }
 
   private setForm(assigment: Assignment) {
-    console.log(assigment);
-
-    this.formGroup.setValue({
+      this.formGroup.setValue({
       title: assigment.title,
       description: assigment.description,
       startDate: {

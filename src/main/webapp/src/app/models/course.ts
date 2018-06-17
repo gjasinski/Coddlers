@@ -35,7 +35,7 @@ export class Course {
 
   public static fromJSON(jsonObj: any): Course {
     return new Course(+jsonObj.id, jsonObj.title, jsonObj.description,
-      jsonObj.startDate, jsonObj.endDate);
+      new Date(jsonObj.startDate), new Date(jsonObj.endDate));
   }
 
   public toJSON() {

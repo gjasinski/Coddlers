@@ -6,6 +6,7 @@ import {Course} from "../../../models/course";
 import {CourseService} from "../../../services/course.service";
 import {filter, flatMap, map, mergeMap, subscribeOn, switchMap, tap} from "rxjs/operators";
 import {Observable} from "rxjs/internal/Observable";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-assignment-page',
@@ -19,7 +20,8 @@ export class AssignmentPageComponent implements OnInit {
   constructor(private courseService: CourseService,
               private assignmentService: AssignmentService,
               private route: ActivatedRoute,
-              private router: Router) { }
+              private router: Router,
+              private _location: Location) { }
 
   ngOnInit() {
     this.router.events.pipe(
@@ -48,6 +50,11 @@ export class AssignmentPageComponent implements OnInit {
           this.assignment = assignment;
         })
       );
+  }
+
+  back(e) {
+    e.preventDefault();
+    this._location.back();
   }
 
 }

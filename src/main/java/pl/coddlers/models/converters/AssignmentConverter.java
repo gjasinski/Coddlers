@@ -10,11 +10,12 @@ import pl.coddlers.repositories.CourseRepository;
 
 @Component
 public class AssignmentConverter implements BaseConverter<Assignment, AssignmentDto> {
-	@Autowired
-	CourseRepository courseRepository;
 
 	@Autowired
 	AssignmentRepository assignmentRepository;
+
+	@Autowired
+	CourseRepository courseRepository;
 
 	@Override
 	public AssignmentDto convertFromEntity(Assignment entity) {
@@ -26,6 +27,7 @@ public class AssignmentConverter implements BaseConverter<Assignment, Assignment
 		assignmentDto.setDueDate(entity.getDueDate());
 		assignmentDto.setStartDate(entity.getStartDate());
 		assignmentDto.setTitle(entity.getTitle());
+
 		return assignmentDto;
 	}
 
@@ -40,12 +42,13 @@ public class AssignmentConverter implements BaseConverter<Assignment, Assignment
 		Course course = courseRepository.getById(dto.getCourseId())
 				.orElseThrow(() -> new IllegalArgumentException("Course does not exist"));
 
+		assignment.setCourse(course);
 		assignment.setDescription(dto.getDescription());
 		assignment.setWeight(dto.getWeight());
 		assignment.setDueDate(dto.getDueDate());
 		assignment.setStartDate(dto.getStartDate());
 		assignment.setTitle(dto.getTitle());
-		assignment.setCourse(course);
+
 		return assignment;
 	}
 }

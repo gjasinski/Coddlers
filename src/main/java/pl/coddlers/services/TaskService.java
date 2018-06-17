@@ -7,7 +7,6 @@ import pl.coddlers.models.converters.TaskConverter;
 import pl.coddlers.models.dto.TaskDto;
 import pl.coddlers.models.entity.Assignment;
 import pl.coddlers.models.entity.Task;
-import pl.coddlers.models.entity.TaskStatus;
 import pl.coddlers.repositories.AssignmentRepository;
 import pl.coddlers.repositories.TaskRepository;
 
@@ -39,12 +38,16 @@ public class TaskService {
     public Long createTask(final TaskDto taskDto) {
         Task task = taskConverter.convertFromDto(taskDto);
         taskRepository.save(task);
+
         return task.getId();
     }
 
-    public void editTask(final TaskDto taskDto) {
+    public void updateTask(Long id, final TaskDto taskDto) {
+        validateTask(id);
+
+        taskDto.setId(id);
         Task task = taskConverter.convertFromDto(taskDto);
-        task.setId(taskDto.getId());
+
         taskRepository.save(task);
     }
 
@@ -55,7 +58,7 @@ public class TaskService {
     }
 
     private Task validateTask(Long id) throws TaskNotFoundException {
-        return taskRepository.findById(id).orElseThrow(
+            return taskRepository.findById(id).orElseThrow(
                 () -> new TaskNotFoundException(id)
         );
     }

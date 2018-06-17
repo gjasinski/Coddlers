@@ -10,6 +10,7 @@ import pl.coddlers.models.converters.CourseConverter;
 import pl.coddlers.models.dto.CourseDto;
 import pl.coddlers.models.entity.Course;
 import pl.coddlers.repositories.CourseRepository;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -60,6 +61,12 @@ public class CourseService {
         this.validateCourse(courseDto);
 
         return courseRepository.save(courseConverter.convertFromDto(courseDto));
+    }
+
+    public void updateCourse(final CourseDto courseDto) {
+        Course course = courseConverter.convertFromDto(courseDto);
+        course.setId(courseDto.getId());
+        courseRepository.save(course);
     }
 
     private Course validateCourse(Long id) throws CourseNotFoundException {
