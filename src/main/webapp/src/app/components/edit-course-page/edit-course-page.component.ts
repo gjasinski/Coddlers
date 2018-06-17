@@ -10,7 +10,7 @@ import {DatePipe} from '@angular/common';
   selector: 'cod-edit-task-page',
   templateUrl: './edit-course-page.component.html',
   styleUrls: ['./edit-course-page.component.scss',
-    './../../app.component.scss']
+    './../../styles/_common.scss']
 })
 export class EditCoursePageComponent implements OnInit {
   private formGroup: FormGroup;

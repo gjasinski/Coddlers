@@ -6,7 +6,7 @@ import {Course} from "../../models/course";
   selector: 'cod-courses',
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.scss',
-    './../../app.component.scss']
+    './../../styles/_common.scss']
 })
 export class CoursesComponent implements OnInit {
   private courses: Course[];

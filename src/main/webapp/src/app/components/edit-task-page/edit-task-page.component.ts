@@ -9,7 +9,7 @@ import {ActivatedRoute} from "@angular/router";
   selector: 'cod-edit-task-page',
   templateUrl: './edit-task-page.component.html',
   styleUrls: ['./edit-task-page.component.scss',
-    './../../app.component.scss']
+    './../../styles/_common.scss']
 })
 export class EditTaskPageComponent implements OnInit {
   private formGroup: FormGroup;

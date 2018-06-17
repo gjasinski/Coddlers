@@ -8,7 +8,7 @@ import {Location} from "@angular/common";
   selector: 'cod-task-page',
   templateUrl: './task-page.component.html',
   styleUrls: ['./task-page.component.scss',
-    './../../../app.component.scss']
+    './../../../styles/_common.scss']
 })
 export class TaskPageComponent implements OnInit {
   private task: Task;

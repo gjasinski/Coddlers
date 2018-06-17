@@ -8,7 +8,7 @@ import {Location} from '@angular/common';
   selector: 'cod-add-course-page',
   templateUrl: './add-course-page.component.html',
   styleUrls: ['./add-course-page.component.scss',
-    './../../app.component.scss']
+    './../../styles/_common.scss']
 })
 export class AddCoursePageComponent implements OnInit {
   private formGroup: FormGroup;

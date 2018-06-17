@@ -8,7 +8,7 @@ import {Task} from "../../models/task";
   selector: 'cod-add-task-page',
   templateUrl: './add-task-page.component.html',
   styleUrls: ['./add-task-page.component.scss',
-    './../../app.component.scss']
+    './../../styles/_common.scss']
 })
 export class AddTaskPageComponent implements OnInit {
   private formGroup: FormGroup;

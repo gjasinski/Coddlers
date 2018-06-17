@@ -10,7 +10,7 @@ import {Location} from "@angular/common";
   selector: 'cod-course-page',
   templateUrl: './course-page.component.html',
   styleUrls: ['./course-page.component.scss',
-    './../../app.component.scss']
+    './../../styles/_common.scss']
 })
 export class CoursePageComponent implements OnInit {
   private course: Course;
