@@ -30,9 +30,7 @@ class GitUserService {
 		String resourceUrl = gitlabApi + "/users";
 
 		HttpHeaders headers = getHttpHeaders();
-
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(resourceUrl)
-				.queryParam("private_token", private_token)
+		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
 				.queryParam("email", email)
 				.queryParam("password", password)
 				.queryParam("username", username)
@@ -55,5 +53,10 @@ class GitUserService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		return headers;
+	}
+
+	private UriComponentsBuilder createComponentBuilder(String resourceUrl) {
+		return UriComponentsBuilder.fromHttpUrl(resourceUrl)
+				.queryParam("private_token", private_token);
 	}
 }
