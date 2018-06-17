@@ -23,7 +23,7 @@ import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.
 import { AddAssignmentPageComponent } from './components/assignment/add-assignment-page/add-assignment-page.component';
 import { AssignmentPageComponent } from './components/assignment/assignment-page/assignment-page.component';
 import { EditAssignmentPageComponent } from './components/assignment/edit-assignment-page/edit-assignment-page.component';
-import {EditCoursePageComponent} from "./components/edit-course-page/edit-course-page.component";
+import {EditCoursePageComponent} from "./components/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
 
 @NgModule({
