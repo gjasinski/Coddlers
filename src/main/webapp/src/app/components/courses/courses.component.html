@@ -1,7 +1,12 @@
 <div class="content-container course-container">
   <h2>Courses</h2>
+
+  <div class="line"></div>
+  <br>
+
   <div class="row">
     <div class="col-12">
+      Filter by title:
       <input [(ngModel)]="searchText" class="search-input" type="text">
       <button routerLink="/add-course" role="button" class="btn float-md-right">Add new course</button>
     </div>

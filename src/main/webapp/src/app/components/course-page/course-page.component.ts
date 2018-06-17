@@ -1,21 +1,26 @@
 import {Component, OnInit} from '@angular/core';
 import {CourseService} from "../../services/course.service";
 import {Course} from "../../models/course";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Assignment} from "../../models/assignment";
 import {AssignmentService} from "../../services/assignment.service";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'cod-course-page',
   templateUrl: './course-page.component.html',
-  styleUrls: ['./course-page.component.scss']
+  styleUrls: ['./course-page.component.scss',
+    './../../styles/_common.scss']
 })
 export class CoursePageComponent implements OnInit {
   private course: Course;
   private assignments: Assignment[] = [];
 
-  constructor(private courseService: CourseService, private route: ActivatedRoute,
-              private assignmentService: AssignmentService) {}
+  constructor(private courseService: CourseService,
+              private route: ActivatedRoute,
+              private _location: Location,
+              private assignmentService: AssignmentService,
+              private router: Router) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(
@@ -32,4 +37,12 @@ export class CoursePageComponent implements OnInit {
     );
   }
 
+  routeToEdit() {
+    this.router.navigate(['edit-course/' + this.course.id]);
+  }
+
+  back(e) {
+    e.preventDefault();
+    this._location.back();
+  }
 }

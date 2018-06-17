@@ -1,14 +1,17 @@
 package pl.coddlers.models.dto;
 
 import lombok.Data;
+import pl.coddlers.models.entity.TaskStatus;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.sql.Timestamp;
 
 @Data
-public class CourseDto {
+public class TaskDto {
     private Long id;
+
+    @NotNull
+    private Long assignmentId;
 
     @NotNull
     @Size(min = 3, max = 100)
@@ -18,8 +21,8 @@ public class CourseDto {
     private String description;
 
     @NotNull
-    private Timestamp startDate;
+    private Integer maxPoints;
 
     @NotNull
-    private Timestamp endDate;
+    private TaskStatus taskStatus;
 }
