@@ -5,10 +5,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.coddlers.git.Exceptions.GitErrorHandler;
+import pl.coddlers.git.models.ResponseWithIdDTO;
 
 @Service
 class GitUserService {
@@ -25,7 +27,7 @@ class GitUserService {
 		this.restTemplate.setErrorHandler(new GitErrorHandler());
 	}
 
-	public void createUser(String email, String name, String username, String password) {
+	public Long createUser(String email, String name, String username, String password) {
 		String resourceUrl = gitlabApi + "/users";
 
 		HttpHeaders headers = new HttpHeaders();
@@ -42,11 +44,12 @@ class GitUserService {
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
-		restTemplate.exchange(
+		ResponseEntity<ResponseWithIdDTO> exchange = restTemplate.exchange(
 				builder.build().toUriString(),
 				HttpMethod.POST,
 				entity,
-				String.class);
+				ResponseWithIdDTO.class);
+		return exchange.getBody().getId();
 	}
 
 }
