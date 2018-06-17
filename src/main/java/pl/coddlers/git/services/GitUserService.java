@@ -5,7 +5,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,8 +29,7 @@ class GitUserService {
 	public Long createUser(String email, String name, String username, String password) {
 		String resourceUrl = gitlabApi + "/users";
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+		HttpHeaders headers = getHttpHeaders();
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(resourceUrl)
 				.queryParam("private_token", private_token)
@@ -44,12 +42,18 @@ class GitUserService {
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
-		ResponseEntity<ResponseWithIdDTO> exchange = restTemplate.exchange(
+		return restTemplate.exchange(
 				builder.build().toUriString(),
 				HttpMethod.POST,
 				entity,
-				ResponseWithIdDTO.class);
-		return exchange.getBody().getId();
+				ResponseWithIdDTO.class)
+				.getBody()
+				.getId();
 	}
 
+	private HttpHeaders getHttpHeaders() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		return headers;
+	}
 }
