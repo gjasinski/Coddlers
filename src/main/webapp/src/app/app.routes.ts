@@ -9,6 +9,7 @@ import {AddTaskPageComponent} from "./components/add-task-page/add-task-page.com
 import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.component";
 import {AddAssignmentPageComponent} from "./components/assignment/add-assignment-page/add-assignment-page.component";
 import {AssignmentPageComponent} from "./components/assignment/assignment-page/assignment-page.component";
+import {EditAssignmentPageComponent} from "./components/assignment/edit-assignment-page/edit-assignment-page.component";
 
 export const ROUTES: Routes = [
   { path: '',
@@ -22,7 +23,12 @@ export const ROUTES: Routes = [
     component: CoursePageComponent,
     children: [
       { path: 'add-assignment', component: AddAssignmentPageComponent },
-      { path: 'assignments/:assignmentId', component: AssignmentPageComponent }
+      { path: 'assignments/:assignmentId',
+        component: AssignmentPageComponent,
+        children: [
+          { path: 'edit-assignment', component: EditAssignmentPageComponent }
+        ]
+      }
     ]
   },
   { path: 'courses', component: CoursesComponent },

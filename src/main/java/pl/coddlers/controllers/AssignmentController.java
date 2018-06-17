@@ -44,4 +44,9 @@ public class AssignmentController {
 	public ResponseEntity<AssignmentDto> getAssignment(@PathVariable Long id) {
 		return ResponseEntity.ok(assignmentService.getAssignmentById(id));
 	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
+	public ResponseEntity<AssignmentDto> updateAssignment(@PathVariable Long id, @Valid @RequestBody AssignmentDto assignmentDto) {
+		return ResponseEntity.ok(assignmentService.updateAssigment(id, assignmentDto));
+	}
 }

@@ -22,6 +22,7 @@ import {TaskService} from "./services/task.service";
 import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.component";
 import { AddAssignmentPageComponent } from './components/assignment/add-assignment-page/add-assignment-page.component';
 import { AssignmentPageComponent } from './components/assignment/assignment-page/assignment-page.component';
+import { EditAssignmentPageComponent } from './components/assignment/edit-assignment-page/edit-assignment-page.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { AssignmentPageComponent } from './components/assignment/assignment-page
     AddTaskPageComponent,
     EditTaskPageComponent,
     AddAssignmentPageComponent,
-    AssignmentPageComponent
+    AssignmentPageComponent,
+    EditAssignmentPageComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +49,7 @@ import { AssignmentPageComponent } from './components/assignment/assignment-page
       ROUTES,
       {
         enableTracing: true, // debug
-        useHash: false
+        useHash: true
       }
     ),
     FormsModule,

@@ -48,7 +48,7 @@ export class Assignment {
 
   public static fromJSON(jsonObj: any): Assignment {
     return new Assignment(+jsonObj.id, +jsonObj.courseId, jsonObj.title, jsonObj.description,
-      +jsonObj.weight, jsonObj.startDate, jsonObj.dueDate);
+      +jsonObj.weight, new Date(jsonObj.startDate), new Date(jsonObj.dueDate));
   }
 
   public toJSON() {

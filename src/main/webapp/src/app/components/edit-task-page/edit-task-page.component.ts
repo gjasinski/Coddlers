@@ -57,9 +57,7 @@ export class EditTaskPageComponent implements OnInit {
     });
   }
 
-  back(e)
-    :
-    void {
+  back(e): void {
     e.preventDefault();
     this._location.back();
   }

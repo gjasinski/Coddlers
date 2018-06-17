@@ -47,6 +47,16 @@ public class AssignmentService {
 		return assignmentConverter.convertFromEntity(assignment);
 	}
 
+	public AssignmentDto updateAssigment(Long id, AssignmentDto assignmentDto) {
+		validateAssignment(id);
+
+		assignmentDto.setId(id);
+		Assignment assignment = assignmentConverter.convertFromDto(assignmentDto);
+		assignmentRepository.save(assignment);
+
+		return assignmentDto;
+	}
+
 	private Assignment validateAssignment(Long id) throws AssignmentNotFoundException {
 		return assignmentRepository.findById(id).orElseThrow(
 				() -> new AssignmentNotFoundException(id)

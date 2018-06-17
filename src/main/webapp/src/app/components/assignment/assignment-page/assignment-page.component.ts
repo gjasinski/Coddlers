@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {AssignmentService} from "../../../services/assignment.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {Assignment} from "../../../models/assignment";
 import {Course} from "../../../models/course";
 import {CourseService} from "../../../services/course.service";
+import {filter, flatMap, map, mergeMap, subscribeOn, switchMap, tap} from "rxjs/operators";
+import {Observable} from "rxjs/internal/Observable";
 
 @Component({
   selector: 'app-assignment-page',
@@ -16,23 +18,36 @@ export class AssignmentPageComponent implements OnInit {
 
   constructor(private courseService: CourseService,
               private assignmentService: AssignmentService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private router: Router) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(
-      params => {
-        this.assignmentService.getAssignment(+params.get('assignmentId'))
-          .subscribe((assignment: Assignment) => {
-            this.assignment = assignment;
-          })
-      }
-    );
+    this.router.events.pipe(
+      filter(e => (e instanceof NavigationEnd && e.url.split('/').length === 5)),
+      switchMap(() => {
+        return this.getAssigment();
+      }),
+    ).subscribe();
+
+    this.getAssigment().subscribe();
 
     this.route.parent.params.subscribe(params => {
       this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
         this.course = course;
       })
     })
+  }
+
+  private getAssigment(): Observable<any> {
+    return this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          return this.assignmentService.getAssignment(+params.get('assignmentId'));
+        }),
+        tap((assignment: Assignment) => {
+          this.assignment = assignment;
+        })
+      );
   }
 
 }

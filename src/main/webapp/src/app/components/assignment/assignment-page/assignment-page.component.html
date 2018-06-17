@@ -1,4 +1,4 @@
-<div class="content-container">
+<div *ngIf="route.children.length === 0" class="content-container">
   <div class="row">
     <div class="col-md-10">
       <h2>{{course?.title}}</h2>
@@ -17,3 +17,5 @@
     </div>
   </div>
 </div>
+
+<router-outlet></router-outlet>

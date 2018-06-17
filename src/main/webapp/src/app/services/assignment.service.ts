@@ -33,8 +33,17 @@ export class AssignmentService {
     return this.http.post('api/assignments', assigment.toJSON(), this.httpOptions);
   }
 
+  public updateAssignment(id: number, assigment: Assignment): Observable<any> {
+    return this.http.put(`api/assignments/${id}`, assigment.toJSON(), this.httpOptions)
+      .pipe(
+        map((obj: any) => {
+          return Assignment.fromJSON(obj);
+        })
+      );
+  }
+
   public getAssignment(assignmentId: number): Observable<Assignment> {
-    return this.http.get<Assignment[]>(`api/assignments/${assignmentId}`)
+    return this.http.get<Assignment>(`api/assignments/${assignmentId}`)
       .pipe(
         map((obj: any) => {
           return Assignment.fromJSON(obj);
