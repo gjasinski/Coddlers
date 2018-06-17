@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class GitProjectService {
 	//todo this should be injected from properties
-	private static final String GIT_HOOKS_ENDPOINT = "http://coddlers.pl:8080/api/git/hooks";
+	private static final String GIT_HOOKS_ENDPOINT = "http://coddlers.pl:8080/api/git/hooks/push";
 	private RestTemplate restTemplate;
 
 	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
@@ -60,7 +60,7 @@ public class GitProjectService {
 		return projectId;
 	}
 
-	public void addStudentToCourse(Long courseGitId, Long studentId) {
+	public Long addStudentToCourse(Long courseGitId, Long studentId) {
 		String resourceUrl = gitlabApi + "/projects/" + courseGitId + "/fork";
 		HttpHeaders headers = getHttpHeaders();
 
@@ -75,8 +75,9 @@ public class GitProjectService {
 				HttpMethod.POST,
 				entity,
 				ResponseWithIdDTO.class);
-		Long studentCouseId = exchange.getBody().getId();
-		registerHooks(courseGitId, studentCouseId);
+		Long studentCourseId = exchange.getBody().getId();
+		registerHooks(courseGitId, studentCourseId);
+		return studentCourseId;
 	}
 
 	private void createGitHook(Long projectId) {
@@ -119,6 +120,6 @@ public class GitProjectService {
 		Hook createdHook = new Hook();
 		createdHook.setProjectId(createdProjectId);
 		createdHook.setBranch(hook.getBranch());
-		return hook;
+		return createdHook;
 	}
 }

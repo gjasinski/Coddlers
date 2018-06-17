@@ -12,7 +12,7 @@ import pl.coddlers.git.Exceptions.GitErrorHandler;
 import pl.coddlers.git.models.ResponseWithIdDTO;
 
 @Service
-class GitUserService {
+public class GitUserService {
 	private RestTemplate restTemplate;
 
 	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")

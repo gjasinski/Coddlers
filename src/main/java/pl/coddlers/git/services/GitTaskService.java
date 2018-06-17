@@ -13,7 +13,7 @@ import pl.coddlers.git.models.Hook;
 import pl.coddlers.git.reposiories.HookRepository;
 
 @Service
-public class TaskService {
+public class GitTaskService {
 	private static final String MASTER = "-master";
 	private static final String DEVELOP = "-develop";
 	private RestTemplate restTemplate = new RestTemplate();
@@ -27,7 +27,7 @@ public class TaskService {
 	private final HookRepository hookRepository;
 
 	@Autowired
-	public TaskService(HookRepository hookRepository) {
+	public GitTaskService(HookRepository hookRepository) {
 		this.hookRepository = hookRepository;
 	}
 

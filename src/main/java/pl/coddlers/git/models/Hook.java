@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Hook {
@@ -48,5 +49,30 @@ public class Hook {
 
 	public void setBranch(String branch) {
 		this.branch = branch;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Hook hook = (Hook) o;
+		return Objects.equals(id, hook.id) &&
+				Objects.equals(projectId, hook.projectId) &&
+				Objects.equals(branch, hook.branch);
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(id, projectId, branch);
+	}
+
+	@Override
+	public String toString() {
+		return "Hook{" +
+				"id=" + id +
+				", projectId=" + projectId +
+				", branch='" + branch + '\'' +
+				'}';
 	}
 }

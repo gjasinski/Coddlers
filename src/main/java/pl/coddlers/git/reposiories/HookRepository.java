@@ -6,7 +6,8 @@ import pl.coddlers.git.models.Hook;
 import java.util.List;
 import java.util.Optional;
 
-public interface HookRepository extends JpaRepository<Hook, Long>  {
+public interface HookRepository extends JpaRepository<Hook, Long> {
 	Optional<Hook> getByProjectIdAndBranch(Long projectId, String branch);
+
 	List<Hook> getAllByProjectId(Long projectId);
 }
