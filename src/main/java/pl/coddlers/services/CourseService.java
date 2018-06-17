@@ -63,7 +63,7 @@ public class CourseService {
         return courseRepository.save(courseConverter.convertFromDto(courseDto));
     }
 
-    public void editCourse(final CourseDto courseDto) {
+    public void updateCourse(final CourseDto courseDto) {
         Course course = courseConverter.convertFromDto(courseDto);
         course.setId(courseDto.getId());
         courseRepository.save(course);

@@ -29,7 +29,6 @@ export class AddCoursePageComponent implements OnInit {
   }
 
   addCourse(course): void {
-    console.log(course);
     this.courseService.createCourse(new Course(
       null,
       course.title,

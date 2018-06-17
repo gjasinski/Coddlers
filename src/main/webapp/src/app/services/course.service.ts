@@ -32,8 +32,8 @@ export class CourseService {
     return this.http.post('api/courses', course.toJSON(), this.httpOptions);
   }
 
-  public saveCourse(course: Course): Observable<any> {
-    return this.http.post('api/courses/save', course.toJSON(), this.httpOptions);
+  public updateCourse(course: Course): Observable<any> {
+    return this.http.put('api/courses', course.toJSON(), this.httpOptions);
   }
 
 }

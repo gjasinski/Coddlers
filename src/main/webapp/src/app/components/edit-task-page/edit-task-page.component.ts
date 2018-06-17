@@ -31,7 +31,6 @@ export class EditTaskPageComponent implements OnInit {
             this.formGroup.setValue({
               'title': this.task.title,
               'description': this.task.description,
-              'weight': this.task.weight,
               'maxPoints': this.task.maxPoints
             });
           }
@@ -42,16 +41,13 @@ export class EditTaskPageComponent implements OnInit {
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(100)])],
       'description': '',
-      'weight': '',
       'maxPoints': ''
     });
   }
 
-  saveTask(task) {
-    console.log(task);
-
-    this.taskService.saveTask(new Task(this.task.id, this.task.assignmentId,
-      task.title, task.description, task.weight, task.maxPoints, this.task.taskStatus.toUpperCase())
+  updateTask(task) {
+    this.taskService.updateTask(new Task(this.task.id, this.task.assignmentId,
+      task.title, task.description, task.maxPoints, this.task.taskStatus.toUpperCase())
     ).subscribe(obj => {
       this._location.back();
     });

@@ -12,9 +12,7 @@ import pl.coddlers.repositories.CourseRepository;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AssignmentService {
@@ -37,6 +35,10 @@ public class AssignmentService {
 
 	public Long createAssignment(AssignmentDto assignmentDto) {
 		Assignment assignment = assignmentConverter.convertFromDto(assignmentDto);
+		Course course = courseRepository.getById(assignmentDto.getCourseId())
+				.orElseThrow(() -> new IllegalArgumentException("Course does not exist"));
+		assignment.setCourse(course);
+
 		assignmentRepository.save(assignment);
 		return assignment.getId();
 	}

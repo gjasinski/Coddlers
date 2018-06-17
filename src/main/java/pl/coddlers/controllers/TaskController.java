@@ -22,8 +22,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDto taskDto) {
         Long id = taskService.createTask(taskDto);
 
@@ -34,19 +33,19 @@ public class TaskController {
         return ResponseEntity.created(location).build();
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"assignmentId"})
+    @GetMapping(params = {"assignmentId"})
     public ResponseEntity<Collection<TaskDto>> getTasks(@RequestParam(value = "assignmentId") Long assignmentId) {
         return ResponseEntity.ok(taskService.getAllAssignmentsTasks(assignmentId));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<TaskDto> getTask(@PathVariable Long id) {
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveTask(@Valid @RequestBody TaskDto taskDto) {
-        taskService.editTask(taskDto);
+    @PutMapping
+    public ResponseEntity<Void> updateTask(@Valid @RequestBody TaskDto taskDto) {
+        taskService.updateTask(taskDto);
 
         return ResponseEntity.ok().build();
     }

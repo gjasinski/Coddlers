@@ -19,7 +19,7 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<Void> createCourse(@Valid @RequestBody CourseDto courseDto) {
         Course course = courseService.createCourse(courseDto);
 
@@ -30,20 +30,20 @@ public class CourseController {
         return ResponseEntity.created(location).build();
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"startsAt", "number"})
+    @GetMapping(params = {"startsAt", "number"})
     public ResponseEntity<Collection<CourseDto>> getCourses(@RequestParam(value = "startsAt", required = false) Integer startsAt,
                                                             @RequestParam(value = "number", required = false) Integer number) {
         return ResponseEntity.ok(courseService.getCourses(startsAt, number));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<CourseDto> getCourse(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/save")
-    public ResponseEntity<Void> saveCourse(@Valid @RequestBody CourseDto courseDto) {
-        courseService.editCourse(courseDto);
+    @PutMapping
+    public ResponseEntity<Void> updateCourse(@Valid @RequestBody CourseDto courseDto) {
+        courseService.updateCourse(courseDto);
 
         return ResponseEntity.ok().build();
     }
