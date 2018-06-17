@@ -26,16 +26,20 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+	jcenter()
 }
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
 	runtime('com.h2database:h2')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile('org.postgresql:postgresql:9.4-1206-jdbc42')
+	compile('io.springfox:springfox-swagger2:2.9.0')
+	compile('io.springfox:springfox-swagger-ui:2.9.0')
 }
 
 def webappDir = "$projectDir/src/main/webapp"
@@ -48,8 +52,8 @@ sourceSets {
 }
 
 node {
-	version = '8.11.1'
-	npmVersion = '3.10.8'
+	version = '10.0.0'
+	npmVersion = '5.6.0'
 	download = true
 	workDir = file("${project.buildDir}/node")
 	nodeModulesDir = file("$webappDir")
