@@ -1,4 +1,4 @@
-package pl.coddlers.git.user;
+package pl.coddlers.git.services;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -8,10 +8,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.coddlers.git.Exceptions.GitErrorHandler;
 
 @Service
 class GitUserService {
-	private RestTemplate restTemplate = new RestTemplate();
+	private RestTemplate restTemplate;
 
 	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
 	private String gitlabApi;
@@ -19,8 +20,12 @@ class GitUserService {
 	@Value("${gitlab.api.apiuser.private_token}")
 	private String private_token;
 
+	public GitUserService() {
+		this.restTemplate = new RestTemplate();
+		this.restTemplate.setErrorHandler(new GitErrorHandler());
+	}
 
-	HttpEntity<String> createUser(String email, String name, String username, String password) {
+	public void createUser(String email, String name, String username, String password) {
 		String resourceUrl = gitlabApi + "/users";
 
 		HttpHeaders headers = new HttpHeaders();
@@ -37,7 +42,7 @@ class GitUserService {
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
-		return restTemplate.exchange(
+		restTemplate.exchange(
 				builder.build().toUriString(),
 				HttpMethod.POST,
 				entity,
