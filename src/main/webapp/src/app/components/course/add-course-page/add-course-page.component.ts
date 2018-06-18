@@ -1,14 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CourseService} from "../../services/course.service";
-import {Course} from "../../models/course";
+import {CourseService} from "../../../services/course.service";
+import {Course} from "../../../models/course";
 import {Location} from '@angular/common';
 
 @Component({
   selector: 'cod-add-course-page',
   templateUrl: './add-course-page.component.html',
-  styleUrls: ['./add-course-page.component.scss',
-    './../../styles/_common.scss']
+  styleUrls: ['./add-course-page.component.scss']
 })
 export class AddCoursePageComponent implements OnInit {
   private formGroup: FormGroup;

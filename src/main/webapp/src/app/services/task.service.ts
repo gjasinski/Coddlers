@@ -32,8 +32,8 @@ export class TaskService {
     return this.http.post('/api/tasks', task.toJSON(), this.httpOptions);
   }
 
-  public updateTask(task: Task): Observable<any> {
-    return this.http.put('/api/tasks', task.toJSON(), this.httpOptions);
+  public updateTask(id: number, task: Task): Observable<any> {
+    return this.http.put(`/api/tasks/${id}`, task.toJSON(), this.httpOptions);
   }
 
 }

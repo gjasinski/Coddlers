@@ -8,8 +8,7 @@ import {ActivatedRoute} from "@angular/router";
 @Component({
   selector: 'cod-edit-task-page',
   templateUrl: './edit-task-page.component.html',
-  styleUrls: ['./edit-task-page.component.scss',
-    './../../styles/_common.scss']
+  styleUrls: ['./edit-task-page.component.scss']
 })
 export class EditTaskPageComponent implements OnInit {
   private formGroup: FormGroup;
@@ -46,14 +45,20 @@ export class EditTaskPageComponent implements OnInit {
   }
 
   updateTask(task) {
-    this.taskService.updateTask(new Task(this.task.id, this.task.assignmentId,
-      task.title, task.description, task.maxPoints, this.task.taskStatus.toUpperCase())
+    this.taskService.updateTask(this.task.id,
+      new Task(this.task.id,
+        this.task.assignmentId,
+        task.title,
+        task.description,
+        task.maxPoints,
+        this.task.taskStatus.toUpperCase()
+      )
     ).subscribe(obj => {
       this._location.back();
     });
   }
 
-  back(e) {
+  back(e): void {
     e.preventDefault();
     this._location.back();
   }

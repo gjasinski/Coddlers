@@ -1,16 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CourseService} from "../../services/course.service";
+import {CourseService} from "../../../services/course.service";
 import {Location} from '@angular/common';
-import {Course} from "../../models/course";
+import {Course} from "../../../models/course";
 import {ActivatedRoute} from "@angular/router";
 import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'cod-edit-task-page',
   templateUrl: './edit-course-page.component.html',
-  styleUrls: ['./edit-course-page.component.scss',
-    './../../styles/_common.scss']
+  styleUrls: ['./edit-course-page.component.scss']
 })
 export class EditCoursePageComponent implements OnInit {
   private formGroup: FormGroup;
@@ -31,11 +30,18 @@ export class EditCoursePageComponent implements OnInit {
             this.course = course;
 
             this.formGroup.setValue({
-              'title': this.course.title,
-              'description': this.course.description,
-              // TODO repair displaying date for course
-              'startDate': this.datePipe.transform(this.course.startDate, 'yyyy-MM-dd'),
-              'endDate': this.datePipe.transform(this.course.endDate, 'yyyy-MM-dd')
+              title: this.course.title,
+              description: this.course.description,
+              startDate: {
+                day: this.course.startDate.getDate(),
+                month: this.course.startDate.getMonth() + 1,
+                year: this.course.startDate.getFullYear()
+              },
+              endDate: {
+                day: this.course.endDate.getDate(),
+                month: this.course.endDate.getMonth() + 1,
+                year: this.course.endDate.getFullYear()
+              },
             });
           }
         );

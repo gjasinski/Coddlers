@@ -1,7 +1,7 @@
-<div class="content-container">
+<div *ngIf="route.children.length === 0" class="content-container">
   <div class="row">
     <div class="col-md-10">
-      <h2>{{course?.title}}</h2>
+      <h2>Course - {{course?.title}}</h2>
 
       <div class="line"></div>
       <br>
@@ -12,20 +12,21 @@
     </div>
 
     <div class="col-md-2">
-      <button class="btn btn-secondary back-btn" (click)="routeToEdit()">Edit course</button>
+      <button class="btn btn-secondary float-right" (click)="routeToEdit()">Edit course</button>
     </div>
   </div>
+
   <div class="row">
     <div class="col-md-10">
       <div class="assignments-container">
         <div class="assignments-header">
           <h3>Assignments</h3>
-          <button class="btn float-md-right" role="button">Add new assignment</button>
+          <button routerLink="add-assignment" class="btn btn-primary float-md-right" role="button">Add new assignment</button>
         </div>
         <div class="assignments-body">
           <ul class="assignments-list">
             <li class="assignment-item card" *ngFor="let assignment of assignments">
-              <a [routerLink]="['/assignments/', assignment.id]" class="card-body">
+              <a [routerLink]="['assignments/', assignment.id]" class="card-body">
                 <h4>{{assignment.title}}</h4>
                 <span class="start-date">Start date: {{assignment.startDate}}</span>
                 <span class="start-date">Due date: {{assignment.dueDate}}</span>
@@ -37,6 +38,12 @@
     </div>
   </div>
 
-  <button class="btn btn-secondary back-btn" (click)="back($event)">Back</button>
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btn-secondary back-btn float-right" (click)="back($event)">Back</button>
+    </div>
+  </div>
 
 </div>
+
+<router-outlet></router-outlet>

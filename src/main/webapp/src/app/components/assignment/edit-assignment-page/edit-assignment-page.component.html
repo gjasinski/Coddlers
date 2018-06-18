@@ -1,0 +1,54 @@
+<div class="content-container">
+  <h2>Edit assignment</h2>
+
+  <div class="line"></div>
+  <br>
+
+  <form [formGroup]="formGroup" (ngSubmit)="saveAssignment(formGroup.value)">
+    <div class="form-group">
+      <label for="assignment-title">Assignment title*</label>
+      <input formControlName="title" type="text" class="form-control"
+             id="assignment-title" placeholder="Enter title">
+    </div>
+    <div class="form-group">
+      <label for="assignment-description">Description</label>
+      <textarea formControlName="description" type="text" class="form-control"
+                id="assignment-description" placeholder="Enter description"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="assignment-start-date">Start date*</label>
+      <div class="input-group">
+        <input id="assignment-start-date" class="form-control" placeholder="yyyy-mm-dd"
+               name="dp" formControlName="startDate" ngbDatepicker #d1="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
+            <img src="assets/img/calendar.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="assignment-end-date">End date*</label>
+      <div class="input-group">
+        <input id="assignment-end-date" class="form-control" placeholder="yyyy-mm-dd"
+               name="dp" formControlName="endDate" ngbDatepicker #d2="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
+            <img src="assets/img/calendar.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="assignemnt-weight">Weight of the assignment</label>
+      <div class="input-group">
+        <input formControlName="weight" class="form-control" type="number" id="assignemnt-weight"
+               placeholder="Enter weight" min="0">
+      </div>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Save" [disabled]="!formGroup.valid">
+    <button class="btn btn-secondary back-btn" (click)="back($event)">Back</button>
+  </form>
+
+</div>

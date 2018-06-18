@@ -20,24 +20,14 @@ public class AssignmentService {
 	@Autowired
 	private AssignmentRepository assignmentRepository;
 	@Autowired
-	private CourseRepository courseRepository;
-	@Autowired
 	private AssignmentConverter assignmentConverter;
 
 	public Collection<AssignmentDto> getAllCoursesAssignments(long courseId) {
-		Optional<Course> course = courseRepository.getById(courseId);
-		if (course.isPresent()) {
-			return assignmentConverter
-					.convertFromEntities(course.get().getAssignmentList());
-		}
-		return Collections.emptyList();
+		return assignmentConverter.convertFromEntities(assignmentRepository.findByCourse_Id(courseId));
 	}
 
 	public Long createAssignment(AssignmentDto assignmentDto) {
 		Assignment assignment = assignmentConverter.convertFromDto(assignmentDto);
-		Course course = courseRepository.getById(assignmentDto.getCourseId())
-				.orElseThrow(() -> new IllegalArgumentException("Course does not exist"));
-		assignment.setCourse(course);
 
 		assignmentRepository.save(assignment);
 		return assignment.getId();
@@ -47,6 +37,16 @@ public class AssignmentService {
 		Assignment assignment = validateAssignment(id);
 
 		return assignmentConverter.convertFromEntity(assignment);
+	}
+
+	public AssignmentDto updateAssigment(Long id, AssignmentDto assignmentDto) {
+		validateAssignment(id);
+
+		assignmentDto.setId(id);
+		Assignment assignment = assignmentConverter.convertFromDto(assignmentDto);
+		assignmentRepository.save(assignment);
+
+		return assignmentDto;
 	}
 
 	private Assignment validateAssignment(Long id) throws AssignmentNotFoundException {
