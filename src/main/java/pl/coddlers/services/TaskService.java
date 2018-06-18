@@ -27,12 +27,7 @@ public class TaskService {
     private AssignmentRepository assignmentRepository;
 
     public Collection<TaskDto> getAllAssignmentsTasks(long assignmentId) {
-        Optional<Assignment> assignment = assignmentRepository.findById(assignmentId);
-        if (assignment.isPresent()) {
-            return taskConverter
-                    .convertFromEntities(assignment.get().getTaskList());
-        }
-        return Collections.emptyList();
+        return taskConverter.convertFromEntities(taskRepository.findByAssignment_Id(assignmentId));
     }
 
     public Long createTask(final TaskDto taskDto) {

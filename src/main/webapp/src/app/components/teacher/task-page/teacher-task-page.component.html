@@ -9,22 +9,22 @@
       <h3>Description</h3>
       <p>{{task?.description}}</p>
     </div>
-  </div>
 
-
-  <div class="row">
-    <div class="col-md-10">
-      <h3> Status: {{task?.taskStatus}}
-        <input *ngIf="reviewExists" type="submit" class="btn btn-primary" value="Show review">
-      </h3>
+    <div class="col-md-2">
+      <button class="btn btn-secondary float-right" (click)="routeToEdit()">Edit task</button>
     </div>
   </div>
+
   <div class="row">
     <div class="col-md-10">
       <h3>Max points: {{task?.maxPoints}}</h3>
     </div>
   </div>
 
-  <button class="btn btn-secondary back-btn" (click)="back($event)">Back</button>
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btn-secondary back-btn float-right" (click)="back($event)">Back</button>
+    </div>
+  </div>
 
 </div>

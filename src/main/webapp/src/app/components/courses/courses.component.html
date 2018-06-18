@@ -18,7 +18,7 @@
           <a class="card-body" [routerLink]="['/courses/', course.id]">
             <h3>{{ course.title }}</h3>
             <p>{{ course.description }}</p>
-            <span>{{course.startDate}} - {{course.endDate}}</span>
+            <span>{{course.startDate | date: 'dd-MM-yyyy'}} - {{course.endDate | date: 'dd-MM-yyyy'}}</span>
           </a>
         </li>
       </ul>

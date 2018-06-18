@@ -3,25 +3,29 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TaskService} from "../../services/task.service";
 import {Location} from '@angular/common';
 import {Task} from "../../models/task";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'cod-add-task-page',
   templateUrl: './add-task-page.component.html',
-  styleUrls: ['./add-task-page.component.scss',
-    './../../styles/_common.scss']
+  styleUrls: ['./add-task-page.component.scss']
 })
 export class AddTaskPageComponent implements OnInit {
   private formGroup: FormGroup;
+  private assignmentId: number;
 
   constructor(private formBuilder: FormBuilder,
               private taskService: TaskService,
-              private _location: Location) {
+              private _location: Location,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    this.route.parent.params.subscribe(params => {
+      this.assignmentId = params.assignmentId;
+    });
+
     this.formGroup = this.formBuilder.group({
-      // TODO delete this line while connecting with assignments
-      'assignmentId': '',
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(100)])],
       'description': '',
@@ -30,9 +34,13 @@ export class AddTaskPageComponent implements OnInit {
   }
 
   addTask(task) {
-    this.taskService.createTask(new Task(null, task.assignmentId,
-      task.title, task.description, task.maxPoints, "NOT SUBMITTED")
-    ).subscribe(obj => {
+    this.taskService.createTask(new Task(null,
+      this.assignmentId,
+      task.title,
+      task.description,
+      task.maxPoints,
+      'NOT SUBMITTED')
+    ).subscribe(() => {
       this._location.back();
     });
   }

@@ -1,24 +1,58 @@
 <div *ngIf="route.children.length === 0" class="content-container">
   <div class="row">
     <div class="col-md-10">
-      <h2>Assignment - {{assignment?.title}}</h2>
-      <h4>{{course?.title}}</h4>
+      <div class="row">
+        <div class="col-12">
+          <h2>Assignment - {{assignment?.title}}</h2>
+          <h4>{{course?.title}}</h4>
 
-      <div class="line"></div>
-      <br>
+          <div class="line"></div>
+          <br>
 
-      <span>{{assignment?.dueDate}}</span>
+          <p>Due date: {{assignment?.dueDate | date: 'dd-MM-yyyy'}} </p>
 
-      <h4>Description</h4>
-      <p>{{assignment?.description}}</p>
+          <h4>Description</h4>
+          <p>{{assignment?.description}}</p>
+        </div>
+
+        <div class="col-12">
+          <h4>Tasks</h4>
+
+          <table class="table tasks-table">
+            <thead>
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Task name</th>
+                <th scope="col">Max points</th>
+                <th scope="col">Submissions</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let task of tasks; let i = index" [attr.data-index]="i">
+                <td>{{i+1}}</td>
+                <td>{{task.title}}</td>
+                <td>{{task.maxPoints}}</td>
+                <td>-</td>
+                <td>
+                  <button class="btn btn-secondary float-right" [routerLink]="['/teacher', 'task', task.id]">Show task</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button class="btn btn-primary float-right" routerLink="add-task">Add task</button>
+        </div>
+      </div>
     </div>
     <div class="col-md-2">
-      <button routerLink="edit-assignment" class="btn btn-primary float-md-right" role="button">Edit assignment</button>
+      <button routerLink="edit-assignment" class="btn btn-secondary float-md-right" role="button">Edit assignment</button>
     </div>
   </div>
 
   <div class="row">
     <div class="col-12">
+      <button class="btn btn-secondary" routerLink="/courses/{{course?.id}}/student/assignments/{{assignment?.id}}">Switch to student</button>
       <button class="btn btn-secondary back-btn float-right" (click)="back($event)">Back</button>
     </div>
   </div>

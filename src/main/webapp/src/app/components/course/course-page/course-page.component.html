@@ -6,7 +6,7 @@
       <div class="line"></div>
       <br>
 
-      <span>{{course?.startDate}} - {{course?.endDate}}</span>
+      <p>{{course?.startDate | date: 'dd-MM-yyyy'}} - {{course?.endDate | date: 'dd-MM-yyyy'}}</p>
       <h3>Description</h3>
       <p>{{course?.description}}</p>
     </div>
@@ -28,8 +28,8 @@
             <li class="assignment-item card" *ngFor="let assignment of assignments">
               <a [routerLink]="['assignments/', assignment.id]" class="card-body">
                 <h4>{{assignment.title}}</h4>
-                <span class="start-date">Start date: {{assignment.startDate}}</span>
-                <span class="start-date">Due date: {{assignment.dueDate}}</span>
+                <span class="start-date">Start date: {{assignment.startDate | date: 'dd-MM-yyyy'}}</span> -
+                <span class="start-date">Due date: {{assignment.dueDate | date: 'dd-MM-yyyy'}}</span>
               </a>
             </li>
           </ul>

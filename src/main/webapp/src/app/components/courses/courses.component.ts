@@ -5,8 +5,7 @@ import {Course} from "../../models/course";
 @Component({
   selector: 'cod-courses',
   templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.scss',
-    './../../styles/_common.scss']
+  styleUrls: ['./courses.component.scss']
 })
 export class CoursesComponent implements OnInit {
   private courses: Course[];
@@ -16,7 +15,6 @@ export class CoursesComponent implements OnInit {
 
   ngOnInit(): void {
     this.courseService.getCourses().subscribe((courses: Course[]) => {
-      console.log(courses);
       this.courses = courses;
     });
   }

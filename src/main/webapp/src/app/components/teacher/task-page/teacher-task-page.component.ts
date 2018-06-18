@@ -6,11 +6,10 @@ import {Location} from "@angular/common";
 
 @Component({
   selector: 'cod-task-page',
-  templateUrl: './task-page.component.html',
-  styleUrls: ['./task-page.component.scss',
-    './../../../styles/_common.scss']
+  templateUrl: './teacher-task-page.component.html',
+  styleUrls: ['./teacher-task-page.component.scss']
 })
-export class TaskPageComponent implements OnInit {
+export class TeacherTaskPageComponent implements OnInit {
   private task: Task;
 
   constructor(private taskService: TaskService,

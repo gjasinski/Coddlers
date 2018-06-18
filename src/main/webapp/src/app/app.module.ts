@@ -15,8 +15,8 @@ import {NavbarComponent} from "./components/navbar/navbar.component";
 import {CoursePageComponent} from "./components/course/course-page/course-page.component";
 import {AssignmentService} from "./services/assignment.service";
 import {AddCoursePageComponent} from "./components/course/add-course-page/add-course-page.component";
-import {TaskPageComponent as TeacherTaskPageComponent} from "./components/teacher-components/task-page/task-page.component";
-import {TaskPageComponent as StudentTaskPageComponent} from "./components/student-components/task-page/task-page.component";
+import {TeacherTaskPageComponent as TeacherTaskPageComponent} from "./components/teacher/task-page/teacher-task-page.component";
+import {StudentTaskPageComponent as StudentTaskPageComponent} from "./components/student/task-page/student-task-page.component";
 import {AddTaskPageComponent} from "./components/add-task-page/add-task-page.component";
 import {TaskService} from "./services/task.service";
 import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.component";
@@ -25,6 +25,7 @@ import { AssignmentPageComponent } from './components/assignment/assignment-page
 import { EditAssignmentPageComponent } from './components/assignment/edit-assignment-page/edit-assignment-page.component';
 import {EditCoursePageComponent} from "./components/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
+import { StudentAssignmentPageComponent } from './components/student/assignment-page/student-assignment-page.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {DatePipe} from "@angular/common";
     AddAssignmentPageComponent,
     AssignmentPageComponent,
     EditAssignmentPageComponent,
-    EditCoursePageComponent
+    EditCoursePageComponent,
+    StudentAssignmentPageComponent
 
   ],
   imports: [
