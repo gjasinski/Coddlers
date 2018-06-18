@@ -19,6 +19,7 @@ export class StudentAssignmentPageComponent implements OnInit {
   private assignment: Assignment;
   private course: Course;
   private tasks: Task[] = [];
+  private repoUrl: string;
 
   constructor(private courseService: CourseService,
               private assignmentService: AssignmentService,
@@ -54,6 +55,8 @@ export class StudentAssignmentPageComponent implements OnInit {
         }),
         map((assignment: Assignment) => {
           this.assignment = assignment;
+          let repoName: string = this.assignment.title.toLowerCase().replace(' ', '-');
+          this.repoUrl = `http://coddlers.pl:10080/student/${repoName}.git`;
 
           return this.assignment;
         })
