@@ -1,7 +1,9 @@
 package pl.coddlers.models.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
@@ -28,4 +30,8 @@ public class AssignmentDto {
 
 	@NotNull
 	private Timestamp dueDate;
+
+	// TODO only for prototype purposes
+	@JsonIgnore
+	private Long gitStudentProjectId;
 }

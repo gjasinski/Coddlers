@@ -33,6 +33,10 @@ public class Assignment {
     @OneToMany(mappedBy = "assignment", targetEntity = Task.class)
     private List<Task> taskList = new ArrayList<>();
 
+    // TODO only for prototype purposes
+    @JsonIgnore
+    private Long gitStudentProjectId;
+
     @JsonIgnore
     @ManyToOne(targetEntity = Course.class)
     private Course course;

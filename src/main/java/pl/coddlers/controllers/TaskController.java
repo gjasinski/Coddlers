@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.coddlers.git.services.GitTaskService;
 import pl.coddlers.models.dto.TaskDto;
+import pl.coddlers.models.entity.Task;
 import pl.coddlers.services.TaskService;
 
 import javax.validation.Valid;
@@ -15,20 +17,22 @@ import java.util.Collection;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    private TaskService taskService;
+    @Autowired
+    private GitTaskService gitTaskService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
+    private TaskService taskService;
 
     @PostMapping
     public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDto taskDto) {
-        Long id = taskService.createTask(taskDto);
+        Task task = taskService.createTask(taskDto);
+        // TODO only for prototype purposes
+        long gitStudentProjectId = task.getAssignment().getGitStudentProjectId();
+        gitTaskService.createTask(gitStudentProjectId, task.getTitle().replaceAll("\\s+","-"));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(id).toUri();
+                .buildAndExpand(task.getId()).toUri();
 
         return ResponseEntity.created(location).build();
     }

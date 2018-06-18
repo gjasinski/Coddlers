@@ -30,6 +30,7 @@ public class AssignmentService {
 		Assignment assignment = assignmentConverter.convertFromDto(assignmentDto);
 
 		assignmentRepository.save(assignment);
+
 		return assignment.getId();
 	}
 

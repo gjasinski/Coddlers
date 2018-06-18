@@ -49,6 +49,9 @@ public class AssignmentConverter implements BaseConverter<Assignment, Assignment
 		assignment.setStartDate(dto.getStartDate());
 		assignment.setTitle(dto.getTitle());
 
+		// TODO only for prototype purposes
+		assignment.setGitStudentProjectId(dto.getGitStudentProjectId());
+
 		return assignment;
 	}
 }

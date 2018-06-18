@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.coddlers.git.services.GitProjectService;
 import pl.coddlers.models.dto.CourseDto;
 import pl.coddlers.models.entity.Course;
 import pl.coddlers.services.CourseService;
@@ -26,6 +27,7 @@ public class CourseController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(course.getId()).toUri();
+
 
         return ResponseEntity.created(location).build();
     }

@@ -30,11 +30,11 @@ public class TaskService {
         return taskConverter.convertFromEntities(taskRepository.findByAssignment_Id(assignmentId));
     }
 
-    public Long createTask(final TaskDto taskDto) {
+    public Task createTask(final TaskDto taskDto) {
         Task task = taskConverter.convertFromDto(taskDto);
         taskRepository.save(task);
 
-        return task.getId();
+        return task;
     }
 
     public void updateTask(Long id, final TaskDto taskDto) {

@@ -1,5 +1,6 @@
 package pl.coddlers.models.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -22,4 +23,5 @@ public class CourseDto {
 
     @NotNull
     private Timestamp endDate;
+
 }
