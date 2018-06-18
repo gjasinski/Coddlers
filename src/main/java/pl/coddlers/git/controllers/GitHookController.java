@@ -33,6 +33,7 @@ public class GitHookController {
 		LOGGER.debug("Received event hook: " + pushEvent.toString());
 		if (isPushEvent(pushEvent) && isHookEnabled(pushEvent)) {
 			LOGGER.info("Reacting on incoming push hook" + pushEvent);
+			System.out.println("Reacting on incoming push hook" + pushEvent);
 		}
 	}
 
