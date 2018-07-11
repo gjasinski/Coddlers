@@ -10,6 +10,8 @@ sudo /home/develop/docker_init.sh
 sudo /home/develop/manually_start_application.sh
 sudo /home/master/manually_start_application.sh
 
+#run build agent
+sudo -H -u production bash -c '/home/teamcity/build_agent/bin/agent.sh reboot'
+
 #redirect production(master) to port 80
 sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8000
-
