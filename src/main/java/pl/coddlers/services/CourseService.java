@@ -10,6 +10,7 @@ import pl.coddlers.models.converters.CourseConverter;
 import pl.coddlers.models.dto.CourseDto;
 import pl.coddlers.models.entity.Course;
 import pl.coddlers.repositories.CourseRepository;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -23,9 +24,9 @@ public class CourseService {
     private CourseConverter courseConverter;
 
     public CourseDto getCourseById(Long id) {
-        validateCourse(id);
+        Course course = validateCourse(id);
 
-        return courseConverter.convertFromEntity(courseRepository.getById(id).get());
+        return courseConverter.convertFromEntity(course);
     }
 
     public Collection<CourseDto> getCourses(Integer startsAt, Integer number) throws WrongDateException {
@@ -62,8 +63,14 @@ public class CourseService {
         return courseRepository.save(courseConverter.convertFromDto(courseDto));
     }
 
-    private void validateCourse(Long id) throws CourseNotFoundException {
-        courseRepository.findById(id).orElseThrow(
+    public void updateCourse(final CourseDto courseDto) {
+        Course course = courseConverter.convertFromDto(courseDto);
+        course.setId(courseDto.getId());
+        courseRepository.save(course);
+    }
+
+    private Course validateCourse(Long id) throws CourseNotFoundException {
+        return courseRepository.findById(id).orElseThrow(
                 () -> new CourseNotFoundException(id)
         );
     }

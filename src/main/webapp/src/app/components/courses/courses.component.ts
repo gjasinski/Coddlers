@@ -10,11 +10,11 @@ import {Course} from "../../models/course";
 export class CoursesComponent implements OnInit {
   private courses: Course[];
 
-  constructor(private courseService: CourseService) {}
+  constructor(private courseService: CourseService) {
+  }
 
   ngOnInit(): void {
     this.courseService.getCourses().subscribe((courses: Course[]) => {
-      console.log(courses);
       this.courses = courses;
     });
   }

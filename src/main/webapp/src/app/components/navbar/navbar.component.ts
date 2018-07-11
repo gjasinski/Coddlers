@@ -1,6 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {CourseService} from "../../services/course.service";
-import {Course} from "../../models/course";
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'cod-navbar',

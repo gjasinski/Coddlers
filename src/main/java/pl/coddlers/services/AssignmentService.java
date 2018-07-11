@@ -12,9 +12,7 @@ import pl.coddlers.repositories.CourseRepository;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AssignmentService {
@@ -22,33 +20,38 @@ public class AssignmentService {
 	@Autowired
 	private AssignmentRepository assignmentRepository;
 	@Autowired
-	private CourseRepository courseRepository;
-	@Autowired
 	private AssignmentConverter assignmentConverter;
 
 	public Collection<AssignmentDto> getAllCoursesAssignments(long courseId) {
-		Optional<Course> course = courseRepository.getById(courseId);
-		if (course.isPresent()) {
-			return assignmentConverter
-					.convertFromEntities(course.get().getAssignmentList());
-		}
-		return Collections.emptyList();
+		return assignmentConverter.convertFromEntities(assignmentRepository.findByCourse_Id(courseId));
 	}
 
 	public Long createAssignment(AssignmentDto assignmentDto) {
 		Assignment assignment = assignmentConverter.convertFromDto(assignmentDto);
+
 		assignmentRepository.save(assignment);
+
 		return assignment.getId();
 	}
 
 	public AssignmentDto getAssignmentById(Long id) {
-		validateAssignment(id);
+		Assignment assignment = validateAssignment(id);
 
-		return assignmentConverter.convertFromEntity(assignmentRepository.findById(id).get());
+		return assignmentConverter.convertFromEntity(assignment);
 	}
 
-	private void validateAssignment(Long id) throws AssignmentNotFoundException {
-		assignmentRepository.findById(id).orElseThrow(
+	public AssignmentDto updateAssigment(Long id, AssignmentDto assignmentDto) {
+		validateAssignment(id);
+
+		assignmentDto.setId(id);
+		Assignment assignment = assignmentConverter.convertFromDto(assignmentDto);
+		assignmentRepository.save(assignment);
+
+		return assignmentDto;
+	}
+
+	private Assignment validateAssignment(Long id) throws AssignmentNotFoundException {
+		return assignmentRepository.findById(id).orElseThrow(
 				() -> new AssignmentNotFoundException(id)
 		);
 	}

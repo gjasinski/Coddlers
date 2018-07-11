@@ -1,17 +1,17 @@
 package pl.coddlers.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.coddlers.git.services.GitProjectService;
 import pl.coddlers.models.dto.AssignmentDto;
+import pl.coddlers.models.entity.Assignment;
 import pl.coddlers.services.AssignmentService;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/assignments")
@@ -24,9 +24,20 @@ public class AssignmentController {
 		this.assignmentService = assignmentService;
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Long> createAssignment(@Valid @RequestBody AssignmentDto assignment) {
-		Long id = assignmentService.createAssignment(assignment);
+	@Autowired
+	private GitProjectService gitProjectService;
+
+	@PostMapping
+	public ResponseEntity<Long> createAssignment(@Valid @RequestBody AssignmentDto assignmentDto) {
+		// TODO this code is only for prototype purposes
+		long tutorGitId = 20;
+		long gitTutorProjectId = gitProjectService.createCourse(tutorGitId, assignmentDto.getTitle());
+		long studentId = 19;
+		long gitStudentProjectId = gitProjectService.addStudentToCourse(gitTutorProjectId, studentId);
+
+		// TODO only for prototype purposes
+		assignmentDto.setGitStudentProjectId(gitStudentProjectId);
+		Long id = assignmentService.createAssignment(assignmentDto);
 
 		URI location = ServletUriComponentsBuilder
 				.fromCurrentRequest().path("/{id}")
@@ -35,13 +46,18 @@ public class AssignmentController {
 		return ResponseEntity.created(location).build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, params = {"courseId"})
+	@GetMapping(params = {"courseId"})
 	public ResponseEntity<Collection<AssignmentDto>> getAssignments(@RequestParam(value = "courseId") Long courseId) {
 		return ResponseEntity.ok(assignmentService.getAllCoursesAssignments(courseId));
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "{id}")
+	@GetMapping(value = "{id}")
 	public ResponseEntity<AssignmentDto> getAssignment(@PathVariable Long id) {
 		return ResponseEntity.ok(assignmentService.getAssignmentById(id));
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
+	public ResponseEntity<AssignmentDto> updateAssignment(@PathVariable Long id, @Valid @RequestBody AssignmentDto assignmentDto) {
+		return ResponseEntity.ok(assignmentService.updateAssigment(id, assignmentDto));
 	}
 }
