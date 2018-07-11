@@ -1,0 +1,6 @@
+FROM library/postgres
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD 6lettersAGHUST
+ENV POSTGRES_DB coddlers
+
+EXPOSE 5432
