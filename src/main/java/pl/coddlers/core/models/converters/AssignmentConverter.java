@@ -11,11 +11,15 @@ import pl.coddlers.core.repositories.CourseRepository;
 @Component
 public class AssignmentConverter implements BaseConverter<Assignment, AssignmentDto> {
 
-	@Autowired
-	AssignmentRepository assignmentRepository;
+	private final AssignmentRepository assignmentRepository;
+
+	private final CourseRepository courseRepository;
 
 	@Autowired
-	CourseRepository courseRepository;
+	public AssignmentConverter(AssignmentRepository assignmentRepository, CourseRepository courseRepository) {
+		this.assignmentRepository = assignmentRepository;
+		this.courseRepository = courseRepository;
+	}
 
 	@Override
 	public AssignmentDto convertFromEntity(Assignment entity) {

@@ -5,7 +5,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class AssignmentNotFoundException extends RuntimeException {
-    public AssignmentNotFoundException(Long id) {
-        super("Could not find assignment with id: "+id+".");
-    }
+
+	private static final String NOT_FOUND = "Could not find assignment with id: ";
+
+	public AssignmentNotFoundException(Long id) {
+		super(NOT_FOUND + id);
+	}
 }

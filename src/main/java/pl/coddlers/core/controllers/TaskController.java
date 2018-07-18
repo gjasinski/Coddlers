@@ -17,11 +17,15 @@ import java.util.Collection;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    @Autowired
-    private GitTaskService gitTaskService;
+    private final GitTaskService gitTaskService;
+
+    private final TaskService taskService;
 
     @Autowired
-    private TaskService taskService;
+    public TaskController(GitTaskService gitTaskService, TaskService taskService) {
+        this.gitTaskService = gitTaskService;
+        this.taskService = taskService;
+    }
 
     @PostMapping
     public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDto taskDto) {

@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    Optional<Course> getById(Long id);
+	Optional<Course> getById(Long id);
 
-    // TODO fix
-    @Query("select c from Course c")
-    List<Course> getPaginatedCourses(Pageable pageable);
+	// TODO fix
+	@Query("select c from Course c")
+	List<Course> getPaginatedCourses(Pageable pageable);
 }

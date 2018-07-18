@@ -14,14 +14,18 @@ import java.util.Collection;
 @Service
 public class TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+
+    private final TaskConverter taskConverter;
+
+    private final AssignmentRepository assignmentRepository;
 
     @Autowired
-    private TaskConverter taskConverter;
-
-    @Autowired
-    private AssignmentRepository assignmentRepository;
+    public TaskService(TaskRepository taskRepository, TaskConverter taskConverter, AssignmentRepository assignmentRepository) {
+        this.taskRepository = taskRepository;
+        this.taskConverter = taskConverter;
+        this.assignmentRepository = assignmentRepository;
+    }
 
     public Collection<TaskDto> getAllAssignmentsTasks(long assignmentId) {
         return taskConverter.convertFromEntities(taskRepository.findByAssignment_Id(assignmentId));

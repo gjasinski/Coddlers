@@ -17,11 +17,15 @@ import java.util.List;
 @Service
 public class CourseService {
 
-    @Autowired
-    private CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
+
+    private final CourseConverter courseConverter;
 
     @Autowired
-    private CourseConverter courseConverter;
+    public CourseService(CourseRepository courseRepository, CourseConverter courseConverter) {
+        this.courseRepository = courseRepository;
+        this.courseConverter = courseConverter;
+    }
 
     public CourseDto getCourseById(Long id) {
         Course course = validateCourse(id);

@@ -12,18 +12,19 @@ public enum TaskStatus {
     GRADED("GRADED"),
     CHANGES_REQUESTED("CHANGES REQUESTED");
 
-    private static Map<String, TaskStatus> stringTaskStatusMap = new HashMap<>();
-    private String name;
+    private final static Map<String, TaskStatus> stringTaskStatusMap = new HashMap<>();
 
-    static {
-        stringTaskStatusMap.put("NOT SUBMITTED", NOT_SUBMITTED);
-        stringTaskStatusMap.put("WAITING FOR REVIEW", WAITING_FOR_REVIEW);
-        stringTaskStatusMap.put("GRADED", GRADED);
-        stringTaskStatusMap.put("CHANGES REQUESTED", CHANGES_REQUESTED);
-    }
+    private final String name;
 
     TaskStatus(String name) {
         this.name = name;
+    }
+
+    static {
+        stringTaskStatusMap.put(NOT_SUBMITTED.toName(), NOT_SUBMITTED);
+        stringTaskStatusMap.put(WAITING_FOR_REVIEW.toName(), WAITING_FOR_REVIEW);
+        stringTaskStatusMap.put(GRADED.toName(), GRADED);
+        stringTaskStatusMap.put(CHANGES_REQUESTED.toName(), CHANGES_REQUESTED);
     }
 
     @JsonCreator

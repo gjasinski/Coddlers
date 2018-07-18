@@ -12,11 +12,15 @@ import pl.coddlers.core.repositories.TaskRepository;
 @Component
 public class TaskConverter implements BaseConverter<Task, TaskDto> { ;
 
-    @Autowired
-    private AssignmentRepository assignmentRepository;
+    private final AssignmentRepository assignmentRepository;
+
+    private final TaskRepository taskRepository;
 
     @Autowired
-    private TaskRepository taskRepository;
+    public TaskConverter(AssignmentRepository assignmentRepository, TaskRepository taskRepository) {
+        this.assignmentRepository = assignmentRepository;
+        this.taskRepository = taskRepository;
+    }
 
     @Override
     public TaskDto convertFromEntity(Task entity) {

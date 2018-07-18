@@ -18,13 +18,13 @@ public class AssignmentController {
 
 	private final AssignmentService assignmentService;
 
-	@Autowired
-	public AssignmentController(AssignmentService assignmentService) {
-		this.assignmentService = assignmentService;
-	}
+	private final GitProjectService gitProjectService;
 
 	@Autowired
-	private GitProjectService gitProjectService;
+	public AssignmentController(AssignmentService assignmentService, GitProjectService gitProjectService) {
+		this.assignmentService = assignmentService;
+		this.gitProjectService = gitProjectService;
+	}
 
 	@PostMapping
 	public ResponseEntity<Long> createAssignment(@Valid @RequestBody AssignmentDto assignmentDto) {
@@ -57,6 +57,6 @@ public class AssignmentController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
 	public ResponseEntity<AssignmentDto> updateAssignment(@PathVariable Long id, @Valid @RequestBody AssignmentDto assignmentDto) {
-		return ResponseEntity.ok(assignmentService.updateAssigment(id, assignmentDto));
+		return ResponseEntity.ok(assignmentService.updateAssignment(id, assignmentDto));
 	}
 }

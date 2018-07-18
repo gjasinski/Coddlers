@@ -13,10 +13,14 @@ import java.util.Collection;
 @Service
 public class AssignmentService {
 
+	private final AssignmentRepository assignmentRepository;
+	private final AssignmentConverter assignmentConverter;
+
 	@Autowired
-	private AssignmentRepository assignmentRepository;
-	@Autowired
-	private AssignmentConverter assignmentConverter;
+	public AssignmentService(AssignmentRepository assignmentRepository, AssignmentConverter assignmentConverter) {
+		this.assignmentRepository = assignmentRepository;
+		this.assignmentConverter = assignmentConverter;
+	}
 
 	public Collection<AssignmentDto> getAllCoursesAssignments(long courseId) {
 		return assignmentConverter.convertFromEntities(assignmentRepository.findByCourse_Id(courseId));
@@ -36,7 +40,7 @@ public class AssignmentService {
 		return assignmentConverter.convertFromEntity(assignment);
 	}
 
-	public AssignmentDto updateAssigment(Long id, AssignmentDto assignmentDto) {
+	public AssignmentDto updateAssignment(Long id, AssignmentDto assignmentDto) {
 		validateAssignment(id);
 
 		assignmentDto.setId(id);
@@ -47,8 +51,7 @@ public class AssignmentService {
 	}
 
 	private Assignment validateAssignment(Long id) throws AssignmentNotFoundException {
-		return assignmentRepository.findById(id).orElseThrow(
-				() -> new AssignmentNotFoundException(id)
-		);
+		return assignmentRepository.findById(id)
+				.orElseThrow(() -> new AssignmentNotFoundException(id));
 	}
 }
