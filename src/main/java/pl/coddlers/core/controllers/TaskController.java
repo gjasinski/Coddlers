@@ -1,13 +1,13 @@
-package pl.coddlers.controllers;
+package pl.coddlers.core.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.git.services.GitTaskService;
-import pl.coddlers.models.dto.TaskDto;
-import pl.coddlers.models.entity.Task;
-import pl.coddlers.services.TaskService;
+import pl.coddlers.core.models.dto.TaskDto;
+import pl.coddlers.core.models.entity.Task;
+import pl.coddlers.core.services.TaskService;
 
 import javax.validation.Valid;
 import java.net.URI;
