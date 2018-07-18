@@ -12,7 +12,7 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class AddTaskPageComponent implements OnInit {
   private formGroup: FormGroup;
-  private assignmentId: number;
+  private lessonId: number;
 
   constructor(private formBuilder: FormBuilder,
               private taskService: TaskService,
@@ -22,7 +22,7 @@ export class AddTaskPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.parent.params.subscribe(params => {
-      this.assignmentId = params.assignmentId;
+      this.lessonId = params.lessonId;
     });
 
     this.formGroup = this.formBuilder.group({
@@ -35,7 +35,7 @@ export class AddTaskPageComponent implements OnInit {
 
   addTask(task) {
     this.taskService.createTask(new Task(null,
-      this.assignmentId,
+      this.lessonId,
       task.title,
       task.description,
       task.maxPoints,

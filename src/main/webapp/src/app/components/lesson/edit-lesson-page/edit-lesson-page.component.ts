@@ -2,20 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
-import {AssignmentService} from "../../../services/assignment.service";
-import {Assignment} from "../../../models/assignment";
+import {LessonService} from "../../../services/lesson.service";
+import {Lesson} from "../../../models/lesson";
 
 @Component({
-  selector: 'app-edit-assignment-page',
-  templateUrl: './edit-assignment-page.component.html',
-  styleUrls: ['./edit-assignment-page.component.scss']
+  selector: 'app-edit-lesson-page',
+  templateUrl: './edit-lesson-page.component.html',
+  styleUrls: ['./edit-lesson-page.component.scss']
 })
-export class EditAssignmentPageComponent implements OnInit {
+export class EditLessonPageComponent implements OnInit {
   private formGroup: FormGroup;
-  private assignment: Assignment;
+  private lesson: Lesson;
 
   constructor(private formBuilder: FormBuilder,
-              private assignmentService: AssignmentService,
+              private lessonService: LessonService,
               private _location: Location,
               private router: Router,
               private route: ActivatedRoute) {}
@@ -31,31 +31,31 @@ export class EditAssignmentPageComponent implements OnInit {
     });
 
     this.route.parent.params.subscribe(params => {
-      this.assignmentService.getAssignment(params.assignmentId)
-        .subscribe((assignment: Assignment) => {
-          this.assignment = assignment;
-          this.setForm(assignment);
+      this.lessonService.getLesson(params.lessonId)
+        .subscribe((lesson: Lesson) => {
+          this.lesson = lesson;
+          this.setForm(lesson);
         })
     });
   }
 
-  saveAssignment(assignment): void {
-    this.assignmentService.updateAssignment(this.assignment.id,
-      new Assignment(
-        this.assignment.id,
-        this.assignment.courseId,
-        assignment.title,
-        assignment.description,
-        assignment.weight,
-        new Date(assignment.startDate.year, assignment.startDate.month - 1, assignment.startDate.day),
-        new Date(assignment.endDate.year, assignment.endDate.month - 1, assignment.endDate.day)
+  saveLesson(lesson): void {
+    this.lessonService.updateLesson(this.lesson.id,
+      new Lesson(
+        this.lesson.id,
+        this.lesson.courseId,
+        lesson.title,
+        lesson.description,
+        lesson.weight,
+        new Date(lesson.startDate.year, lesson.startDate.month - 1, lesson.startDate.day),
+        new Date(lesson.endDate.year, lesson.endDate.month - 1, lesson.endDate.day)
       )).subscribe(obj => {
 
-      this.router.navigate(['/courses', this.assignment.courseId, 'assignments', this.assignment.id]);
+      this.router.navigate(['/courses', this.lesson.courseId, 'lesson', this.lesson.id]);
     });
   }
 
-  private setForm(assigment: Assignment) {
+  private setForm(assigment: Lesson) {
       this.formGroup.setValue({
       title: assigment.title,
       description: assigment.description,

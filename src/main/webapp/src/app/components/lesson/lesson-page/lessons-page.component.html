@@ -3,7 +3,7 @@
     <div class="col-md-10">
       <div class="row">
         <div class="col-12">
-          <h2>Assignment - {{lesson?.title}}</h2>
+          <h2>Lesson - {{lesson?.title}}</h2>
           <h4>{{course?.title}}</h4>
 
           <div class="line"></div>
@@ -52,7 +52,7 @@
 
   <div class="row">
     <div class="col-12">
-      <button class="btn btn-secondary" routerLink="/courses/{{course?.id}}/student/assignments/{{lesson?.id}}">Switch to student</button>
+      <button class="btn btn-secondary" routerLink="/courses/{{course?.id}}/student/lessons/{{lesson?.id}}">Switch to student</button>
       <button class="btn btn-secondary back-btn float-right" (click)="back($event)">Back</button>
     </div>
   </div>

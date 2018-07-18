@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 
 import {CourseService} from "../../../services/course.service";
 import {Course} from "../../../models/course";
-import {Assignment} from "../../../models/assignment";
-import {AssignmentService} from "../../../services/assignment.service";
+import {Lesson} from "../../../models/lesson";
+import {LessonService} from "../../../services/lesson.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 
@@ -15,12 +15,12 @@ import {Location} from "@angular/common";
 })
 export class CoursePageComponent implements OnInit {
   private course: Course;
-  private assignments: Assignment[] = [];
+  private lessons: Lesson[] = [];
 
   constructor(private courseService: CourseService,
               private route: ActivatedRoute,
               private _location: Location,
-              private assignmentService: AssignmentService,
+              private lessonService: LessonService,
               private router: Router) {}
 
   ngOnInit(): void {
@@ -31,8 +31,8 @@ export class CoursePageComponent implements OnInit {
           this.course = course;
         });
 
-        this.assignmentService.getAssignments(courseId).subscribe((assignments: Assignment[]) => {
-          this.assignments = assignments;
+        this.lessonService.getLessons(courseId).subscribe((lessons: Lesson[]) => {
+          this.lessons = lessons;
         });
       }
     );

@@ -1,4 +1,4 @@
-export class Assignment {
+export class Lesson {
   private _id: number;
   private _courseId: number;
   private _title: string;
@@ -46,8 +46,8 @@ export class Assignment {
     return this._dueDate;
   }
 
-  public static fromJSON(jsonObj: any): Assignment {
-    return new Assignment(+jsonObj.id, +jsonObj.courseId, jsonObj.title, jsonObj.description,
+  public static fromJSON(jsonObj: any): Lesson {
+    return new Lesson(+jsonObj.id, +jsonObj.courseId, jsonObj.title, jsonObj.description,
       +jsonObj.weight, new Date(jsonObj.startDate), new Date(jsonObj.dueDate));
   }
 

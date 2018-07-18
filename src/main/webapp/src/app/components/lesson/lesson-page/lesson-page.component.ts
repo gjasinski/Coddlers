@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {AssignmentService} from "../../../services/assignment.service";
+import {LessonService} from "../../../services/lesson.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {Assignment} from "../../../models/assignment";
+import {Lesson} from "../../../models/lesson";
 import {Course} from "../../../models/course";
 import {CourseService} from "../../../services/course.service";
 import {filter, flatMap, map, mergeMap, subscribeOn, switchMap, tap} from "rxjs/operators";
@@ -11,17 +11,17 @@ import {Task} from "../../../models/task";
 import {TaskService} from "../../../services/task.service";
 
 @Component({
-  selector: 'app-assignment-page',
-  templateUrl: './assignment-page.component.html',
-  styleUrls: ['./assignment-page.component.scss']
+  selector: 'app-lessons-page',
+  templateUrl: './lessons-page.component.html',
+  styleUrls: ['./lessons-page.component.scss']
 })
-export class AssignmentPageComponent implements OnInit {
-  private assignment: Assignment;
+export class LessonPageComponent implements OnInit {
+  private lesson: Lesson;
   private course: Course;
   private tasks: Task[] = [];
 
   constructor(private courseService: CourseService,
-              private assignmentService: AssignmentService,
+              private lessonService: LessonService,
               private route: ActivatedRoute,
               private router: Router,
               private _location: Location,
@@ -31,11 +31,11 @@ export class AssignmentPageComponent implements OnInit {
     this.router.events.pipe(
       filter(e => (e instanceof NavigationEnd && e.url.split('/').length === 5)),
       switchMap(() => {
-        return this.getAssignmentAndTasks();
+        return this.getLessonsAndTasks();
       }),
     ).subscribe();
 
-    this.getAssignmentAndTasks().subscribe();
+    this.getLessonsAndTasks().subscribe();
 
     this.route.parent.params.subscribe(params => {
       this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
@@ -44,31 +44,31 @@ export class AssignmentPageComponent implements OnInit {
     });
   }
 
-  private getAssignmentAndTasks(): Observable<any> {
-    return this.getAssignment()
+  private getLessonsAndTasks(): Observable<any> {
+    return this.getLesson()
       .pipe(
-        switchMap((assignment: Assignment) => {
-          return this.getTasks(assignment.id);
+        switchMap((lesson: Lesson) => {
+          return this.getTasks(lesson.id);
         })
       );
   }
 
-  private getAssignment(): Observable<Assignment> {
+  private getLesson(): Observable<Lesson> {
     return this.route.paramMap
       .pipe(
         switchMap((params) => {
-          return this.assignmentService.getAssignment(+params.get('assignmentId'));
+          return this.lessonService.getLesson(+params.get('lessonId'));
         }),
-        map((assignment: Assignment) => {
-          this.assignment = assignment;
+        map((lesson: Lesson) => {
+          this.lesson = lesson;
 
-          return this.assignment;
+          return this.lesson;
         })
       );
   }
 
-  private getTasks(assignmentId: number): Observable<any> {
-    return this.taskService.getTasks(assignmentId).pipe(
+  private getTasks(lessonId: number): Observable<any> {
+    return this.taskService.getTasks(lessonId).pipe(
       tap((tasks: Task[]) => {
         this.tasks = tasks;
       })

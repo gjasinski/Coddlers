@@ -13,19 +13,19 @@ import {CourseFilterPipe} from "./filters/course-filter.pipe";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NavbarComponent} from "./components/navbar/navbar.component";
 import {CoursePageComponent} from "./components/course/course-page/course-page.component";
-import {AssignmentService} from "./services/assignment.service";
+import {LessonService} from "./services/lesson.service";
 import {AddCoursePageComponent} from "./components/course/add-course-page/add-course-page.component";
 import {TeacherTaskPageComponent as TeacherTaskPageComponent} from "./components/teacher/task-page/teacher-task-page.component";
 import {StudentTaskPageComponent as StudentTaskPageComponent} from "./components/student/task-page/student-task-page.component";
 import {AddTaskPageComponent} from "./components/add-task-page/add-task-page.component";
 import {TaskService} from "./services/task.service";
 import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.component";
-import { AddAssignmentPageComponent } from './components/assignment/add-assignment-page/add-assignment-page.component';
-import { AssignmentPageComponent } from './components/assignment/assignment-page/assignment-page.component';
-import { EditAssignmentPageComponent } from './components/assignment/edit-assignment-page/edit-assignment-page.component';
+import { AddLessonPageComponent } from './components/lesson/add-lesson-page/add-lesson-page.component';
+import { LessonPageComponent } from './components/lesson/lesson-page/lesson-page.component';
+import { EditLessonPageComponent } from './components/lesson/edit-lesson-page/edit-lesson-page.component';
 import {EditCoursePageComponent} from "./components/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
-import { StudentAssignmentPageComponent } from './components/student/assignment-page/student-assignment-page.component';
+import { StudentLessonPageComponent } from './components/student/lesson-page/student-lesson-page.component';
 
 @NgModule({
   declarations: [
@@ -40,11 +40,11 @@ import { StudentAssignmentPageComponent } from './components/student/assignment-
     StudentTaskPageComponent,
     AddTaskPageComponent,
     EditTaskPageComponent,
-    AddAssignmentPageComponent,
-    AssignmentPageComponent,
-    EditAssignmentPageComponent,
+    AddLessonPageComponent,
+    LessonPageComponent,
+    EditLessonPageComponent,
     EditCoursePageComponent,
-    StudentAssignmentPageComponent
+    StudentLessonPageComponent
 
   ],
   imports: [
@@ -63,7 +63,7 @@ import { StudentAssignmentPageComponent } from './components/student/assignment-
   ],
   providers: [
     CourseService,
-    AssignmentService,
+    LessonService,
     TaskService,
     DatePipe
   ],

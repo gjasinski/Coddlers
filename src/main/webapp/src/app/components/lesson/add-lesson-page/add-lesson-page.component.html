@@ -1,12 +1,12 @@
 <div class="content-container">
-  <h2>Edit lesson</h2>
+  <h2>Add an lesson</h2>
 
   <div class="line"></div>
   <br>
 
-  <form [formGroup]="formGroup" (ngSubmit)="saveAssignment(formGroup.value)">
+  <form [formGroup]="formGroup" (ngSubmit)="addLesson(formGroup.value)">
     <div class="form-group">
-      <label for="lesson-title">Assignment title*</label>
+      <label for="lesson-title">Lesson title*</label>
       <input formControlName="title" type="text" class="form-control"
              id="lesson-title" placeholder="Enter title">
     </div>
@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <input type="submit" class="btn btn-primary" value="Save" [disabled]="!formGroup.valid">
+    <input type="submit" class="btn btn-primary" value="Create" [disabled]="!formGroup.valid">
     <button class="btn btn-secondary back-btn" (click)="back($event)">Back</button>
   </form>
 

@@ -47,7 +47,7 @@ export class EditTaskPageComponent implements OnInit {
   updateTask(task) {
     this.taskService.updateTask(this.task.id,
       new Task(this.task.id,
-        this.task.assignmentId,
+        this.task.lessonId,
         task.title,
         task.description,
         task.maxPoints,

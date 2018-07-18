@@ -1,35 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import {Assignment} from "../../../models/assignment";
+import {Lesson} from "../../../models/lesson";
 import {Task} from "../../../models/task";
 import {Course} from "../../../models/course";
 import {Observable} from "rxjs/internal/Observable";
 import {map, switchMap, tap} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
-import {AssignmentService} from "../../../services/assignment.service";
+import {LessonService} from "../../../services/lesson.service";
 import {CourseService} from "../../../services/course.service";
 import {TaskService} from "../../../services/task.service";
 
 @Component({
-  selector: 'app-student-assignment-page',
-  templateUrl: './student-assignment-page.component.html',
-  styleUrls: ['./student-assignment-page.component.scss']
+  selector: 'app-student-lesson-page',
+  templateUrl: './student-lesson-page.component.html',
+  styleUrls: ['./student-lesson-page.component.scss']
 })
-export class StudentAssignmentPageComponent implements OnInit {
-  private assignment: Assignment;
+export class StudentLessonPageComponent implements OnInit {
+  private lesson: Lesson;
   private course: Course;
   private tasks: Task[] = [];
   private repoUrl: string;
 
   constructor(private courseService: CourseService,
-              private assignmentService: AssignmentService,
+              private lessonService: LessonService,
               private route: ActivatedRoute,
               private router: Router,
               private _location: Location,
               private taskService: TaskService) { }
 
   ngOnInit() {
-    this.getAssignmentAndTasks().subscribe();
+    this.getLessonAndTasks().subscribe();
 
     this.route.parent.params.subscribe(params => {
       this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
@@ -38,33 +38,33 @@ export class StudentAssignmentPageComponent implements OnInit {
     });
   }
 
-  private getAssignmentAndTasks(): Observable<any> {
-    return this.getAssignment()
+  private getLessonAndTasks(): Observable<any> {
+    return this.getLesson()
       .pipe(
-        switchMap((assignment: Assignment) => {
-          return this.getTasks(assignment.id);
+        switchMap((lesson: Lesson) => {
+          return this.getTasks(lesson.id);
         })
       );
   }
 
-  private getAssignment(): Observable<Assignment> {
+  private getLesson(): Observable<Lesson> {
     return this.route.paramMap
       .pipe(
         switchMap((params) => {
-          return this.assignmentService.getAssignment(+params.get('assignmentId'));
+          return this.lessonService.getLesson(+params.get('lessonId'));
         }),
-        map((assignment: Assignment) => {
-          this.assignment = assignment;
-          let repoName: string = this.assignment.title.toLowerCase().replace(' ', '-');
+        map((lesson: Lesson) => {
+          this.lesson = lesson;
+          let repoName: string = this.lesson.title.toLowerCase().replace(' ', '-');
           this.repoUrl = `http://coddlers.pl:10080/student/${repoName}.git`;
 
-          return this.assignment;
+          return this.lesson;
         })
       );
   }
 
-  private getTasks(assignmentId: number): Observable<any> {
-    return this.taskService.getTasks(assignmentId).pipe(
+  private getTasks(lessonId: number): Observable<any> {
+    return this.taskService.getTasks(lessonId).pipe(
       tap((tasks: Task[]) => {
         this.tasks = tasks;
       })

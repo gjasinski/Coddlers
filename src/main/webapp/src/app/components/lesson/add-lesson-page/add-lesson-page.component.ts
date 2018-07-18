@@ -1,20 +1,20 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AssignmentService} from "../../../services/assignment.service";
+import {LessonService} from "../../../services/lesson.service";
 import {Location} from "@angular/common";
-import {Assignment} from "../../../models/assignment";
+import {Lesson} from "../../../models/lesson";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
-  selector: 'app-add-assignment-page',
-  templateUrl: './add-assignment-page.component.html',
-  styleUrls: ['./add-assignment-page.component.scss']
+  selector: 'app-add-lesson-page',
+  templateUrl: './add-lesson-page.component.html',
+  styleUrls: ['./add-lesson-page.component.scss']
 })
-export class AddAssignmentPageComponent implements OnInit {
+export class AddLessonPageComponent implements OnInit {
   private formGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-              private assignmentService: AssignmentService,
+              private lessonService: LessonService,
               private _location: Location,
               private router: Router,
               private route: ActivatedRoute) { }
@@ -30,18 +30,18 @@ export class AddAssignmentPageComponent implements OnInit {
     });
   }
 
-  addAssignment(assignment): void {
+  addLesson(lesson): void {
     this.route.parent.params.subscribe(params => {
-      this.assignmentService.createAssignment(new Assignment(
+      this.lessonService.createLesson(new Lesson(
         null,
         params.courseId,
-        assignment.title,
-        assignment.description,
-        assignment.weight,
-        new Date(assignment.startDate.year, assignment.startDate.month - 1, assignment.startDate.day),
-        new Date(assignment.endDate.year, assignment.endDate.month - 1, assignment.endDate.day)
+        lesson.title,
+        lesson.description,
+        lesson.weight,
+        new Date(lesson.startDate.year, lesson.startDate.month - 1, lesson.startDate.day),
+        new Date(lesson.endDate.year, lesson.endDate.month - 1, lesson.endDate.day)
       )).subscribe(obj => {
-        this.assignmentService.getAssignments(params.courseId);
+        this.lessonService.getLessons(params.courseId);
         this.router.navigate(['/courses', params.courseId]);
       });
 
