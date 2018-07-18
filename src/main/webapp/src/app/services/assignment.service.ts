@@ -18,7 +18,7 @@ export class AssignmentService {
   constructor(private http: HttpClient) {}
 
   public getAssignments(courseId: number): Observable<Assignment[]> {
-    this.http.get<Assignment[]>(`api/assignments?courseId=${courseId}`)
+    this.http.get<Assignment[]>(`api/lessons?courseId=${courseId}`)
       .pipe(
         map((objArray: any[]) => objArray.map(obj => Assignment.fromJSON(obj))),
         tap((assignments: Assignment[]) => {
@@ -30,11 +30,11 @@ export class AssignmentService {
   }
 
   public createAssignment(assigment: Assignment): Observable<any> {
-    return this.http.post('api/assignments', assigment.toJSON(), this.httpOptions);
+    return this.http.post('api/lessons', assigment.toJSON(), this.httpOptions);
   }
 
   public updateAssignment(id: number, assigment: Assignment): Observable<any> {
-    return this.http.put(`api/assignments/${id}`, assigment.toJSON(), this.httpOptions)
+    return this.http.put(`api/lessons/${id}`, assigment.toJSON(), this.httpOptions)
       .pipe(
         map((obj: any) => {
           return Assignment.fromJSON(obj);
@@ -43,7 +43,7 @@ export class AssignmentService {
   }
 
   public getAssignment(assignmentId: number): Observable<Assignment> {
-    return this.http.get<Assignment>(`api/assignments/${assignmentId}`)
+    return this.http.get<Assignment>(`api/lessons/${assignmentId}`)
       .pipe(
         map((obj: any) => {
           return Assignment.fromJSON(obj);
