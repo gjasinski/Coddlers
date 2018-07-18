@@ -23,14 +23,12 @@ public class LessonService {
 	}
 
 	public Collection<LessonDTO> getAllCoursesLessons(long courseId) {
-		return lessonConverter.convertFromEntities(lessonRepository.findByCourse_Id(courseId));
+		return lessonConverter.convertFromEntities(lessonRepository.findByCourseId(courseId));
 	}
 
 	public Long createLesson(LessonDTO lessonDTO) {
 		Lesson lesson = lessonConverter.convertFromDto(lessonDTO);
-
 		lessonRepository.save(lesson);
-
 		return lesson.getId();
 	}
 
@@ -42,7 +40,6 @@ public class LessonService {
 
 	public LessonDTO updateLesson(Long id, LessonDTO lessonDTO) {
 		validateLesson(id);
-
 		lessonDTO.setId(id);
 		Lesson lesson = lessonConverter.convertFromDto(lessonDTO);
 		lessonRepository.save(lesson);

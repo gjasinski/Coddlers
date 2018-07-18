@@ -2,6 +2,7 @@ package pl.coddlers.core.models.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.dto.TaskDto;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.Task;
@@ -11,7 +12,6 @@ import pl.coddlers.core.repositories.TaskRepository;
 
 @Component
 public class TaskConverter implements BaseConverter<Task, TaskDto> {
-	private static final String LESSON_DOES_NOT_EXIST = "Lesson does not exist";
 
 	private final LessonRepository lessonRepository;
 
@@ -45,7 +45,7 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 		}
 
 		Lesson lesson = lessonRepository.findById(dto.getLessonId())
-				.orElseThrow(() -> new IllegalArgumentException(LESSON_DOES_NOT_EXIST));
+				.orElseThrow(() -> new LessonNotFoundException(dto.getLessonId()));
 
 		task.setTitle(dto.getTitle());
 		task.setDescription(dto.getDescription());

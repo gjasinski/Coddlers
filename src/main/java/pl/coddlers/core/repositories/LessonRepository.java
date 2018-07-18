@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
 	Optional<Lesson> findById(Long id);
 
-	Collection<Lesson> findByCourse_Id(Long courseId);
+	Collection<Lesson> findByCourseId(Long courseId);
 }

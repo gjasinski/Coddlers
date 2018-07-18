@@ -6,7 +6,6 @@ import pl.coddlers.core.exceptions.TaskNotFoundException;
 import pl.coddlers.core.models.converters.TaskConverter;
 import pl.coddlers.core.models.dto.TaskDto;
 import pl.coddlers.core.models.entity.Task;
-import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.TaskRepository;
 
 import java.util.Collection;
@@ -14,48 +13,42 @@ import java.util.Collection;
 @Service
 public class TaskService {
 
-    private final TaskRepository taskRepository;
+	private final TaskRepository taskRepository;
 
-    private final TaskConverter taskConverter;
+	private final TaskConverter taskConverter;
 
-    private final LessonRepository lessonRepository;
+	@Autowired
+	public TaskService(TaskRepository taskRepository, TaskConverter taskConverter) {
+		this.taskRepository = taskRepository;
+		this.taskConverter = taskConverter;
+	}
 
-    @Autowired
-    public TaskService(TaskRepository taskRepository, TaskConverter taskConverter, LessonRepository lessonRepository) {
-        this.taskRepository = taskRepository;
-        this.taskConverter = taskConverter;
-        this.lessonRepository = lessonRepository;
-    }
+	public Collection<TaskDto> getAllLessonsTasks(long lessonId) {
+		return taskConverter.convertFromEntities(taskRepository.findByLessonId(lessonId));
+	}
 
-    public Collection<TaskDto> getAllLessonsTasks(long lessonId) {
-        return taskConverter.convertFromEntities(taskRepository.findByLesson_Id(lessonId));
-    }
+	public Task createTask(final TaskDto taskDto) {
+		Task task = taskConverter.convertFromDto(taskDto);
+		taskRepository.save(task);
+		return task;
+	}
 
-    public Task createTask(final TaskDto taskDto) {
-        Task task = taskConverter.convertFromDto(taskDto);
-        taskRepository.save(task);
+	public void updateTask(Long id, final TaskDto taskDto) {
+		validateTask(id);
+		taskDto.setId(id);
+		Task task = taskConverter.convertFromDto(taskDto);
+		taskRepository.save(task);
+	}
 
-        return task;
-    }
+	public TaskDto getTaskById(Long id) {
+		Task task = validateTask(id);
 
-    public void updateTask(Long id, final TaskDto taskDto) {
-        validateTask(id);
+		return taskConverter.convertFromEntity(task);
+	}
 
-        taskDto.setId(id);
-        Task task = taskConverter.convertFromDto(taskDto);
-
-        taskRepository.save(task);
-    }
-
-    public TaskDto getTaskById(Long id) {
-        Task task = validateTask(id);
-
-        return taskConverter.convertFromEntity(task);
-    }
-
-    private Task validateTask(Long id) throws TaskNotFoundException {
-            return taskRepository.findById(id).orElseThrow(
-                () -> new TaskNotFoundException(id)
-        );
-    }
+	private Task validateTask(Long id) throws TaskNotFoundException {
+		return taskRepository.findById(id).orElseThrow(
+				() -> new TaskNotFoundException(id)
+		);
+	}
 }

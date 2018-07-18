@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
-	Collection<Task> findByLesson_Id(Long lessonId);
+	Collection<Task> findByLessonId(Long lessonId);
 
 	Optional<Task> findById(Long id);
 }

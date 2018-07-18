@@ -2,6 +2,7 @@ package pl.coddlers.core.models.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coddlers.core.exceptions.CourseNotFoundException;
 import pl.coddlers.core.models.dto.LessonDTO;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.Course;
@@ -44,7 +45,7 @@ public class LessonConverter implements BaseConverter<Lesson, LessonDTO> {
 		}
 
 		Course course = courseRepository.getById(dto.getCourseId())
-				.orElseThrow(() -> new IllegalArgumentException("Course does not exist"));
+				.orElseThrow(() -> new CourseNotFoundException(dto.getCourseId()));
 
 		lesson.setCourse(course);
 		lesson.setDescription(dto.getDescription());
