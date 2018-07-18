@@ -23,17 +23,17 @@ public class Task {
     private int maxPoints;
 
     @JsonIgnore
-    @ManyToOne(targetEntity = Assignment.class)
-    private Assignment assignment;
+    @ManyToOne(targetEntity = Lesson.class)
+    private Lesson lesson;
 
     @Column(nullable=false)
     private TaskStatus taskStatus;
 
-    public Task(String title, String description, int maxPoints, Assignment assignment, TaskStatus taskStatus) {
+    public Task(String title, String description, int maxPoints, Lesson lesson, TaskStatus taskStatus) {
         this.title = title;
         this.description = description;
         this.maxPoints = maxPoints;
-        this.assignment = assignment;
+        this.lesson = lesson;
         this.taskStatus = taskStatus;
     }
 }

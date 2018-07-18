@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class Assignment {
+public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -30,7 +30,7 @@ public class Assignment {
     @Column(nullable=false)
     private Timestamp dueDate;
 
-    @OneToMany(mappedBy = "assignment", targetEntity = Task.class)
+    @OneToMany(mappedBy = "lesson", targetEntity = Task.class)
     private List<Task> taskList = new ArrayList<>();
 
     // TODO only for prototype purposes
@@ -41,7 +41,7 @@ public class Assignment {
     @ManyToOne(targetEntity = Course.class)
     private Course course;
 
-    public Assignment(String title, String description, Integer weight, Timestamp startDate, Timestamp dueDate) {
+    public Lesson(String title, String description, Integer weight, Timestamp startDate, Timestamp dueDate) {
         this.title = title;
         this.description = description;
         this.startDate = startDate;

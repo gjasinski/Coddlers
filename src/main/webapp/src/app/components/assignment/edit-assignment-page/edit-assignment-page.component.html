@@ -1,24 +1,24 @@
 <div class="content-container">
-  <h2>Edit assignment</h2>
+  <h2>Edit lesson</h2>
 
   <div class="line"></div>
   <br>
 
   <form [formGroup]="formGroup" (ngSubmit)="saveAssignment(formGroup.value)">
     <div class="form-group">
-      <label for="assignment-title">Assignment title*</label>
+      <label for="lesson-title">Assignment title*</label>
       <input formControlName="title" type="text" class="form-control"
-             id="assignment-title" placeholder="Enter title">
+             id="lesson-title" placeholder="Enter title">
     </div>
     <div class="form-group">
-      <label for="assignment-description">Description</label>
+      <label for="lesson-description">Description</label>
       <textarea formControlName="description" type="text" class="form-control"
-                id="assignment-description" placeholder="Enter description"></textarea>
+                id="lesson-description" placeholder="Enter description"></textarea>
     </div>
     <div class="form-group">
-      <label for="assignment-start-date">Start date*</label>
+      <label for="lesson-start-date">Start date*</label>
       <div class="input-group">
-        <input id="assignment-start-date" class="form-control" placeholder="yyyy-mm-dd"
+        <input id="lesson-start-date" class="form-control" placeholder="yyyy-mm-dd"
                name="dp" formControlName="startDate" ngbDatepicker #d1="ngbDatepicker">
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
@@ -28,9 +28,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="assignment-end-date">End date*</label>
+      <label for="lesson-end-date">End date*</label>
       <div class="input-group">
-        <input id="assignment-end-date" class="form-control" placeholder="yyyy-mm-dd"
+        <input id="lesson-end-date" class="form-control" placeholder="yyyy-mm-dd"
                name="dp" formControlName="endDate" ngbDatepicker #d2="ngbDatepicker">
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
@@ -40,7 +40,7 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="assignemnt-weight">Weight of the assignment</label>
+      <label for="assignemnt-weight">Weight of the lesson</label>
       <div class="input-group">
         <input formControlName="weight" class="form-control" type="number" id="assignemnt-weight"
                placeholder="Enter weight" min="0">

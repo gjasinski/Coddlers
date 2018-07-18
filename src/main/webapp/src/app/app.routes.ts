@@ -23,15 +23,15 @@ export const ROUTES: Routes = [
   { path: 'courses/:courseId',
     component: CoursePageComponent,
     children: [
-      { path: 'add-assignment', component: AddAssignmentPageComponent },
-      { path: 'assignments/:assignmentId',
+      { path: 'add-lesson', component: AddAssignmentPageComponent },
+      { path: 'assignments/:lessonId',
         component: AssignmentPageComponent,
         children: [
-          { path: 'edit-assignment', component: EditAssignmentPageComponent },
+          { path: 'edit-lesson', component: EditAssignmentPageComponent },
           { path: 'add-task', component: AddTaskPageComponent }
         ]
       },
-      { path: 'student/assignments/:assignmentId', component: StudentAssignmentPageComponent }
+      { path: 'student/assignments/:lessonId', component: StudentAssignmentPageComponent }
     ]
   },
   { path: 'courses', component: CoursesComponent },

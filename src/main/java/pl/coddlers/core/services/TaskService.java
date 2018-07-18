@@ -6,7 +6,7 @@ import pl.coddlers.core.exceptions.TaskNotFoundException;
 import pl.coddlers.core.models.converters.TaskConverter;
 import pl.coddlers.core.models.dto.TaskDto;
 import pl.coddlers.core.models.entity.Task;
-import pl.coddlers.core.repositories.AssignmentRepository;
+import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.TaskRepository;
 
 import java.util.Collection;
@@ -18,17 +18,17 @@ public class TaskService {
 
     private final TaskConverter taskConverter;
 
-    private final AssignmentRepository assignmentRepository;
+    private final LessonRepository lessonRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, TaskConverter taskConverter, AssignmentRepository assignmentRepository) {
+    public TaskService(TaskRepository taskRepository, TaskConverter taskConverter, LessonRepository lessonRepository) {
         this.taskRepository = taskRepository;
         this.taskConverter = taskConverter;
-        this.assignmentRepository = assignmentRepository;
+        this.lessonRepository = lessonRepository;
     }
 
-    public Collection<TaskDto> getAllAssignmentsTasks(long assignmentId) {
-        return taskConverter.convertFromEntities(taskRepository.findByAssignment_Id(assignmentId));
+    public Collection<TaskDto> getAllLessonsTasks(long lessonId) {
+        return taskConverter.convertFromEntities(taskRepository.findByLesson_Id(lessonId));
     }
 
     public Task createTask(final TaskDto taskDto) {

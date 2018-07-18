@@ -31,7 +31,7 @@ public class TaskController {
     public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDto taskDto) {
         Task task = taskService.createTask(taskDto);
         // TODO only for prototype purposes
-        long gitStudentProjectId = task.getAssignment().getGitStudentProjectId();
+        long gitStudentProjectId = task.getLesson().getGitStudentProjectId();
         gitTaskService.createTask(gitStudentProjectId, task.getTitle().replaceAll("\\s+","-"));
 
         URI location = ServletUriComponentsBuilder
@@ -41,9 +41,9 @@ public class TaskController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(params = {"assignmentId"})
-    public ResponseEntity<Collection<TaskDto>> getTasks(@RequestParam(value = "assignmentId") Long assignmentId) {
-        return ResponseEntity.ok(taskService.getAllAssignmentsTasks(assignmentId));
+    @GetMapping(params = {"lessonId"})
+    public ResponseEntity<Collection<TaskDto>> getTasks(@RequestParam(value = "lessonId") Long lessonId) {
+        return ResponseEntity.ok(taskService.getAllLessonsTasks(lessonId));
     }
 
     @GetMapping(value = "/{id}")

@@ -21,15 +21,15 @@
       <div class="assignments-container">
         <div class="assignments-header">
           <h3>Assignments</h3>
-          <button routerLink="add-assignment" class="btn btn-primary float-md-right" role="button">Add new assignment</button>
+          <button routerLink="add-lesson" class="btn btn-primary float-md-right" role="button">Add new lesson</button>
         </div>
         <div class="assignments-body">
           <ul class="assignments-list">
-            <li class="assignment-item card" *ngFor="let assignment of assignments">
-              <a [routerLink]="['assignments/', assignment.id]" class="card-body">
-                <h4>{{assignment.title}}</h4>
-                <span class="start-date">Start date: {{assignment.startDate | date: 'dd-MM-yyyy'}}</span> -
-                <span class="start-date">Due date: {{assignment.dueDate | date: 'dd-MM-yyyy'}}</span>
+            <li class="lesson-item card" *ngFor="let lesson of assignments">
+              <a [routerLink]="['assignments/', lesson.id]" class="card-body">
+                <h4>{{lesson.title}}</h4>
+                <span class="start-date">Start date: {{lesson.startDate | date: 'dd-MM-yyyy'}}</span> -
+                <span class="start-date">Due date: {{lesson.dueDate | date: 'dd-MM-yyyy'}}</span>
               </a>
             </li>
           </ul>

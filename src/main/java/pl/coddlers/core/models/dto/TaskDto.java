@@ -11,7 +11,7 @@ public class TaskDto {
     private Long id;
 
     @NotNull
-    private Long assignmentId;
+    private Long lessonId;
 
     @NotNull
     @Size(min = 3, max = 100)

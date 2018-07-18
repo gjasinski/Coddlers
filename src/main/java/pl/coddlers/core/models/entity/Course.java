@@ -29,8 +29,8 @@ public class Course {
     private Timestamp endDate;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "course", targetEntity = Assignment.class)
-    private List<Assignment> assignmentList = new ArrayList<>();
+    @OneToMany(mappedBy = "course", targetEntity = Lesson.class)
+    private List<Lesson> lessonList = new ArrayList<>();
 
     public Course(String title, String description, Timestamp startDate, Timestamp endDate) {
         this.title = title;

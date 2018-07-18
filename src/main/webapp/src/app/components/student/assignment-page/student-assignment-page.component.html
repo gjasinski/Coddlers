@@ -3,16 +3,16 @@
     <div class="col-md-10">
       <div class="row">
         <div class="col-12">
-          <h2>Assignment - {{assignment?.title}}</h2>
+          <h2>Assignment - {{lesson?.title}}</h2>
           <h4>{{course?.title}}</h4>
 
           <div class="line"></div>
           <br>
 
-          <p>Due date: {{assignment?.dueDate | date: 'dd-MM-yyyy'}} </p>
+          <p>Due date: {{lesson?.dueDate | date: 'dd-MM-yyyy'}} </p>
 
           <h4>Description</h4>
-          <p>{{assignment?.description}}</p>
+          <p>{{lesson?.description}}</p>
         </div>
 
         <div class="col-12">
