@@ -12,13 +12,11 @@ import {LessonPageComponent} from "./components/teacher/lesson/lesson-page/lesso
 import {EditLessonPageComponent} from "./components/teacher/lesson/edit-lesson-page/edit-lesson-page.component";
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {StudentLessonPageComponent} from "./components/student/lesson-page/student-lesson-page.component";
+import {LandingPageComponent} from "./components/landing-page/landing-page.component";
 
 
 export const ROUTES: Routes = [
-  { path: '',
-    redirectTo: 'courses',
-    pathMatch: 'full'
-  },
+  { path: '', component: LandingPageComponent },
   { path: 'add-course', component: AddCoursePageComponent },
   { path: 'courses/:courseId',
     component: CoursePageComponent,

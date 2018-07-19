@@ -1,0 +1,30 @@
+import { Injectable } from '@angular/core';
+import {User} from "../models/user";
+import {Observable} from "rxjs/index";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {tap} from "rxjs/operators";
+import {Router} from "@angular/router";
+
+@Injectable()
+export class AccountService {
+
+  constructor(private _router: Router,
+              private http: HttpClient) { }
+
+  register(user: User): Observable<any> {
+    const body = user.toJSON();
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const options = {
+      headers: headers
+    };
+
+    return this.http.post(`api/account/register`, body, options)
+      .pipe(
+        tap(() => {
+          this._router.navigate(['/'])
+        })
+      );
+  }
+}

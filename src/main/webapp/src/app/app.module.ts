@@ -26,6 +26,7 @@ import { EditLessonPageComponent } from './components/teacher/lesson/edit-lesson
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
 import { StudentLessonPageComponent } from './components/student/lesson-page/student-lesson-page.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { StudentLessonPageComponent } from './components/student/lesson-page/stu
     LessonPageComponent,
     EditLessonPageComponent,
     EditCoursePageComponent,
-    StudentLessonPageComponent
+    StudentLessonPageComponent,
+    LandingPageComponent
 
   ],
   imports: [
