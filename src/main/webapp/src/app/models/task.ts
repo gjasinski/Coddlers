@@ -1,14 +1,14 @@
 export class Task {
   private _id: number;
-  private _assignmentId: number;
+  private _lessonId: number;
   private _title: string;
   private _description: string;
   private _maxPoints: number;
   private _taskStatus: string;
 
-  constructor(id: number, assignmentId: number, title: string, description: string, maxPoints: number, taskStatus: string) {
+  constructor(id: number, lessonId: number, title: string, description: string, maxPoints: number, taskStatus: string) {
     this._id = id;
-    this._assignmentId = assignmentId;
+    this._lessonId = lessonId;
     this._title = title;
     this._description = description;
     this._maxPoints = maxPoints;
@@ -19,8 +19,8 @@ export class Task {
     return this._id;
   }
 
-  get assignmentId(): number {
-    return this._assignmentId;
+  get lessonId(): number {
+    return this._lessonId;
   }
 
   get title(): string {
@@ -40,14 +40,14 @@ export class Task {
   }
 
   public static fromJSON(jsonObj: any): Task {
-    return new Task(+jsonObj.id, +jsonObj.assignmentId, jsonObj.title,
+    return new Task(+jsonObj.id, +jsonObj.lessonId, jsonObj.title,
       jsonObj.description, +jsonObj.maxPoints, jsonObj.taskStatus.toLocaleLowerCase());
   }
 
   public toJSON() {
     return {
       id: this.id,
-      assignmentId: this.assignmentId,
+      lessonId: this.lessonId,
       title: this.title,
       description: this.description,
       maxPoints: this.maxPoints,

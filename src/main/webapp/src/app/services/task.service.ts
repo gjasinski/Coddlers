@@ -14,8 +14,8 @@ export class TaskService {
 
   constructor(private http: HttpClient) { }
 
-  public getTasks(assignmentId: number): Observable<Task[]> {
-    return this.http.get<Task[]>(`/api/tasks?assignmentId=${assignmentId}`)
+  public getTasks(lessonId: number): Observable<Task[]> {
+    return this.http.get<Task[]>(`/api/tasks?lessonId=${lessonId}`)
       .pipe(
         map((objArray: any[]) => objArray.map(obj => Task.fromJSON(obj)))
       );

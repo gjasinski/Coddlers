@@ -7,25 +7,25 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {RouterModule} from '@angular/router';
 import {ROUTES} from "./app.routes";
 import {CourseService} from "./services/course.service";
-import {CoursesComponent} from "./components/courses/courses.component";
-import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.component";
+import {CoursesComponent} from "./components/common/courses/courses.component";
+import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {CourseFilterPipe} from "./filters/course-filter.pipe";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NavbarComponent} from "./components/navbar/navbar.component";
-import {CoursePageComponent} from "./components/course/course-page/course-page.component";
-import {AssignmentService} from "./services/assignment.service";
-import {AddCoursePageComponent} from "./components/course/add-course-page/add-course-page.component";
-import {TeacherTaskPageComponent as TeacherTaskPageComponent} from "./components/teacher/task-page/teacher-task-page.component";
+import {NavbarComponent} from "./components/common/navbar/navbar.component";
+import {CoursePageComponent} from "./components/teacher/course/course-page/course-page.component";
+import {LessonService} from "./services/lesson.service";
+import {AddCoursePageComponent} from "./components/teacher/course/add-course-page/add-course-page.component";
+import {TeacherTaskPageComponent as TeacherTaskPageComponent} from "./components/teacher/task/task-page/teacher-task-page.component";
 import {StudentTaskPageComponent as StudentTaskPageComponent} from "./components/student/task-page/student-task-page.component";
-import {AddTaskPageComponent} from "./components/add-task-page/add-task-page.component";
+import {AddTaskPageComponent} from "./components/teacher/task/add-task-page/add-task-page.component";
 import {TaskService} from "./services/task.service";
-import {EditTaskPageComponent} from "./components/edit-task-page/edit-task-page.component";
-import { AddAssignmentPageComponent } from './components/assignment/add-assignment-page/add-assignment-page.component';
-import { AssignmentPageComponent } from './components/assignment/assignment-page/assignment-page.component';
-import { EditAssignmentPageComponent } from './components/assignment/edit-assignment-page/edit-assignment-page.component';
-import {EditCoursePageComponent} from "./components/course/edit-course-page/edit-course-page.component";
+import {EditTaskPageComponent} from "./components/teacher/task/edit-task-page/edit-task-page.component";
+import { AddLessonPageComponent } from './components/teacher/lesson/add-lesson-page/add-lesson-page.component';
+import { LessonPageComponent } from './components/teacher/lesson/lesson-page/lesson-page.component';
+import { EditLessonPageComponent } from './components/teacher/lesson/edit-lesson-page/edit-lesson-page.component';
+import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
-import { StudentAssignmentPageComponent } from './components/student/assignment-page/student-assignment-page.component';
+import { StudentLessonPageComponent } from './components/student/lesson-page/student-lesson-page.component';
 
 @NgModule({
   declarations: [
@@ -40,11 +40,11 @@ import { StudentAssignmentPageComponent } from './components/student/assignment-
     StudentTaskPageComponent,
     AddTaskPageComponent,
     EditTaskPageComponent,
-    AddAssignmentPageComponent,
-    AssignmentPageComponent,
-    EditAssignmentPageComponent,
+    AddLessonPageComponent,
+    LessonPageComponent,
+    EditLessonPageComponent,
     EditCoursePageComponent,
-    StudentAssignmentPageComponent
+    StudentLessonPageComponent
 
   ],
   imports: [
@@ -63,7 +63,7 @@ import { StudentAssignmentPageComponent } from './components/student/assignment-
   ],
   providers: [
     CourseService,
-    AssignmentService,
+    LessonService,
     TaskService,
     DatePipe
   ],
