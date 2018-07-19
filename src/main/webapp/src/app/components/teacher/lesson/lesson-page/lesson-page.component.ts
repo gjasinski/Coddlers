@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import {LessonService} from "../../../services/lesson.service";
+import {LessonService} from "../../../../services/lesson.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {Lesson} from "../../../models/lesson";
-import {Course} from "../../../models/course";
-import {CourseService} from "../../../services/course.service";
+import {Lesson} from "../../../../models/lesson";
+import {Course} from "../../../../models/course";
+import {CourseService} from "../../../../services/course.service";
 import {filter, flatMap, map, mergeMap, subscribeOn, switchMap, tap} from "rxjs/operators";
 import {Observable} from "rxjs/internal/Observable";
 import {Location} from "@angular/common";
-import {Task} from "../../../models/task";
-import {TaskService} from "../../../services/task.service";
+import {Task} from "../../../../models/task";
+import {TaskService} from "../../../../services/task.service";
 
 @Component({
   selector: 'app-lessons-page',

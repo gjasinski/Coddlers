@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 
-import {CourseService} from "../../../services/course.service";
-import {Course} from "../../../models/course";
-import {Lesson} from "../../../models/lesson";
-import {LessonService} from "../../../services/lesson.service";
+import {CourseService} from "../../../../services/course.service";
+import {Course} from "../../../../models/course";
+import {Lesson} from "../../../../models/lesson";
+import {LessonService} from "../../../../services/lesson.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 

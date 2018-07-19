@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {TaskService} from "../../services/task.service";
+import {TaskService} from "../../../../services/task.service";
 import {Location} from '@angular/common';
-import {Task} from "../../models/task";
+import {Task} from "../../../../models/task";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
@@ -39,7 +39,7 @@ export class AddTaskPageComponent implements OnInit {
       task.title,
       task.description,
       task.maxPoints,
-      'NOT SUBMITTED')
+      'NOT_SUBMITTED')
     ).subscribe(() => {
       this._location.back();
     });

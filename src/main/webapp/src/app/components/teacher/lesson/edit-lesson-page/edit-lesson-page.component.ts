@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
-import {LessonService} from "../../../services/lesson.service";
-import {Lesson} from "../../../models/lesson";
+import {LessonService} from "../../../../services/lesson.service";
+import {Lesson} from "../../../../models/lesson";
 
 @Component({
   selector: 'app-edit-lesson-page',
@@ -51,7 +51,7 @@ export class EditLessonPageComponent implements OnInit {
         new Date(lesson.endDate.year, lesson.endDate.month - 1, lesson.endDate.day)
       )).subscribe(obj => {
 
-      this.router.navigate(['/courses', this.lesson.courseId, 'lesson', this.lesson.id]);
+      this.router.navigate(['/courses', this.lesson.courseId, 'lessons', this.lesson.id]);
     });
   }
 
