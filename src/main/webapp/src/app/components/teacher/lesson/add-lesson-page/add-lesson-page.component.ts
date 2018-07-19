@@ -1,8 +1,8 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {LessonService} from "../../../services/lesson.service";
+import {LessonService} from "../../../../services/lesson.service";
 import {Location} from "@angular/common";
-import {Lesson} from "../../../models/lesson";
+import {Lesson} from "../../../../models/lesson";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({

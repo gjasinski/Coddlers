@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CourseService} from "../../../services/course.service";
+import {CourseService} from "../../../../services/course.service";
 import {Location} from '@angular/common';
-import {Course} from "../../../models/course";
+import {Course} from "../../../../models/course";
 import {ActivatedRoute} from "@angular/router";
 import {DatePipe} from '@angular/common';
 
