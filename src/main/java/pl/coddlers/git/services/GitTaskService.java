@@ -14,8 +14,12 @@ import pl.coddlers.git.reposiories.HookRepository;
 
 @Service
 public class GitTaskService {
-	private static final String MASTER = "-master";
+	private static final String MASTER_POSTFIX = "-master";
 	private static final String DEVELOP = "-develop";
+	private static final String REPOSITORY_ID = "repositoryId";
+	private static final String BRANCH = "branch";
+	private static final String REF = "ref";
+	private static final String MASTER = "master";
 	private RestTemplate restTemplate = new RestTemplate();
 
 	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
@@ -33,12 +37,12 @@ public class GitTaskService {
 
 	public void createTask(long repositoryId, String taskName) {
 		createBranch(repositoryId, taskName + DEVELOP);
-		createBranch(repositoryId, taskName + MASTER);
+		createBranch(repositoryId, taskName + MASTER_POSTFIX);
 		registerHook(repositoryId, taskName);
 	}
 
 	private void registerHook(long repositoryId, String taskName) {
-		hookRepository.save(createHook(repositoryId, taskName + MASTER));
+		hookRepository.save(createHook(repositoryId, taskName + MASTER_POSTFIX));
 	}
 
 	private void createBranch(long repositoryId, String branchName) {
@@ -47,9 +51,9 @@ public class GitTaskService {
 		HttpHeaders headers = createHttpHeaders();
 
 		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-				.queryParam("repositoryId", repositoryId)
-				.queryParam("branch", branchName)
-				.queryParam("ref", "master");
+				.queryParam(REPOSITORY_ID, repositoryId)
+				.queryParam(BRANCH, branchName)
+				.queryParam(REF, MASTER);
 
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);

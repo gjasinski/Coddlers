@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.coddlers.git.services.GitProjectService;
+import pl.coddlers.git.services.GitLessonService;
 import pl.coddlers.core.models.dto.LessonDTO;
 import pl.coddlers.core.services.LessonService;
 
@@ -18,10 +18,10 @@ public class LessonController {
 
 	private final LessonService lessonService;
 
-	private final GitProjectService gitProjectService;
+	private final GitLessonService gitProjectService;
 
 	@Autowired
-	public LessonController(LessonService lessonService, GitProjectService gitProjectService) {
+	public LessonController(LessonService lessonService, GitLessonService gitProjectService) {
 		this.lessonService = lessonService;
 		this.gitProjectService = gitProjectService;
 	}
@@ -30,9 +30,9 @@ public class LessonController {
 	public ResponseEntity<Long> createLesson(@Valid @RequestBody LessonDTO lessonDTO) {
 		// TODO this code is only for prototype purposes
 		long tutorGitId = 20;
-		long gitTutorProjectId = gitProjectService.createCourse(tutorGitId, lessonDTO.getTitle());
+		long gitTutorProjectId = gitProjectService.createLesson(tutorGitId, lessonDTO.getTitle());
 		long studentId = 19;
-		long gitStudentProjectId = gitProjectService.addStudentToCourse(gitTutorProjectId, studentId);
+		long gitStudentProjectId = gitProjectService.forkLesson(gitTutorProjectId, studentId);
 
 		// TODO only for prototype purposes
 		lessonDTO.setGitStudentProjectId(gitStudentProjectId);

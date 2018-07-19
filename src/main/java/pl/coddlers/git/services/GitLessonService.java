@@ -18,34 +18,46 @@ import pl.coddlers.git.reposiories.HookRepository;
 import java.util.List;
 
 @Service
-public class GitProjectService {
-	//todo this should be injected from properties
-	private static final String GIT_HOOKS_ENDPOINT = "http://coddlers.pl:8080/api/git/hooks/push";
-	private RestTemplate restTemplate;
+public class GitLessonService {
+	private static final String PROJECTS = "/projects/";
+	private static final String NAME = "name";
+	private static final String VISIBILITY = "visibility";
+	private static final String PRIVATE = "private";
+	private static final String FORK = "/fork";
+	private static final String HOOKS = "/hooks";
+	private static final String NAMESPACE = "namespace";
+	private static final String URL = "url";
+	private static final String PUSH_EVENTS = "push_events";
+	private static final String PRIVATE_TOKEN = "private_token";
 
-	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
-	private String gitlabApi;
+	@Value("${pl.coddlers.git.host}:${pl.coddlers.git.port}${pl.coddlers.git.event.url}")
+	private String gitEventEndpoint;
+
+	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}" + PROJECTS)
+	private String gitlabApiProjects;
 
 	@Value("${gitlab.api.apiuser.private_token}")
-	private String private_token;
+	private String privateToken;
 
 	private final HookRepository hookRepository;
 
+	private RestTemplate restTemplate;
+
 	@Autowired
-	public GitProjectService(HookRepository hookRepository) {
+	public GitLessonService(HookRepository hookRepository) {
 		this.restTemplate = new RestTemplate();
 		this.restTemplate.setErrorHandler(new GitErrorHandler());
 		this.hookRepository = hookRepository;
 	}
 
-	public Long createCourse(long tutorGitId, String courseName) {
-		String resourceUrl = gitlabApi + "/projects/user/" + tutorGitId;
+	public Long createLesson(long tutorGitId, String lessonName) {
+		String resourceUrl = gitlabApiProjects + tutorGitId;
 
 		HttpHeaders headers = getHttpHeaders();
 
 		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-				.queryParam("name", courseName)
-				.queryParam("visibility", "private");
+				.queryParam(NAME, lessonName)
+				.queryParam(VISIBILITY, PRIVATE);
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
@@ -60,12 +72,12 @@ public class GitProjectService {
 		return projectId;
 	}
 
-	public Long addStudentToCourse(Long courseGitId, Long studentId) {
-		String resourceUrl = gitlabApi + "/projects/" + courseGitId + "/fork";
+	public Long forkLesson(Long lessonId, Long userId) {
+		String resourceUrl = gitlabApiProjects + lessonId + FORK;
 		HttpHeaders headers = getHttpHeaders();
 
 		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-				.queryParam("namespace", studentId);
+				.queryParam(NAMESPACE, userId);
 
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -76,17 +88,17 @@ public class GitProjectService {
 				entity,
 				ResponseWithIdDTO.class);
 		Long studentCourseId = exchange.getBody().getId();
-		registerHooks(courseGitId, studentCourseId);
+		registerHooks(lessonId, studentCourseId);
 		return studentCourseId;
 	}
 
 	private void createGitHook(Long projectId) {
-		String resourceUrl = gitlabApi + "/projects/" + projectId + "/hooks";
+		String resourceUrl = gitlabApiProjects + projectId + HOOKS;
 		HttpHeaders headers = getHttpHeaders();
 
 		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-				.queryParam("url", GIT_HOOKS_ENDPOINT)
-				.queryParam("push_events", "true");
+				.queryParam(URL, gitEventEndpoint)
+				.queryParam(PUSH_EVENTS, Boolean.TRUE);
 
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -106,7 +118,7 @@ public class GitProjectService {
 
 	private UriComponentsBuilder createComponentBuilder(String resourceUrl) {
 		return UriComponentsBuilder.fromHttpUrl(resourceUrl)
-				.queryParam("private_token", private_token);
+				.queryParam(PRIVATE_TOKEN, privateToken);
 	}
 
 	private void registerHooks(Long originProjectGitId, Long createdProjectId) {
