@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
+// FIXME: 19.07.18 For now this we need this class, while cloning repository I have to now about hooks which should I create in forked repository.
+// todo: 19.07.18 In future we will have model and this may not be necessary.
+
 @Entity
 public class Hook {
 	@Id

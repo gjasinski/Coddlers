@@ -13,12 +13,12 @@ import pl.coddlers.git.models.ResponseWithIdDTO;
 
 @Service
 public class GitUserService {
-	public static final String PRIVATE_TOKEN = "private_token";
-	public static final String SKIP_CONFIRMATION = "skip_confirmation";
-	public static final String NAME = "name";
-	public static final String USERNAME = "username";
-	public static final String PASSWORD = "password";
-	public static final String EMAIL = "email";
+	private static final String PRIVATE_TOKEN = "private_token";
+	private static final String SKIP_CONFIRMATION = "skip_confirmation";
+	private static final String NAME = "name";
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "password";
+	private static final String EMAIL = "email";
 	private RestTemplate restTemplate;
 
 	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
