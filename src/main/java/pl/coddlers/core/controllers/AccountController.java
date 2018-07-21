@@ -29,4 +29,9 @@ public class AccountController {
         // TODO send activation email
     }
 
+    @GetMapping
+    public UserDto getAccount() {
+        return userDetailsService.getUserDtoWithAccountTypes();
+    }
+
 }

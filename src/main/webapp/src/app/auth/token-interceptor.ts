@@ -9,7 +9,7 @@ export class TokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     if (!request.url.includes('api/auth') &&
-      !request.url.includes('api/account')) {
+      !request.url.includes('api/account/register')) {
       request = request.clone({
         setHeaders: {
           Authorization: localStorage.getItem('jwt')

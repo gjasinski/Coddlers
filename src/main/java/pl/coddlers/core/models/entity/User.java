@@ -30,9 +30,9 @@ public class User {
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "UserAccountType",
-            joinColumns = {@JoinColumn(name = "userId", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "accountTypeName", referencedColumnName = "name")})
+            name = "user_account_type",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "account_type_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
-    private Set<AccountType> authorities = new HashSet<>();
+    private Set<AccountType> accountTypes = new HashSet<>();
 }

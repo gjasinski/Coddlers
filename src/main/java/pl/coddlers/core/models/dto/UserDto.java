@@ -1,5 +1,6 @@
 package pl.coddlers.core.models.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class UserDto {
     @NotNull
     private String userMail;
 
+    @JsonIgnore
     @JsonProperty("password")
     @Size(min = 4, max = 100)
     @NotNull
@@ -28,5 +30,5 @@ public class UserDto {
     private String lastname;
 
     @NotNull
-    private String userRole;
+    private String[] userRoles;
 }

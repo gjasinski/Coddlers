@@ -6,7 +6,7 @@ import {Lesson} from "../../../../models/lesson";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
-  selector: 'app-add-lesson-page',
+  selector: 'cod-add-lesson-page',
   templateUrl: './add-lesson-page.component.html',
   styleUrls: ['./add-lesson-page.component.scss']
 })

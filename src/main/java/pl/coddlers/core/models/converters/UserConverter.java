@@ -11,6 +11,7 @@ import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.AccountTypeRepository;
 import pl.coddlers.core.security.AccountTypeConstants;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,27 +26,42 @@ public class UserConverter implements BaseConverter<User, UserDto> {
 
     @Override
     public UserDto convertFromEntity(User entity) {
-        return null;
+        UserDto dto = new UserDto();
+        dto.setUserMail(entity.getUserMail());
+        dto.setFirstname(entity.getFirstname());
+        dto.setLastname(entity.getLastname());
+        dto.setUserRoles(entity.getAccountTypes().stream().map(AccountType::getName).toArray(String[]::new));
+
+        return dto;
     }
 
     @Override
     public User convertFromDto(UserDto dto) {
         User userEntity = new User();
 
-        String accountTypeString = dto.getUserRole().toUpperCase();
-        if (!accountTypeString.equals(AccountTypeConstants.STUDENT) &&
-                !accountTypeString.equals(AccountTypeConstants.TEACHER)) {
-            throw new WrongAccountTypeProvided();
-        }
+        String[] accountTypes = Arrays.stream(dto.getUserRoles())
+                .map(str -> {
+                    String strUpperCase = str.toUpperCase();
+                    if (!strUpperCase.equals(AccountTypeConstants.STUDENT) &&
+                            !strUpperCase.equals(AccountTypeConstants.TEACHER)) {
+                        throw new WrongAccountTypeProvided();
+                    }
 
-        AccountType accountType = authorityRepository.findById(accountTypeString)
-                .orElseThrow(() -> new DbNotPopulatedWithDataException("Db is not initialize with Authorities"));
+                    return strUpperCase;
+                })
+                .toArray(String[]::new);
+
         Set<AccountType> authorities = new HashSet<>();
-        authorities.add(accountType);
+
+        for (String accountTypeString : accountTypes) {
+            AccountType accountType = authorityRepository.findById(accountTypeString)
+                    .orElseThrow(() -> new DbNotPopulatedWithDataException("Db is not initialize with Authorities"));
+            authorities.add(accountType);
+        }
 
         userEntity.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         userEntity.setUserMail(dto.getUserMail().toLowerCase());
-        userEntity.setAuthorities(authorities);
+        userEntity.setAccountTypes(authorities);
         userEntity.setFirstname(dto.getFirstname());
         userEntity.setLastname(dto.getLastname());
 

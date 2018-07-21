@@ -1,8 +1,8 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {Injector, NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {RouterModule} from '@angular/router';
 import {ROUTES} from "./app.routes";
@@ -26,7 +26,16 @@ import { EditLessonPageComponent } from './components/teacher/lesson/edit-lesson
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
 import { StudentLessonPageComponent } from './components/student/lesson-page/student-lesson-page.component';
-import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { LandingPageComponent } from './components/common/landing-page/landing-page.component';
+import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
+import {AuthenticationService} from "./auth/authentication.service";
+import {AuthExpiredInterceptor} from "./auth/auth-expired.interceptor";
+import {TokenInterceptor} from "./auth/token-interceptor";
+import {AccountService} from "./services/account.service";
+import { SignInModalComponent } from './components/common/sign-in-modal/sign-in-modal.component';
+import { SignUpModalComponent } from './components/common/sign-up-modal/sign-up-modal.component';
+import { StudentDashboardComponent } from './components/student/dashboard/student-dashboard.component';
+import { TeacherDashboardComponent } from './components/teacher/dashboard/teacher-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -46,8 +55,12 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
     EditLessonPageComponent,
     EditCoursePageComponent,
     StudentLessonPageComponent,
-    LandingPageComponent
-
+    LandingPageComponent,
+    HasAnyAuthorityDirective,
+    SignInModalComponent,
+    SignUpModalComponent,
+    StudentDashboardComponent,
+    TeacherDashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -61,13 +74,29 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
       }
     ),
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule.forRoot()
   ],
   providers: [
     CourseService,
     LessonService,
     TaskService,
-    DatePipe
+    DatePipe,
+    AuthenticationService,
+    AccountService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthExpiredInterceptor,
+      multi: true,
+      deps: [
+        Injector
+      ]
+    }
   ],
   bootstrap: [AppComponent]
 })
