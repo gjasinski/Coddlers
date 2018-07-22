@@ -10,11 +10,15 @@ export class TokenInterceptor implements HttpInterceptor {
 
     if (!request.url.includes('api/auth') &&
       !request.url.includes('api/account/register')) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: localStorage.getItem('jwt')
-        }
-      });
+      const token = localStorage.getItem('jwt');
+
+      if (!!token) {
+        request = request.clone({
+          setHeaders: {
+            Authorization: token
+          }
+        });
+      }
     }
 
     return next.handle(request);
