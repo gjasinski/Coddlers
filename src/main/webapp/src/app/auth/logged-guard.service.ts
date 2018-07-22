@@ -15,21 +15,8 @@ export class LoggedGuardService implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.authService.isSignedIn()) {
-
-      return this.principalService.identity().then((user: User) => {
-        if (user.userRoles.includes(AccountTypesConstants.ROLE_TEACHER)) {
-          this.router.navigate(['/teacher', 'dashboard']);
-          return false;
-        }
-
-        if (user.userRoles.includes(AccountTypesConstants.ROLE_STUDENT)) {
-          this.router.navigate(['/student', 'dashboard']);
-          return false;
-        }
-
-        // TODO handle admin case
-        return false;
-      });
+      return this.principalService.redirectToRoleRootRoute()
+        .then(() => false);
 
     } else {
       return true;

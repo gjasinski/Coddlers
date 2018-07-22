@@ -24,7 +24,7 @@ export class HasAnyAuthorityDirective {
               private viewContainerRef: ViewContainerRef) {}
 
   @Input()
-  set jhiHasAnyAuthority(value: string|string[]) {
+  set codHasAnyAuthority(value: string|string[]) {
     this.authorities = typeof value === 'string' ? [ <string> value ] : <string[]> value;
     this.updateView();
     // Get notified each time authentication state changes.

@@ -8,6 +8,9 @@ import {Router} from "@angular/router";
 import {throwError} from "rxjs/internal/observable/throwError";
 import {Observable} from "rxjs/internal/Observable";
 import {catchError} from "rxjs/operators";
+import {User} from "../../../models/user";
+import {AccountTypesConstants} from "../../../constants/account-types.constants";
+import {PrincipalService} from "../../../auth/principal.service";
 
 @Component({
   selector: 'cod-sign-in-modal',
@@ -28,7 +31,7 @@ export class SignInModalComponent implements OnInit, OnDestroy {
               private eventService: EventService,
               private formBuilder: FormBuilder,
               private authService: AuthenticationService,
-              private router: Router) {}
+              private principalService: PrincipalService) {}
 
   ngOnInit() {
     this.formGroup = this.formBuilder.group({
@@ -70,10 +73,9 @@ export class SignInModalComponent implements OnInit, OnDestroy {
         console.log('logged');
         this.modalRefNgb.close('logged');
         // login guard handles next action depending on user roles
-        this.router.navigate(['']);
+        this.principalService.redirectToRoleRootRoute();
         this.formGroup.reset();
       }
     );
   }
-
 }

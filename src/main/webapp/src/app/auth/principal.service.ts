@@ -3,6 +3,8 @@ import {AccountService} from "../services/account.service";
 import {Subject} from "rxjs/internal/Subject";
 import {User} from "../models/user";
 import {Observable} from "rxjs/internal/Observable";
+import {AccountTypesConstants} from "../constants/account-types.constants";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +15,15 @@ export class PrincipalService {
   private authenticationState = new Subject<any>();
 
   constructor(
-    private accountService: AccountService
+    private accountService: AccountService,
+    private router: Router
   ) { }
+
+  authenticate(identity) {
+    this.userIdentity = identity;
+    this.authenticated = identity !== null;
+    this.authenticationState.next(this.userIdentity);
+  }
 
   hasAnyAuthority(authorities: string[]): Promise<boolean> {
     return Promise.resolve(this.hasAnyAuthorityDirect(authorities));
@@ -81,5 +90,18 @@ export class PrincipalService {
     return this.authenticationState.asObservable();
   }
 
-  redirectToRoot
+  redirectToRoleRootRoute(): Promise<User> {
+    return this.identity().then((user: User) => {
+      if (user.userRoles.includes(AccountTypesConstants.ROLE_TEACHER)) {
+        this.router.navigate(['/teacher', 'dashboard']);
+      }
+      else if (user.userRoles.includes(AccountTypesConstants.ROLE_STUDENT)) {
+        this.router.navigate(['/student', 'dashboard']);
+      }
+
+      // TODO handle admin case
+
+      return user;
+    });
+  }
 }

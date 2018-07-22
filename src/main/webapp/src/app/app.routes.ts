@@ -21,7 +21,11 @@ import {AccountTypesConstants} from "./constants/account-types.constants";
 
 
 export const ROUTES: Routes = [
-  { path: '', component: LandingPageComponent, canActivate: [LoggedGuardService] },
+  {
+    path: '',
+    component: LandingPageComponent,
+    canActivate: [LoggedGuardService]
+  },
   // TODO make separate modules for this
   { path: 'student',
     children: [
