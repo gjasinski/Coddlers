@@ -14,23 +14,26 @@ import pl.coddlers.core.exceptions.InternalServerErrorException;
 import pl.coddlers.core.exceptions.UserNotFoundException;
 import pl.coddlers.core.models.converters.UserConverter;
 import pl.coddlers.core.models.dto.UserDto;
+import pl.coddlers.core.models.entity.AccountType;
 import pl.coddlers.core.repositories.UserDataRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
     private UserDataRepository userDataRepository;
 
-    @Autowired
     private UserConverter userConverter;
 
-    public UserDetailsServiceImpl(UserDataRepository userDataRepository) {
+    @Autowired
+    public UserDetailsServiceImpl(UserDataRepository userDataRepository, UserConverter userConverter) {
         this.userDataRepository = userDataRepository;
+        this.userConverter = userConverter;
     }
 
     @Override
@@ -40,22 +43,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(userMail);
         }
         return new User(applicationUser.getUserMail(), applicationUser.getPassword(),
-                applicationUser.getAccountTypes().stream()
+                convertAccountTypesToSimpleGrantedAuthority(applicationUser.getAccountTypes()));
+    }
+
+    private List<SimpleGrantedAuthority> convertAccountTypesToSimpleGrantedAuthority(Set<AccountType> accountTypes) {
+        return accountTypes.stream()
                 .map((auth)-> new SimpleGrantedAuthority(auth.getName()))
-                        .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
     public pl.coddlers.core.models.entity.User getCurrentUserEntity() {
         // TODO could be moved to SecurityUtils tools class
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Optional<User> user = Optional.ofNullable(securityContext.getAuthentication())
-                .map(authentication -> {
-                    if (authentication.getPrincipal() instanceof User) {
-                        return (User) authentication.getPrincipal();
-                    }
-
-                    return null;
-                });
+                .filter(auth -> auth.getPrincipal() instanceof User)
+                .map(auth -> (User) auth.getPrincipal());
 
         if (user.isPresent()) {
             return userDataRepository.findFirstByUserMail(user.get().getUsername());

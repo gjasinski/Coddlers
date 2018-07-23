@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -13,6 +14,7 @@ public class UserDto {
     @JsonProperty("userMail")
     @Size(min = 4, max = 50)
     @NotNull
+    @Email
     private String userMail;
 
     @JsonIgnore

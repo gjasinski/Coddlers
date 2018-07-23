@@ -38,7 +38,7 @@ public class AuthenticationController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<?> login(@Valid @RequestBody AuthenticationDto authenticationDto) throws AuthenticationException {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 authenticationDto.getMail(),

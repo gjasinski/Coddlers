@@ -20,7 +20,7 @@ public class TokenUtils {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration.seconds}")
     private Long expiration;
 
     @Value("${jwt.prefix}")
@@ -32,14 +32,6 @@ public class TokenUtils {
     private static final String SUBJECT_KEY = "sub";
     private static final String AUTHORITIES_KEY = "auth";
     private static final String CREATED_KEY = "created";
-
-    private Date generateCurrentDate() {
-        return new Date(System.currentTimeMillis());
-    }
-
-    private Date generateExpirationDate() {
-        return new Date(System.currentTimeMillis() + this.expiration * 1000);
-    }
 
     public String generateToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
@@ -58,12 +50,12 @@ public class TokenUtils {
                 .compact();
     }
 
-    public String getSubjectFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret.getBytes())
-                .parseClaimsJws(token.replace(jwtPrefix, ""))
-                .getBody()
-                .getSubject();
+    private Date generateCurrentDate() {
+        return new Date(System.currentTimeMillis());
+    }
+
+    private Date generateExpirationDate() {
+        return new Date(System.currentTimeMillis() + this.expiration * 1000);
     }
 
     public Authentication getAuthentication(String token) {
@@ -73,13 +65,17 @@ public class TokenUtils {
                 .getBody();
 
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(splitAuthorityClaim(claims))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
         User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+    }
+
+    private String[] splitAuthorityClaim(Claims claims) {
+        return claims.get(AUTHORITIES_KEY).toString().split(",");
     }
 
     public boolean validateToken(String authToken) {
