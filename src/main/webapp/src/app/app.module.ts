@@ -20,12 +20,14 @@ import {StudentTaskPageComponent as StudentTaskPageComponent} from "./components
 import {AddTaskPageComponent} from "./components/teacher/task/add-task-page/add-task-page.component";
 import {TaskService} from "./services/task.service";
 import {EditTaskPageComponent} from "./components/teacher/task/edit-task-page/edit-task-page.component";
-import { AddLessonPageComponent } from './components/teacher/lesson/add-lesson-page/add-lesson-page.component';
-import { LessonPageComponent } from './components/teacher/lesson/lesson-page/lesson-page.component';
-import { EditLessonPageComponent } from './components/teacher/lesson/edit-lesson-page/edit-lesson-page.component';
+import {AddLessonPageComponent} from './components/teacher/lesson/add-lesson-page/add-lesson-page.component';
+import {LessonPageComponent} from './components/teacher/lesson/lesson-page/lesson-page.component';
+import {EditLessonPageComponent} from './components/teacher/lesson/edit-lesson-page/edit-lesson-page.component';
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
-import { StudentLessonPageComponent } from './components/student/lesson-page/student-lesson-page.component';
+import {StudentLessonPageComponent} from './components/student/lesson-page/student-lesson-page.component';
+import {EditionPageComponent} from './components/teacher/edition/edition-page/edition-page.component';
+import {EditionService} from "./services/edition.service";
 
 @NgModule({
   declarations: [
@@ -44,7 +46,8 @@ import { StudentLessonPageComponent } from './components/student/lesson-page/stu
     LessonPageComponent,
     EditLessonPageComponent,
     EditCoursePageComponent,
-    StudentLessonPageComponent
+    StudentLessonPageComponent,
+    EditionPageComponent
 
   ],
   imports: [
@@ -65,6 +68,7 @@ import { StudentLessonPageComponent } from './components/student/lesson-page/stu
     CourseService,
     LessonService,
     TaskService,
+    EditionService,
     DatePipe
   ],
   bootstrap: [AppComponent]
