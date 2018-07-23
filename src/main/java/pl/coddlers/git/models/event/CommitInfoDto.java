@@ -1,13 +1,13 @@
 package pl.coddlers.git.models.event;
 
-public class CommitInfoDTO {
+public class CommitInfoDto {
 	private String id;
 	private String message;
 	private String timestamp;
 	private String url;
-	private CommitInfoDTO author;
+	private CommitInfoDto author;
 
-	public CommitInfoDTO(String id, String message, String timestamp, String url, CommitInfoDTO author) {
+	public CommitInfoDto(String id, String message, String timestamp, String url, CommitInfoDto author) {
 		this.id = id;
 		this.message = message;
 		this.timestamp = timestamp;
@@ -15,7 +15,7 @@ public class CommitInfoDTO {
 		this.author = author;
 	}
 
-	public CommitInfoDTO() {
+	public CommitInfoDto() {
 	}
 
 	public String getId() {
@@ -50,11 +50,11 @@ public class CommitInfoDTO {
 		this.url = url;
 	}
 
-	public CommitInfoDTO getAuthor() {
+	public CommitInfoDto getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(CommitInfoDTO author) {
+	public void setAuthor(CommitInfoDto author) {
 		this.author = author;
 	}
 

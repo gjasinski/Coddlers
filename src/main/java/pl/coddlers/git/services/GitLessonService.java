@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.coddlers.git.Exceptions.GitErrorHandler;
 import pl.coddlers.git.models.Hook;
-import pl.coddlers.git.models.ResponseWithIdDTO;
+import pl.coddlers.git.models.ResponseWithIdDto;
 import pl.coddlers.git.reposiories.HookRepository;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class GitLessonService {
 				builder.build().toUriString(),
 				HttpMethod.POST,
 				entity,
-				ResponseWithIdDTO.class)
+				ResponseWithIdDto.class)
 				.getBody()
 				.getId();
 		createGitHook(projectId);
@@ -82,11 +82,11 @@ public class GitLessonService {
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
-		ResponseEntity<ResponseWithIdDTO> exchange = restTemplate.exchange(
+		ResponseEntity<ResponseWithIdDto> exchange = restTemplate.exchange(
 				builder.build().toUriString(),
 				HttpMethod.POST,
 				entity,
-				ResponseWithIdDTO.class);
+				ResponseWithIdDto.class);
 		Long studentCourseId = exchange.getBody().getId();
 		registerHooks(lessonId, studentCourseId);
 		return studentCourseId;

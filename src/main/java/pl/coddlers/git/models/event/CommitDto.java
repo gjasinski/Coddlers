@@ -1,30 +1,30 @@
 package pl.coddlers.git.models.event;
 
-public class CommitDTO {
-	private CommitInfoDTO commitInfoDTO;
-	private CommitAuthorDTO commitAuthorDTO;
+public class CommitDto {
+	private CommitInfoDto commitInfoDTO;
+	private CommitAuthorDto commitAuthorDTO;
 
-	public CommitDTO(CommitInfoDTO commitInfoDTO, CommitAuthorDTO commitAuthorDTO) {
+	public CommitDto(CommitInfoDto commitInfoDTO, CommitAuthorDto commitAuthorDTO) {
 		this.commitInfoDTO = commitInfoDTO;
 		this.commitAuthorDTO = commitAuthorDTO;
 	}
 
-	public CommitDTO() {
+	public CommitDto() {
 	}
 
-	public CommitInfoDTO getCommitInfoDTO() {
+	public CommitInfoDto getCommitInfoDTO() {
 		return commitInfoDTO;
 	}
 
-	public void setCommitInfoDTO(CommitInfoDTO commitInfoDTO) {
+	public void setCommitInfoDTO(CommitInfoDto commitInfoDTO) {
 		this.commitInfoDTO = commitInfoDTO;
 	}
 
-	public CommitAuthorDTO getCommitAuthorDTO() {
+	public CommitAuthorDto getCommitAuthorDTO() {
 		return commitAuthorDTO;
 	}
 
-	public void setCommitAuthorDTO(CommitAuthorDTO commitAuthorDTO) {
+	public void setCommitAuthorDTO(CommitAuthorDto commitAuthorDTO) {
 		this.commitAuthorDTO = commitAuthorDTO;
 	}
 

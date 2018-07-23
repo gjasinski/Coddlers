@@ -1,15 +1,15 @@
 package pl.coddlers.git.models.event;
 
-public class CommitAuthorDTO {
+public class CommitAuthorDto {
 	private String name;
 	private String email;
 
-	public CommitAuthorDTO(String name, String email) {
+	public CommitAuthorDto(String name, String email) {
 		this.name = name;
 		this.email = email;
 	}
 
-	public CommitAuthorDTO() {
+	public CommitAuthorDto() {
 	}
 
 	public String getName() {

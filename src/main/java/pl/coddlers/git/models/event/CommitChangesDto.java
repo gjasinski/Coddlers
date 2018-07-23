@@ -2,18 +2,18 @@ package pl.coddlers.git.models.event;
 
 import java.util.Arrays;
 
-public class CommitChangesDTO {
+public class CommitChangesDto {
 	private String[] added;
 	private String[] modified;
 	private String[] removed;
 
-	public CommitChangesDTO(String[] added, String[] modified, String[] removed) {
+	public CommitChangesDto(String[] added, String[] modified, String[] removed) {
 		this.added = added;
 		this.modified = modified;
 		this.removed = removed;
 	}
 
-	public CommitChangesDTO() {
+	public CommitChangesDto() {
 	}
 
 	public String[] getAdded() {

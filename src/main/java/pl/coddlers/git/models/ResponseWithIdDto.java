@@ -1,14 +1,14 @@
 package pl.coddlers.git.models;
 
-public class ResponseWithIdDTO {
+public class ResponseWithIdDto {
 
 	private Long id;
 
-	public ResponseWithIdDTO(Long id) {
+	public ResponseWithIdDto(Long id) {
 		this.id = id;
 	}
 
-	public ResponseWithIdDTO() {
+	public ResponseWithIdDto() {
 	}
 
 	public Long getId() {
