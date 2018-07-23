@@ -28,7 +28,7 @@ public class Lesson {
     private Timestamp startDate;
 
     @Column(nullable=false)
-    private Timestamp dueDate;
+    private Integer timeInDays;
 
     @OneToMany(mappedBy = "lesson", targetEntity = Task.class)
     private List<Task> taskList = new ArrayList<>();
@@ -38,14 +38,13 @@ public class Lesson {
     private Long gitStudentProjectId;
 
     @JsonIgnore
-    @ManyToOne(targetEntity = Course.class)
-    private Course course;
+    @ManyToOne(targetEntity = CourseVersion.class)
+    private CourseVersion courseVersion;
 
     public Lesson(String title, String description, Integer weight, Timestamp startDate, Timestamp dueDate) {
         this.title = title;
         this.description = description;
         this.startDate = startDate;
-        this.dueDate = dueDate;
         this.weight = weight;
     }
 }

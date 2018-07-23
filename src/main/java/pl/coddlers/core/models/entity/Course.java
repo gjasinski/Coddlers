@@ -22,20 +22,12 @@ public class Course {
 
     private String description;
 
-    @Column(nullable = false)
-    private Timestamp startDate;
-
-    @Column(nullable = false)
-    private Timestamp endDate;
-
     @JsonIgnore
     @OneToMany(mappedBy = "course", targetEntity = Lesson.class)
-    private List<Lesson> lessonList = new ArrayList<>();
+    private List<Lesson> courseVersion = new ArrayList<>();
 
     public Course(String title, String description, Timestamp startDate, Timestamp endDate) {
         this.title = title;
         this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
     }
 }

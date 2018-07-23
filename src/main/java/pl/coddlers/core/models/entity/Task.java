@@ -27,13 +27,13 @@ public class Task {
     private Lesson lesson;
 
     @Column(nullable=false)
-    private TaskStatus taskStatus;
+    private SubmissionStatusType submissionStatusType;
 
-    public Task(String title, String description, int maxPoints, Lesson lesson, TaskStatus taskStatus) {
+    public Task(String title, String description, int maxPoints, Lesson lesson, SubmissionStatusType submissionStatusType) {
         this.title = title;
         this.description = description;
         this.maxPoints = maxPoints;
         this.lesson = lesson;
-        this.taskStatus = taskStatus;
+        this.submissionStatusType = submissionStatusType;
     }
 }

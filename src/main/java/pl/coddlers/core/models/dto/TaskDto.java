@@ -1,7 +1,7 @@
 package pl.coddlers.core.models.dto;
 
 import lombok.Data;
-import pl.coddlers.core.models.entity.TaskStatus;
+import pl.coddlers.core.models.entity.SubmissionStatusType;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -24,5 +24,5 @@ public class TaskDto {
     private Integer maxPoints;
 
     @NotNull
-    private TaskStatus taskStatus;
+    private SubmissionStatusType submissionStatusType;
 }
