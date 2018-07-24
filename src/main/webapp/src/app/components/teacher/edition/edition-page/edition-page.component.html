@@ -28,9 +28,9 @@
 
               <div *ngFor="let task of courseMap.get(lesson)">
                 <br>
-                <h5 (click)="metoda()">{{task.title}}</h5>
+                <h5 (click)="changeVisibilityForSubmissions(task)">{{task.title}}</h5>
 
-                <table class="table tasks-table">
+                <table *ngIf="shouldShowSubmissions(task)" class="table tasks-table">
                   <thead>
                   <tr>
                     <th scope="col">No</th>
@@ -46,7 +46,7 @@
                   <tr *ngFor="let submission of submissionsMap.get(task); let j = index" [attr.data-index]="j">
                     <td>{{j+1}}</td>
                     <td>{{submission.author}}</td>
-                    <td>{{submission.submissionTime}}</td>
+                    <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
                     <td>{{submission.status}}</td>
                     <td></td>
                     <td>{{submission.points}}</td>

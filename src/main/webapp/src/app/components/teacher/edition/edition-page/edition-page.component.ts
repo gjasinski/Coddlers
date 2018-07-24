@@ -22,6 +22,7 @@ export class EditionPageComponent implements OnInit {
   private showLesson: boolean[];
   private courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
   private submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
+  private showSubmissions: Map<Task, boolean> = new Map<Task, boolean>();
 
   constructor(private courseService: CourseService,
               private editionService: EditionService,
@@ -43,6 +44,7 @@ export class EditionPageComponent implements OnInit {
             this.taskService.getTasks(lesson.id).subscribe((tasks: Task[]) => {
               this.courseMap.set(lesson, tasks);
               tasks.forEach(task => {
+                this.showSubmissions.set(task,false);
                 //get submissions for each task
                 this.submissionService.getSubmissions((task.id)).subscribe((submissions: Submission[]) => {
                   this.submissionsMap.set(task, submissions);
@@ -82,7 +84,11 @@ export class EditionPageComponent implements OnInit {
     return Array.from(map.keys());
   }
 
-  metoda() {
-    console.log("DUPA")
+  changeVisibilityForSubmissions(task: Task) {
+    this.showSubmissions.set(task, !this.showSubmissions.get(task));
+  }
+
+  shouldShowSubmissions(task: Task) {
+    return this.showSubmissions.get(task)
   }
 }
