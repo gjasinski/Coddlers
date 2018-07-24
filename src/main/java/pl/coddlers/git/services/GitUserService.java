@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.coddlers.git.Exceptions.GitErrorHandler;
-import pl.coddlers.git.models.ResponseWithIdDTO;
+import pl.coddlers.git.models.ResponseWithIdDto;
 
 @Service
 public class GitUserService {
@@ -50,7 +50,7 @@ public class GitUserService {
 				builder.build().toUriString(),
 				HttpMethod.POST,
 				entity,
-				ResponseWithIdDTO.class)
+				ResponseWithIdDto.class)
 				.getBody()
 				.getId();
 	}
