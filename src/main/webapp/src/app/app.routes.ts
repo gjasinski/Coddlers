@@ -1,7 +1,7 @@
 import {Routes} from "@angular/router";
-import {CoursesComponent} from "./components/courses/courses.component";
+import {CoursesComponent} from "./components/common/courses/courses.component";
 import {CoursePageComponent} from "./components/teacher/course/course-page/course-page.component";
-import {PageNotFoundComponent} from "./components/page-not-found/page-not-found.component";
+import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {AddCoursePageComponent} from "./components/teacher/course/add-course-page/add-course-page.component";
 import {TeacherTaskPageComponent as TeacherTaskPageComponent} from "./components/teacher/task/task-page/teacher-task-page.component";
 import {StudentTaskPageComponent as StudentTaskPageComponent} from "./components/student/task-page/student-task-page.component";
@@ -12,13 +12,48 @@ import {LessonPageComponent} from "./components/teacher/lesson/lesson-page/lesso
 import {EditLessonPageComponent} from "./components/teacher/lesson/edit-lesson-page/edit-lesson-page.component";
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {StudentLessonPageComponent} from "./components/student/lesson-page/student-lesson-page.component";
+import {LandingPageComponent} from "./components/common/landing-page/landing-page.component";
+import {StudentDashboardComponent} from "./components/student/dashboard/student-dashboard.component";
+import {TeacherDashboardComponent} from "./components/teacher/dashboard/teacher-dashboard.component";
+import {LoggedGuardService} from "./auth/logged-guard.service";
+import {UserRouteAccessService} from "./auth/user-route-access.service";
+import {AccountTypesConstants} from "./constants/account-types.constants";
 
 
 export const ROUTES: Routes = [
-  { path: '',
-    redirectTo: 'courses',
-    pathMatch: 'full'
+  {
+    path: '',
+    component: LandingPageComponent,
+    canActivate: [LoggedGuardService]
   },
+  // TODO make separate modules for this
+  { path: 'student',
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        component: StudentDashboardComponent,
+        data: {
+          authorities: [AccountTypesConstants.ROLE_STUDENT],
+        },
+        canActivate: [UserRouteAccessService]
+      }
+    ]
+  },
+  { path: 'teacher',
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        component: TeacherDashboardComponent,
+        data: {
+          authorities: [AccountTypesConstants.ROLE_TEACHER],
+        },
+        canActivate: [UserRouteAccessService]
+      }
+    ]
+  },
+  // TODO refactor routes below
   { path: 'add-course', component: AddCoursePageComponent },
   { path: 'courses/:courseId',
     component: CoursePageComponent,

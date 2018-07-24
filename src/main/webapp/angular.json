@@ -132,11 +132,11 @@
       "spec": false
     },
     "@schematics/angular:component": {
-      "prefix": "app",
+      "prefix": "cod",
       "styleext": "scss"
     },
     "@schematics/angular:directive": {
-      "prefix": "app"
+      "prefix": "cod"
     }
   }
 }

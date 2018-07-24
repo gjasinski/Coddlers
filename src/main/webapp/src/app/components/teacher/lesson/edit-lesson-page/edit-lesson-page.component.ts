@@ -6,7 +6,7 @@ import {LessonService} from "../../../../services/lesson.service";
 import {Lesson} from "../../../../models/lesson";
 
 @Component({
-  selector: 'app-edit-lesson-page',
+  selector: 'cod-edit-lesson-page',
   templateUrl: './edit-lesson-page.component.html',
   styleUrls: ['./edit-lesson-page.component.scss']
 })
