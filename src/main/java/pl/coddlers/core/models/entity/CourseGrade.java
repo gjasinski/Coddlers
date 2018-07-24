@@ -4,20 +4,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class Group {
+public class CourseGrade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "groups")
-    private Set<User> users = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(nullable=false)
+    private Integer courseGrade;
 }

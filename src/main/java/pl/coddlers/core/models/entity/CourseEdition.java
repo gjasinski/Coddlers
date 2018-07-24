@@ -1,11 +1,13 @@
 package pl.coddlers.core.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -22,5 +24,22 @@ public class CourseEdition {
     private Timestamp startDate;
 
     @ManyToOne(targetEntity = CourseVersion.class)
+    @JoinColumn(name = "course_version_id")
     private CourseVersion courseVersion;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseEdition", targetEntity = CourseEditionLesson.class)
+    private CourseEditionLesson courseEditionLesson;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "course_edition_students",
+            joinColumns = {@JoinColumn(name = "course_edition_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
+    )
+    private Set<User> users = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseEdition", targetEntity = StudentLessonRepository.class)
+    private Set<StudentLessonRepository> studentLessonRepositories;
 }

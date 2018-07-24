@@ -26,12 +26,15 @@ public class CourseVersion {
     @OneToMany(mappedBy = "courseVersion", targetEntity = CourseEdition.class)
     private List<CourseEdition> courseEditions;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "courseVersion", targetEntity = Lesson.class)
     private List<Lesson> lessons;
 
-    @OneToMany(mappedBy = "courseVersion", targetEntity = Lesson.class)
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseVersion", targetEntity = Note.class)
     private List<Note> notes;
 
-    @OneToMany(mappedBy = "courseVersion", targetEntity = Lesson.class)
-    private List<CourseLessonRepository> courseLessonRepositories;
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseVersion", targetEntity = CourseVersionLessonRepository.class)
+    private List<CourseVersionLessonRepository> courseLessonRepositories;
 }

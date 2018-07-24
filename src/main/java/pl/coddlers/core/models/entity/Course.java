@@ -26,6 +26,14 @@ public class Course {
     @OneToMany(mappedBy = "course", targetEntity = Lesson.class)
     private List<Lesson> courseVersion = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", targetEntity = CourseGrade.class)
+    private List<CourseGrade> courseGrades = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", targetEntity = Teacher.class)
+    private List<Teacher> teachers = new ArrayList<>();
+
     public Course(String title, String description, Timestamp startDate, Timestamp endDate) {
         this.title = title;
         this.description = description;

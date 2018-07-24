@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,18 +24,15 @@ public class Task {
     @Column(nullable=false)
     private int maxPoints;
 
+    private Boolean isCodeTask;
+
     @JsonIgnore
     @ManyToOne(targetEntity = Lesson.class)
     private Lesson lesson;
 
-    @Column(nullable=false)
-    private SubmissionStatusType submissionStatusType;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "task", targetEntity = Submission.class)
+    private List<Submission> submissions = new ArrayList<>();
 
-    public Task(String title, String description, int maxPoints, Lesson lesson, SubmissionStatusType submissionStatusType) {
-        this.title = title;
-        this.description = description;
-        this.maxPoints = maxPoints;
-        this.lesson = lesson;
-        this.submissionStatusType = submissionStatusType;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "task", targetEntity = Note.class)
+    private List<Note> notes = new ArrayList<>();
 }

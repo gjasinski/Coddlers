@@ -4,20 +4,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class Group {
+public class NoteAttachment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
+    @Column(nullable=false)
+    private String fileName;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "groups")
-    private Set<User> users = new HashSet<>();
+    @ManyToOne(targetEntity = Note.class)
+    @JoinColumn(name = "note_id")
+    private Note note;
 }

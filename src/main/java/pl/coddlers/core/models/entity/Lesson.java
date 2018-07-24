@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -25,13 +26,10 @@ public class Lesson {
     private Integer weight;
 
     @Column(nullable=false)
-    private Timestamp startDate;
-
-    @Column(nullable=false)
     private Integer timeInDays;
 
     @OneToMany(mappedBy = "lesson", targetEntity = Task.class)
-    private List<Task> taskList = new ArrayList<>();
+    private List<Task> tasks = new ArrayList<>();
 
     // TODO only for prototype purposes
     @JsonIgnore
@@ -41,10 +39,19 @@ public class Lesson {
     @ManyToOne(targetEntity = CourseVersion.class)
     private CourseVersion courseVersion;
 
-    public Lesson(String title, String description, Integer weight, Timestamp startDate, Timestamp dueDate) {
-        this.title = title;
-        this.description = description;
-        this.startDate = startDate;
-        this.weight = weight;
-    }
+    @JsonIgnore
+    @OneToMany(mappedBy = "lesson", targetEntity = CourseEditionLesson.class)
+    private Set<CourseEditionLesson> courseEditionLessons;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "lesson", targetEntity = Note.class)
+    private List<Note> notes;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "lesson", targetEntity = StudentLessonRepository.class)
+    private List<StudentLessonRepository> studentLessonRepositories;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "lesson", targetEntity = CourseVersionLessonRepository.class)
+    private List<CourseVersionLessonRepository> courseVersionLessonRepositories;
 }
