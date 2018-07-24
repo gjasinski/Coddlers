@@ -28,6 +28,7 @@ import {DatePipe} from "@angular/common";
 import {StudentLessonPageComponent} from './components/student/lesson-page/student-lesson-page.component';
 import {EditionPageComponent} from './components/teacher/edition/edition-page/edition-page.component';
 import {EditionService} from "./services/edition.service";
+import {SubmissionService} from "./services/submission.service";
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import {EditionService} from "./services/edition.service";
     LessonService,
     TaskService,
     EditionService,
+    SubmissionService,
     DatePipe
   ],
   bootstrap: [AppComponent]

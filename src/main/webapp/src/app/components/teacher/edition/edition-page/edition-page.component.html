@@ -23,8 +23,8 @@
             </button>
 
             <div *ngIf="shouldShowLesson(i)">
-                <button class="btn in-table-button">Go to lesson view</button>
-                <button class="btn">Edit lesson due date</button>
+              <button class="btn in-table-button">Go to lesson view</button>
+              <button class="btn">Edit lesson due date</button>
 
               <div *ngFor="let task of courseMap.get(lesson)">
                 <br>
@@ -43,14 +43,13 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <!--<tr *ngFor="let lesson of lessons; let i = index" [attr.data-index]="i">-->
-                  <tr>
-                    <td>{{i+1}}</td>
-                    <td>Autor submission</td>
-                    <td>Czas submission</td>
-                    <td>Status submission</td>
+                  <tr *ngFor="let submission of submissionsMap.get(task); let j = index" [attr.data-index]="j">
+                    <td>{{j+1}}</td>
+                    <td>{{submission.author}}</td>
+                    <td>{{submission.submissionTime}}</td>
+                    <td>{{submission.status}}</td>
                     <td></td>
-                    <td>Zdobyte punkty</td>
+                    <td>{{submission.points}}</td>
                     <td>
                       <div class="dots"></div>
                     </td>

@@ -8,6 +8,8 @@ import {ActivatedRoute} from "@angular/router";
 import {EditionService} from "../../../../services/edition.service";
 import {LessonService} from "../../../../services/lesson.service";
 import {TaskService} from "../../../../services/task.service";
+import {Submission} from "../../../../models/submission";
+import {SubmissionService} from "../../../../services/submission.service";
 
 @Component({
   selector: 'app-edition-page',
@@ -19,11 +21,13 @@ export class EditionPageComponent implements OnInit {
   private edition: Edition;
   private showLesson: boolean[];
   private courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
+  private submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
 
   constructor(private courseService: CourseService,
               private editionService: EditionService,
               private lessonService: LessonService,
               private taskService: TaskService,
+              private submissionService: SubmissionService,
               private route: ActivatedRoute) {
   }
 
@@ -32,10 +36,18 @@ export class EditionPageComponent implements OnInit {
       this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
         this.course = course;
 
+        // get lessons
         this.lessonService.getLessons(course.id).subscribe((lessons: Lesson[]) => {
           lessons.forEach(lesson => {
+            // get tasks for each lesson
             this.taskService.getTasks(lesson.id).subscribe((tasks: Task[]) => {
-              this.courseMap.set(lesson, tasks)
+              this.courseMap.set(lesson, tasks);
+              tasks.forEach(task => {
+                //get submissions for each task
+                this.submissionService.getSubmissions((task.id)).subscribe((submissions: Submission[]) => {
+                  this.submissionsMap.set(task, submissions);
+                })
+              })
             })
           });
 
