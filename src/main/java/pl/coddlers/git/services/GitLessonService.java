@@ -1,6 +1,5 @@
 package pl.coddlers.git.services;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -30,7 +29,7 @@ public class GitLessonService {
 	private static final String URL = "url";
 	private static final String PUSH_EVENTS = "push_events";
 	private static final String PRIVATE_TOKEN = "private_token";
-	private static final String USER = "/user/";
+	private static final String USER = "user/";
 
 	@Value("${pl.coddlers.git.host}:${pl.coddlers.git.port}${pl.coddlers.git.event.url}")
 	private String gitEventEndpoint;
