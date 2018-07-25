@@ -1,12 +1,15 @@
 package pl.coddlers.core.models.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
 @Entity
 @Data
 @NoArgsConstructor
 class SubmissionStatusType {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    
+    @Column(length = 50, nullable = false)
+    private String name;
 }
