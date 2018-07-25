@@ -11,7 +11,7 @@ import {Task} from "../../../../models/task";
 import {TaskService} from "../../../../services/task.service";
 
 @Component({
-  selector: 'app-lessons-page',
+  selector: 'cod-lessons-page',
   templateUrl: './lessons-page.component.html',
   styleUrls: ['./lessons-page.component.scss']
 })

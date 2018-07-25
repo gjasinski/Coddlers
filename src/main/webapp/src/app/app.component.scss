@@ -1,3 +1,8 @@
 @import "styles/variables";
 
-
+.footer {
+  padding: 15px;
+  background-color: $footer-bg-color;
+  color: $shadow-color;
+  text-align: center;
+}

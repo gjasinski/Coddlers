@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.coddlers.git.services.GitProjectService;
-import pl.coddlers.core.models.dto.LessonDTO;
+import pl.coddlers.git.services.GitLessonService;
+import pl.coddlers.core.models.dto.LessonDto;
 import pl.coddlers.core.services.LessonService;
 
 import javax.validation.Valid;
@@ -18,25 +18,25 @@ public class LessonController {
 
 	private final LessonService lessonService;
 
-	private final GitProjectService gitProjectService;
+	private final GitLessonService gitProjectService;
 
 	@Autowired
-	public LessonController(LessonService lessonService, GitProjectService gitProjectService) {
+	public LessonController(LessonService lessonService, GitLessonService gitProjectService) {
 		this.lessonService = lessonService;
 		this.gitProjectService = gitProjectService;
 	}
 
 	@PostMapping
-	public ResponseEntity<Long> createLesson(@Valid @RequestBody LessonDTO lessonDTO) {
+	public ResponseEntity<Long> createLesson(@Valid @RequestBody LessonDto lessonDto) {
 		// TODO this code is only for prototype purposes
 		long tutorGitId = 20;
-		long gitTutorProjectId = gitProjectService.createCourse(tutorGitId, lessonDTO.getTitle());
+		long gitTutorProjectId = gitProjectService.createLesson(tutorGitId, lessonDto.getTitle());
 		long studentId = 19;
-		long gitStudentProjectId = gitProjectService.addStudentToCourse(gitTutorProjectId, studentId);
+		long gitStudentProjectId = gitProjectService.forkLesson(gitTutorProjectId, studentId);
 
 		// TODO only for prototype purposes
-		lessonDTO.setGitStudentProjectId(gitStudentProjectId);
-		Long id = lessonService.createLesson(lessonDTO);
+		lessonDto.setGitStudentProjectId(gitStudentProjectId);
+		Long id = lessonService.createLesson(lessonDto);
 
 		URI location = ServletUriComponentsBuilder
 				.fromCurrentRequest()
@@ -48,17 +48,17 @@ public class LessonController {
 	}
 
 	@GetMapping(params = {"courseId"})
-	public ResponseEntity<Collection<LessonDTO>> getLessons(@RequestParam(value = "courseId") Long courseId) {
+	public ResponseEntity<Collection<LessonDto>> getLessons(@RequestParam(value = "courseId") Long courseId) {
 		return ResponseEntity.ok(lessonService.getAllCoursesLessons(courseId));
 	}
 
 	@GetMapping(value = "{id}")
-	public ResponseEntity<LessonDTO> getLesson(@PathVariable Long id) {
+	public ResponseEntity<LessonDto> getLesson(@PathVariable Long id) {
 		return ResponseEntity.ok(lessonService.getLessonById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "{id}")
-	public ResponseEntity<LessonDTO> updateLesson(@PathVariable Long id, @Valid @RequestBody LessonDTO lessonDTO) {
-		return ResponseEntity.ok(lessonService.updateLesson(id, lessonDTO));
+	public ResponseEntity<LessonDto> updateLesson(@PathVariable Long id, @Valid @RequestBody LessonDto lessonDto) {
+		return ResponseEntity.ok(lessonService.updateLesson(id, lessonDto));
 	}
 }

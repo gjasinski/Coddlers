@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">Coddlers</a>
+
+    <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed"
+            [attr.aria-expanded]="!isCollapsed" aria-controls="navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav" [ngbCollapse]="isCollapsed">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" routerLinkActive="active" *codHasAnyAuthority="['ROLE_STUDENT', 'ROLE_TEACHER']">
+          <a *codHasAnyAuthority="['ROLE_STUDENT']" class="nav-link" routerLink="/student/dashboard">Dashboard</a>
+          <a *codHasAnyAuthority="['ROLE_TEACHER']" class="nav-link" routerLink="/teacher/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active" *codHasAnyAuthority="['ROLE_STUDENT', 'ROLE_TEACHER']">
+          <a class="nav-link" routerLink="/courses">My courses</a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav justify-content-end">
+        <li *ngIf="!authService.isSignedIn()" class="nav-item" routerLinkActive="active">
+          <a class="nav-link" (click)="openSignInModal($event)">Sign in</a>
+        </li>
+
+        <li *ngIf="!authService.isSignedIn()" class="nav-item" routerLinkActive="active">
+          <a class="nav-link" (click)="openSignUpModal($event)">Sign up</a>
+        </li>
+
+        <li *ngIf="authService.isSignedIn()" class="nav-item">
+          <a class="nav-link" (click)="logout($event)">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.converters.LessonConverter;
-import pl.coddlers.core.models.dto.LessonDTO;
+import pl.coddlers.core.models.dto.LessonDto;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.repositories.LessonRepository;
 
@@ -22,29 +22,29 @@ public class LessonService {
 		this.lessonConverter = lessonConverter;
 	}
 
-	public Collection<LessonDTO> getAllCoursesLessons(long courseId) {
+	public Collection<LessonDto> getAllCoursesLessons(long courseId) {
 		return lessonConverter.convertFromEntities(lessonRepository.findByCourseId(courseId));
 	}
 
-	public Long createLesson(LessonDTO lessonDTO) {
-		Lesson lesson = lessonConverter.convertFromDto(lessonDTO);
+	public Long createLesson(LessonDto lessonDto) {
+		Lesson lesson = lessonConverter.convertFromDto(lessonDto);
 		lessonRepository.save(lesson);
 		return lesson.getId();
 	}
 
-	public LessonDTO getLessonById(Long id) {
+	public LessonDto getLessonById(Long id) {
 		Lesson lesson = validateLesson(id);
 
 		return lessonConverter.convertFromEntity(lesson);
 	}
 
-	public LessonDTO updateLesson(Long id, LessonDTO lessonDTO) {
+	public LessonDto updateLesson(Long id, LessonDto lessonDto) {
 		validateLesson(id);
-		lessonDTO.setId(id);
-		Lesson lesson = lessonConverter.convertFromDto(lessonDTO);
+		lessonDto.setId(id);
+		Lesson lesson = lessonConverter.convertFromDto(lessonDto);
 		lessonRepository.save(lesson);
 
-		return lessonDTO;
+		return lessonDto;
 	}
 
 	private Lesson validateLesson(Long id) throws LessonNotFoundException {

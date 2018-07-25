@@ -9,17 +9,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.coddlers.git.Exceptions.GitErrorHandler;
-import pl.coddlers.git.models.ResponseWithIdDTO;
+import pl.coddlers.git.models.ResponseWithIdDto;
 
 @Service
 public class GitUserService {
+	private static final String PRIVATE_TOKEN = "private_token";
+	private static final String SKIP_CONFIRMATION = "skip_confirmation";
+	private static final String NAME = "name";
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "password";
+	private static final String EMAIL = "email";
 	private RestTemplate restTemplate;
 
 	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
 	private String gitlabApi;
 
 	@Value("${gitlab.api.apiuser.private_token}")
-	private String private_token;
+	private String privateToken;
 
 	public GitUserService() {
 		this.restTemplate = new RestTemplate();
@@ -31,11 +37,11 @@ public class GitUserService {
 
 		HttpHeaders headers = getHttpHeaders();
 		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-				.queryParam("email", email)
-				.queryParam("password", password)
-				.queryParam("username", username)
-				.queryParam("name", name)
-				.queryParam("skip_confirmation", "true");
+				.queryParam(EMAIL, email)
+				.queryParam(PASSWORD, password)
+				.queryParam(USERNAME, username)
+				.queryParam(NAME, name)
+				.queryParam(SKIP_CONFIRMATION, Boolean.TRUE);
 
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -44,7 +50,7 @@ public class GitUserService {
 				builder.build().toUriString(),
 				HttpMethod.POST,
 				entity,
-				ResponseWithIdDTO.class)
+				ResponseWithIdDto.class)
 				.getBody()
 				.getId();
 	}
@@ -57,6 +63,6 @@ public class GitUserService {
 
 	private UriComponentsBuilder createComponentBuilder(String resourceUrl) {
 		return UriComponentsBuilder.fromHttpUrl(resourceUrl)
-				.queryParam("private_token", private_token);
+				.queryParam(PRIVATE_TOKEN, privateToken);
 	}
 }
