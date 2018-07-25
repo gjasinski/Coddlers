@@ -52,7 +52,7 @@ public class GitTaskService {
         this.hookRepository = hookRepository;
     }
 
-    public void createTask(long repositoryId, String taskName) {
+    public boolean createTask(long repositoryId, String taskName) {
         Future<Boolean> develop = createBranch(repositoryId, taskName + DEVELOP);
         Future<Boolean> master = createBranch(repositoryId, taskName + MASTER_POSTFIX);
         try {
@@ -60,11 +60,14 @@ public class GitTaskService {
             Boolean createdMaster = master.get(timeout, TimeUnit.MILLISECONDS);
             if (createdDevelop && createdMaster) {
                 registerHook(repositoryId, taskName);
+                return true;
             } else {
                 log.debug("Cannot register hook - branch was not created");
+                return false;
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             log.error(e.toString());
+            return false;
         }
     }
 
