@@ -1,18 +1,12 @@
 package pl.coddlers.core.models.entity;
 
-public enum SubmissionStatusType {
-    NOT_SUBMITTED("NOT SUBMITTED"),
-    WAITING_FOR_REVIEW("WAITING FOR REVIEW"),
-    GRADED("GRADED"),
-    CHANGES_REQUESTED("CHANGES REQUESTED");
+@Entity
+@Data
+@NoArgsConstructor
+class SubmissionStatusType {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    private final String status;
-
-    SubmissionStatusType(String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
+    
 }

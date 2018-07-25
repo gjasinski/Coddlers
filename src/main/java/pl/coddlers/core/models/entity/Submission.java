@@ -9,4 +9,17 @@ import javax.persistence.Entity;
 @Data
 @NoArgsConstructor
 public class Submission {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(nullable=false)
+    private Timestamp submissionTime;
+
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = SubmissionStatusType.class)
+    @JoinColumn(name = "submission_status_type_id")
+    private SubmissionStatusType submissionStatusType;
+
+    
 }
