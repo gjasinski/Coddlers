@@ -36,3 +36,23 @@ For details how to make documentation in swagger please visit [https://github.co
 ```$ gradle clean build```
 
 ```$ java -jar -Dspring.profiles.active=prod coddlers-0.0.1-SNAPSHOT.jar```
+
+## Troubleshooting
+
+* I want to use Windows for development and I cannot run sh scripts to run db script
+    
+    Just run once scripts inside "if" condition to download image and initialize container
+    then use ```docker start <container-name>```. Container should be in up state after os restart. 
+    If not, write the command to start container again.
+   
+* I have an errors connected with missing getters & setters in Intellij
+
+    You should Install Lombok plugin. Then go to settings ```Annotation processors``` and enable ```annotation processing```.
+    
+* Intellij don't see repository beans
+
+    You should enable ```Sping Data``` plugin in ```Plugins```.  
+    
+* I have a problem with node-sass package
+
+    Try ```sudo npm rebuild node-sass```  
