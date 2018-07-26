@@ -26,5 +26,6 @@ public class CoddlersApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CoddlersApplication.class, args);
+		Mail.main(new String[]{});
 	}
 }
