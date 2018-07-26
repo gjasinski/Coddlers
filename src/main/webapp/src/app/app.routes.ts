@@ -68,7 +68,11 @@ export const ROUTES: Routes = [
         ]
       },
       { path: 'editions/:editionId',
-        component: EditionPageComponent
+        component: EditionPageComponent,
+        data: {
+          authorities: [AccountTypesConstants.ROLE_TEACHER],
+        },
+        canActivate: [UserRouteAccessService]
       },
       { path: 'student/lessons/:lessonId', component: StudentLessonPageComponent }
     ]

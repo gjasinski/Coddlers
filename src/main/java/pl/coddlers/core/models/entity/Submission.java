@@ -29,12 +29,4 @@ public class Submission {
 
     @Column(nullable=false)
     private TaskStatus status;
-
-    public Submission(String author, Timestamp submissionTime, int points, Task task, TaskStatus status) {
-        this.author = author;
-        this.submissionTime = submissionTime;
-        this.points = points;
-        this.task = task;
-        this.status = status;
-    }
 }

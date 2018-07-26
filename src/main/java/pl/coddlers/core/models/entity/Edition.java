@@ -25,16 +25,12 @@ public class Edition {
     private Timestamp startDate;
 
     @Column(nullable = false)
-    private Timestamp endDate;
-
-    @Column(nullable = false)
     private Long courseId;
 
-    public Edition(String title, Long version, Timestamp startDate, Timestamp endDate, Long courseId) {
+    public Edition(String title, Long version, Timestamp startDate, Long courseId) {
         this.title = title;
         this.version = version;
         this.startDate = startDate;
-        this.endDate = endDate;
         this.courseId = courseId;
     }
 }

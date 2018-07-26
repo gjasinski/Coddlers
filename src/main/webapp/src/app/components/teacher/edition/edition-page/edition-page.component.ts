@@ -37,15 +37,12 @@ export class EditionPageComponent implements OnInit {
       this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
         this.course = course;
 
-        // get lessons
         this.lessonService.getLessons(course.id).subscribe((lessons: Lesson[]) => {
           lessons.forEach(lesson => {
-            // get tasks for each lesson
             this.taskService.getTasks(lesson.id).subscribe((tasks: Task[]) => {
               this.courseMap.set(lesson, tasks);
               tasks.forEach(task => {
                 this.showSubmissions.set(task,false);
-                //get submissions for each task
                 this.submissionService.getSubmissions((task.id)).subscribe((submissions: Submission[]) => {
                   this.submissionsMap.set(task, submissions);
                 })

@@ -28,7 +28,7 @@
 
               <div *ngFor="let task of courseMap.get(lesson)">
                 <br>
-                <h5 (click)="changeVisibilityForSubmissions(task)">{{task.title}}</h5>
+                <h5 (click)="changeVisibilityForSubmissions(task)" style="cursor: pointer">{{task.title}}</h5>
 
                 <table *ngIf="shouldShowSubmissions(task)" class="table tasks-table">
                   <thead>
