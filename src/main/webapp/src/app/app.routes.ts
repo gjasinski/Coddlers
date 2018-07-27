@@ -18,7 +18,7 @@ import {TeacherDashboardComponent} from "./components/teacher/dashboard/teacher-
 import {LoggedGuardService} from "./auth/logged-guard.service";
 import {UserRouteAccessService} from "./auth/user-route-access.service";
 import {AccountTypesConstants} from "./constants/account-types.constants";
-import {EditionPageComponent} from "./components/teacher/edition/edition-page/edition-page.component";
+import {CourseEditionPageComponent} from "./components/teacher/course-edition/course-edition-page/course-edition-page.component";
 
 
 export const ROUTES: Routes = [
@@ -68,7 +68,7 @@ export const ROUTES: Routes = [
         ]
       },
       { path: 'editions/:editionId',
-        component: EditionPageComponent,
+        component: CourseEditionPageComponent,
         data: {
           authorities: [AccountTypesConstants.ROLE_TEACHER],
         },

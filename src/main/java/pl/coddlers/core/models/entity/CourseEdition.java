@@ -8,9 +8,8 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
-@Table(name="course_edition")
 @NoArgsConstructor
-public class Edition {
+public class CourseEdition {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -27,7 +26,7 @@ public class Edition {
     @Column(nullable = false)
     private Long courseId;
 
-    public Edition(String title, Long version, Timestamp startDate, Long courseId) {
+    public CourseEdition(String title, Long version, Timestamp startDate, Long courseId) {
         this.title = title;
         this.version = version;
         this.startDate = startDate;

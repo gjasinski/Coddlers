@@ -2,10 +2,10 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import {Edition} from "../models/edition";
+import {CourseEdition} from "../models/courseEdition";
 
 @Injectable()
-export class EditionService {
+export class CourseEditionService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type':  'application/json'
@@ -14,10 +14,10 @@ export class EditionService {
 
   constructor(private http: HttpClient) { }
 
-  getEdition(editionId: number): Observable<Edition> {
-    return this.http.get<Edition>(`api/editions/${editionId}`)
+  getEdition(editionId: number): Observable<CourseEdition> {
+    return this.http.get<CourseEdition>(`api/editions/${editionId}`)
       .pipe(
-        map(obj => Edition.fromJSON(obj))
+        map(obj => CourseEdition.fromJSON(obj))
       )
   }
 }

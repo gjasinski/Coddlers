@@ -1,4 +1,4 @@
-export class Edition {
+export class CourseEdition {
   private _id: number;
   private _title: string;
   private _version: number;
@@ -33,8 +33,8 @@ export class Edition {
     return this._endDate;
   }
 
-  public static fromJSON(jsonObj: any): Edition {
-    return new Edition(+jsonObj.id, jsonObj.title, +jsonObj.version,
+  public static fromJSON(jsonObj: any): CourseEdition {
+    return new CourseEdition(+jsonObj.id, jsonObj.title, +jsonObj.version,
       new Date(jsonObj.startDate), new Date(jsonObj.endDate));
   }
 

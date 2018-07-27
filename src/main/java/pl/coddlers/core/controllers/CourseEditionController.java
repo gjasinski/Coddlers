@@ -6,22 +6,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.coddlers.core.models.dto.EditionDto;
-import pl.coddlers.core.services.EditionService;
+import pl.coddlers.core.models.dto.CourseEditionDto;
+import pl.coddlers.core.services.CourseEditionService;
 
 @RestController
 @RequestMapping("api/editions")
-public class EditionController {
+public class CourseEditionController {
 
-	private final EditionService editionService;
+	private final CourseEditionService courseEditionService;
 
 	@Autowired
-	public EditionController(EditionService editionService) {
-		this.editionService = editionService;
+	public CourseEditionController(CourseEditionService courseEditionService) {
+		this.courseEditionService = courseEditionService;
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<EditionDto> getEdition(@PathVariable Long id) {
-		return ResponseEntity.ok(editionService.getEditionById(id));
+	public ResponseEntity<CourseEditionDto> getCourseEdition(@PathVariable Long id) {
+		return ResponseEntity.ok(courseEditionService.getCourseEditionById(id));
 	}
 }

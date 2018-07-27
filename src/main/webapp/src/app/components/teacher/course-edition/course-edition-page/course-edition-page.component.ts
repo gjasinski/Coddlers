@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Course} from "../../../../models/course";
 import {Lesson} from "../../../../models/lesson";
-import {Edition} from "../../../../models/edition";
+import {CourseEdition} from "../../../../models/courseEdition";
 import {Task} from "../../../../models/task";
 import {CourseService} from "../../../../services/course.service";
 import {ActivatedRoute} from "@angular/router";
-import {EditionService} from "../../../../services/edition.service";
+import {CourseEditionService} from "../../../../services/courseEdition.service";
 import {LessonService} from "../../../../services/lesson.service";
 import {TaskService} from "../../../../services/task.service";
 import {Submission} from "../../../../models/submission";
@@ -13,19 +13,19 @@ import {SubmissionService} from "../../../../services/submission.service";
 
 @Component({
   selector: 'app-edition-page',
-  templateUrl: './edition-page.component.html',
-  styleUrls: ['./edition-page.component.scss']
+  templateUrl: './course-edition-page.component.html',
+  styleUrls: ['./course-edition-page.component.scss']
 })
-export class EditionPageComponent implements OnInit {
+export class CourseEditionPageComponent implements OnInit {
   private course: Course;
-  private edition: Edition;
+  private edition: CourseEdition;
   private showLesson: boolean[];
   private courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
   private submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
   private showSubmissions: Map<Task, boolean> = new Map<Task, boolean>();
 
   constructor(private courseService: CourseService,
-              private editionService: EditionService,
+              private editionService: CourseEditionService,
               private lessonService: LessonService,
               private taskService: TaskService,
               private submissionService: SubmissionService,
@@ -54,7 +54,7 @@ export class EditionPageComponent implements OnInit {
         })
       });
       // TODO Don't know why it's not working. (params.editionId = undefined)
-      // this.editionService.getEdition(params.editionId).subscribe((edition: Edition) => {
+      // this.editionService.getCourseEdition(params.editionId).subscribe((edition: CourseEdition) => {
       //   this.edition = edition;
       // });
     });
@@ -62,7 +62,7 @@ export class EditionPageComponent implements OnInit {
     this.route.paramMap.subscribe(
       params => {
         let editionId: number = +params.get('editionId');
-        this.editionService.getEdition(editionId).subscribe((edition: Edition) => {
+        this.editionService.getEdition(editionId).subscribe((edition: CourseEdition) => {
           this.edition = edition;
         });
       }

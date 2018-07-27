@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 
 @Data
-public class EditionDto {
+public class CourseEditionDto {
     private Long id;
 
     @NotNull
