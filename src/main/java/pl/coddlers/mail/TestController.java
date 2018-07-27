@@ -13,8 +13,12 @@ import javax.mail.internet.InternetAddress;
 @RequestMapping("/api/test")
 public class TestController {
 
+    private final MailInitializer mailInitializer;
+
     @Autowired
-    private MailInitializer mailInitializer;
+    public TestController(MailInitializer mailInitializer) {
+        this.mailInitializer = mailInitializer;
+    }
 
     @GetMapping("/send")
     public String send(@RequestParam("email") String email) {
@@ -22,6 +26,30 @@ public class TestController {
         try {
             for (int i = 0; i < 100; i++) {
                 Mail message = new Mail(new InternetAddress("admin@coddlers.pl"), new InternetAddress(email), "title" + i, "message");
+                initialize.scheduleMail(message);
+            }
+        } catch (AddressException e) {
+            e.printStackTrace();
+        }
+        return "OK";
+    }
+
+    @GetMapping("/sendMore")
+    public String sendMore(@RequestParam("email") String email, @RequestParam("cc") String cc, @RequestParam("bcc") String bcc) {
+        MailQueue initialize = mailInitializer.initialize();
+        try {
+            for (int i = 0; i < 100; i++) {
+                Mail message = new Mail(new InternetAddress("admin@coddlers.pl"), new InternetAddress(email), "title" + i, "message");
+                message.addBccReceiver(new InternetAddress(bcc));
+                message.addCcReceiver(new InternetAddress(cc));
+                message.setTitle("with html " + i);
+                message.setMessage("<html>\n" +
+                        "  <body>\n" +
+                        "    <h1>HelloWorld Tutorial</h1>\n" +
+                        "  </body>\n" +
+                        "</html>");
+                message.addAttachment("/home/develop/start_application.sh");
+                message.addAttachment("/home/develop/manually_start_application.sh");
                 initialize.scheduleMail(message);
             }
         } catch (AddressException e) {

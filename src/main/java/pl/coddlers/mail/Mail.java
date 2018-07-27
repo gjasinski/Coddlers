@@ -4,11 +4,18 @@ import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +27,7 @@ public class Mail implements IMail {
     private List<InternetAddress> to = new ArrayList<>();
     private List<InternetAddress> bcc = new ArrayList<>();
     private List<InternetAddress> cc = new ArrayList<>();
+    private List<DataHandler> attachments = new ArrayList<>();
     private String title;
     private String message;
 
@@ -60,6 +68,11 @@ public class Mail implements IMail {
         this.message = message;
     }
 
+    public void addAttachment(String file){
+        DataSource source = new FileDataSource(file);
+        this.attachments.add(new DataHandler(source));
+    }
+
     MimeMessage createMimeMessage(Session session) throws MessagingException {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(from);
@@ -67,11 +80,35 @@ public class Mail implements IMail {
         message.addRecipients(Message.RecipientType.CC, convertListToArray(cc));
         message.addRecipients(Message.RecipientType.BCC, convertListToArray(bcc));
         message.setSubject(title);
-        message.setText(this.message);
+        message.setContent(createContent());
         return message;
+    }
+
+    private Multipart createContent() throws MessagingException {
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(createBody());
+        for (DataHandler dataHandler : attachments) {
+            multipart.addBodyPart(createAttachment(dataHandler));
+        }
+        return multipart;
+    }
+
+    private BodyPart createAttachment(DataHandler dataHandler) throws MessagingException {
+        BodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setDataHandler(dataHandler);
+        messageBodyPart.setFileName(dataHandler.getName());
+        return messageBodyPart;
+    }
+
+    private BodyPart createBody() throws MessagingException {
+        BodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setContent(message, "text/html");
+        return messageBodyPart;
     }
 
     private InternetAddress[] convertListToArray(List<InternetAddress> list) {
         return list.toArray(new InternetAddress[list.size()]);
     }
+
+
 }
