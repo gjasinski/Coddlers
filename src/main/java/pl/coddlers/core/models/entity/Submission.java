@@ -18,7 +18,7 @@ public class Submission {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Timestamp submissionTime;
 
     private Integer points;
@@ -27,6 +27,7 @@ public class Submission {
     @JoinColumn(name = "task_id")
     private Task task;
 
-    @Column(nullable=false)
-    private TaskStatus status;
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = SubmissionStatusType.class)
+    @JoinColumn(name = "submission_status_type_name")
+    private SubmissionStatusType submissionStatusType;
 }

@@ -33,6 +33,7 @@ export class CourseEditionPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    // TODO That's callback hell. People discovered promises and observables to prevent it. ;) Use pipe method and mergeMap aka flatMap operator to chain observables.
     this.route.parent.params.subscribe(params => {
       this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
         this.course = course;
@@ -42,7 +43,7 @@ export class CourseEditionPageComponent implements OnInit {
             this.taskService.getTasks(lesson.id).subscribe((tasks: Task[]) => {
               this.courseMap.set(lesson, tasks);
               tasks.forEach(task => {
-                this.showSubmissions.set(task,false);
+                this.showSubmissions.set(task, false);
                 this.submissionService.getSubmissions((task.id)).subscribe((submissions: Submission[]) => {
                   this.submissionsMap.set(task, submissions);
                 })

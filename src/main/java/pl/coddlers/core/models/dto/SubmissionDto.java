@@ -1,8 +1,8 @@
 package pl.coddlers.core.models.dto;
 
 import lombok.Data;
+import pl.coddlers.core.models.entity.SubmissionStatusType;
 import pl.coddlers.core.models.entity.Task;
-import pl.coddlers.core.models.entity.TaskStatus;
 import pl.coddlers.core.models.entity.User;
 
 import javax.validation.constraints.NotNull;
@@ -22,7 +22,7 @@ public class SubmissionDto {
     private Timestamp submissionTime;
 
     @NotNull
-    private TaskStatus status;
+    private SubmissionStatusType submissionStatusType;
 
     private Integer points;
 }

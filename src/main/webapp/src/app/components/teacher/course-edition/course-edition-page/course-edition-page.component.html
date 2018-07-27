@@ -47,7 +47,7 @@
                     <td>{{j+1}}</td>
                     <td>{{submission.author.firstname}} {{submission.author.lastname}}</td>
                     <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
-                    <td>{{submission.status}}</td>
+                    <td>{{submission.submissionStatusType.name}}</td>
                     <td></td>
                     <td>{{submission.points}}</td>
                     <td>
