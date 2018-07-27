@@ -1,6 +1,8 @@
 package pl.coddlers.core.models.dto;
 
 import lombok.Data;
+import pl.coddlers.core.models.entity.Course;
+import pl.coddlers.core.models.entity.CourseVersion;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -15,14 +17,11 @@ public class CourseEditionDto {
     private String title;
 
     @NotNull
-    private Long version;
+    private CourseVersion courseVersion;
 
     @NotNull
     private Timestamp startDate;
 
     @NotNull
-    private Timestamp endDate;
-
-    @NotNull
-    private Long courseId;
+    private Course course;
 }

@@ -18,12 +18,9 @@ public class CourseEditionConverter implements BaseConverter<CourseEdition, Cour
         CourseEditionDto courseEditionDto = new CourseEditionDto();
         courseEditionDto.setId(entity.getId());
         courseEditionDto.setTitle(entity.getTitle());
-        courseEditionDto.setVersion(entity.getVersion());
+        courseEditionDto.setCourseVersion(entity.getCourseVersion());
         courseEditionDto.setStartDate(entity.getStartDate());
-        courseEditionDto.setCourseId(entity.getCourseId());
-
-        Course course = courseRepository.getById(courseEditionDto.getCourseId()).get();
-        courseEditionDto.setEndDate(course.getEndDate());
+        courseEditionDto.setCourse(entity.getCourse());
 
         return courseEditionDto;
     }
@@ -33,8 +30,8 @@ public class CourseEditionConverter implements BaseConverter<CourseEdition, Cour
         CourseEdition courseEdition = new CourseEdition();
         courseEdition.setTitle(dto.getTitle());
         courseEdition.setStartDate(dto.getStartDate());
-        courseEdition.setVersion(dto.getVersion());
-        courseEdition.setCourseId(dto.getCourseId());
+        courseEdition.setCourseVersion(dto.getCourseVersion());
+        courseEdition.setCourse(dto.getCourse());
 
         return courseEdition;
     }

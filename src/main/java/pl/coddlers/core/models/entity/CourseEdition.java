@@ -17,19 +17,21 @@ public class CourseEdition {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private Long version;
+    @ManyToOne(targetEntity = CourseVersion.class)
+    @JoinColumn(name = "course_version_id")
+    private CourseVersion courseVersion;
 
     @Column(nullable = false)
     private Timestamp startDate;
 
-    @Column(nullable = false)
-    private Long courseId;
+    @ManyToOne(targetEntity = Course.class)
+    @JoinColumn(name = "course_id")
+    private Course course;
 
-    public CourseEdition(String title, Long version, Timestamp startDate, Long courseId) {
+    public CourseEdition(String title, CourseVersion courseVersion, Timestamp startDate, Course course) {
         this.title = title;
-        this.version = version;
+        this.courseVersion = courseVersion;
         this.startDate = startDate;
-        this.courseId = courseId;
+        this.course = course;
     }
 }

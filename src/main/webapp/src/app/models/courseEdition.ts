@@ -1,16 +1,19 @@
+import {Course} from "./course";
+import {CourseVersion} from "./courseVersion";
+
 export class CourseEdition {
   private _id: number;
   private _title: string;
-  private _version: number;
+  private _courseVersion: CourseVersion;
   private _startDate: Date;
-  private _endDate: Date;
+  private _course: Course;
 
-  constructor(id: number, title: string, version: number, startDate: Date, endDate: Date) {
+  constructor(id: number, title: string, courseVersion: CourseVersion, startDate: Date, course: Course) {
     this._id = id;
     this._title = title;
-    this._version = version;
+    this._courseVersion = courseVersion;
     this._startDate = startDate;
-    this._endDate = endDate;
+    this._course = course;
   }
 
   get id(): number {
@@ -21,30 +24,29 @@ export class CourseEdition {
     return this._title;
   }
 
-  get version(): number {
-    return this._version;
+  get courseVersion(): CourseVersion {
+    return this._courseVersion;
   }
 
   get startDate(): Date {
     return this._startDate;
   }
 
-  get endDate(): Date {
-    return this._endDate;
+  get course(): Course {
+    return this._course;
   }
 
   public static fromJSON(jsonObj: any): CourseEdition {
-    return new CourseEdition(+jsonObj.id, jsonObj.title, +jsonObj.version,
-      new Date(jsonObj.startDate), new Date(jsonObj.endDate));
+    return new CourseEdition(+jsonObj.id, jsonObj.title, jsonObj.courseVersion, new Date(jsonObj.startDate), jsonObj.course);
   }
 
   public toJSON() {
     return {
       id: this.id,
       title: this.title,
-      description: this.version,
+      description: this.courseVersion,
       startDate: this.startDate,
-      endDate: this.endDate
+      course: this.course
     }
   }
 }
