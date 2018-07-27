@@ -1,7 +1,9 @@
 package pl.coddlers.core.models.dto;
 
 import lombok.Data;
+import pl.coddlers.core.models.entity.Task;
 import pl.coddlers.core.models.entity.TaskStatus;
+import pl.coddlers.core.models.entity.User;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
@@ -11,10 +13,10 @@ public class SubmissionDto {
     private Long id;
 
     @NotNull
-    private Long taskId;
+    private Task task;
 
     @NotNull
-    private String author;
+    private User author;
 
     @NotNull
     private Timestamp submissionTime;

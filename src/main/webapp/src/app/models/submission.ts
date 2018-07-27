@@ -1,14 +1,17 @@
+import {User} from "./user";
+import {Task} from "./task";
+
 export class Submission {
   private _id: number;
-  private _lessonId: number;
-  private _author: string;
+  private _task: Task;
+  private _author: User;
   private _submissionTime: Date;
   private _status: string;
   private _points: number;
 
-  constructor(id: number, lessonId: number, author: string, submissionTime: Date, status: string, points: number) {
+  constructor(id: number, task: Task, author: User, submissionTime: Date, status: string, points: number) {
     this._id = id;
-    this._lessonId = lessonId;
+    this._task = task;
     this._author = author;
     this._submissionTime = submissionTime;
     this._status = status;
@@ -19,11 +22,11 @@ export class Submission {
     return this._id;
   }
 
-  get lessonId(): number {
-    return this._lessonId;
+  get task(): Task {
+    return this._task;
   }
 
-  get author(): string {
+  get author(): User {
     return this._author;
   }
 
@@ -40,14 +43,14 @@ export class Submission {
   }
 
   public static fromJSON(jsonObj: any): Submission {
-    return new Submission(+jsonObj.id, +jsonObj.lessonId, jsonObj.author,
+    return new Submission(+jsonObj.id, jsonObj.task, jsonObj.author,
       new Date(jsonObj.submissionTime), jsonObj.status.toLocaleLowerCase(), +jsonObj.points);
   }
 
   public toJSON() {
     return {
       id: this.id,
-      lessonId: this.lessonId,
+      task: this.task,
       author: this.author,
       submissionTime: this.submissionTime,
       points: this.points,

@@ -1,6 +1,5 @@
 package pl.coddlers.core.models.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,16 +14,17 @@ public class Submission {
     @GeneratedValue
     private long id;
 
-    @Column(nullable=false)
-    private String author;
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name = "user_id")
+    private User author;
 
     @Column(nullable=false)
     private Timestamp submissionTime;
 
     private Integer points;
 
-    @JsonIgnore
     @ManyToOne(targetEntity = Task.class)
+    @JoinColumn(name = "task_id")
     private Task task;
 
     @Column(nullable=false)

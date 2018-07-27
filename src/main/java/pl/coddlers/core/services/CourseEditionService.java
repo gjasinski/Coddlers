@@ -23,7 +23,6 @@ public class CourseEditionService {
 
     public CourseEditionDto getCourseEditionById(Long id) {
         CourseEdition courseEdition = validateCourseEdition(id);
-        System.out.println(courseEdition);
         return courseEditionConverter.convertFromEntity(courseEdition);
     }
 
