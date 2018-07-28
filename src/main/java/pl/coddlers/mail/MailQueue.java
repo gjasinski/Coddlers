@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
+// TODO: 26.07.18 I would like this module logs to be stored in different file
 @Slf4j
-// TODO: 26.07.18 I would like this logs to be stored in different file
-public class MailQueue implements Runnable {
+class MailQueue implements Runnable {
     private final AbstractMailSender mailSender;
     private final BlockingDeque<Mail> queue = new LinkedBlockingDeque<>();
 
@@ -15,8 +15,12 @@ public class MailQueue implements Runnable {
         this.mailSender = mailSender;
     }
 
-    public boolean scheduleMail(Mail mail) {
+    boolean scheduleMail(Mail mail) {
         return this.queue.add(mail);
+    }
+
+    String queueStateDebug(){
+        return "Queue size: " + queue.size() + ", queue remaining capacity: " + queue.remainingCapacity();
     }
 
     @Override

@@ -19,29 +19,42 @@ import javax.mail.internet.MimeMultipart;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode
 @ToString
-public class Mail implements IMail {
-    // TODO: 26.07.18 here should be abstract class with common impl
+@EqualsAndHashCode
+public class Mail {
+    private static final String TITLE_AND_HTML_MESSAGE_CANNOT_BE_NULL = "Title and htmlMessage cannot be null";
+    private static final String TEXT_HTML = "text/html";
     private InternetAddress from;
     private List<InternetAddress> to = new ArrayList<>();
     private List<InternetAddress> bcc = new ArrayList<>();
     private List<InternetAddress> cc = new ArrayList<>();
     private List<DataHandler> attachments = new ArrayList<>();
     private String title;
-    private String message;
+    private String htmlMessage;
 
 
-    public Mail(InternetAddress from, InternetAddress to, String title, String message) {
-        this(from, Lists.newArrayList(to), title, message);
+    public Mail(InternetAddress from, InternetAddress to, String title, String htmlMessage) {
+        this(from, Lists.newArrayList(to), title, htmlMessage);
     }
 
-    public Mail(InternetAddress from, List<InternetAddress> to, String title, String message) {
+    public Mail(InternetAddress from, List<InternetAddress> to, String title, String htmlMessage) {
+        if (title == null || htmlMessage == null) {
+            throw new IllegalArgumentException(TITLE_AND_HTML_MESSAGE_CANNOT_BE_NULL);
+        }
         this.from = from;
         this.to = to;
         this.title = title;
-        this.message = message;
+        this.htmlMessage = htmlMessage;
     }
+
+    public void addReceiver(InternetAddress internetAddress) {
+        this.to.add(internetAddress);
+    }
+
+    public void addReceivers(List<InternetAddress> internetAddress) {
+        this.to.addAll(internetAddress);
+    }
+
 
     public void addCcReceiver(InternetAddress receiver) {
         this.cc.add(receiver);
@@ -64,11 +77,11 @@ public class Mail implements IMail {
         this.title = title;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setHtmlMessage(String htmlMessage) {
+        this.htmlMessage = htmlMessage;
     }
 
-    public void addAttachment(String file){
+    public void addAttachment(String file) {
         DataSource source = new FileDataSource(file);
         this.attachments.add(new DataHandler(source));
     }
@@ -102,7 +115,7 @@ public class Mail implements IMail {
 
     private BodyPart createBody() throws MessagingException {
         BodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setContent(message, "text/html");
+        messageBodyPart.setContent(htmlMessage, TEXT_HTML);
         return messageBodyPart;
     }
 

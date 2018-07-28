@@ -9,8 +9,8 @@ import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
+// TODO: 26.07.18 I would like this module logs to be stored in different file
 @Slf4j
-// TODO: 26.07.18 I would like this logs to be stored in different file
 public class MailSender extends AbstractMailSender {
     private static final String MAIL_SMTP_HOST = "mail.smtp.host";
     private static final String MAIL_SMTP_PORT = "mail.smtp.port";
@@ -31,7 +31,7 @@ public class MailSender extends AbstractMailSender {
             MimeMessage mimeMessage = mail.createMimeMessage(session);
             Transport.send(mimeMessage);
         } catch (MessagingException mex) {
-            log.error("Couldn't send e-mail: " + mail.toString() + ", cause: " + mex.getCause().getMessage());
+            log.error("Couldn't send e-mail cause: " + mex.getCause().getMessage());
         }
     }
 }

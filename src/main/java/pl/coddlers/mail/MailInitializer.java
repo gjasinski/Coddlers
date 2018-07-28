@@ -14,13 +14,13 @@ public class MailInitializer {
 
     private MailQueue mailQueue;
 
-    synchronized MailQueue initialize() {
+    public synchronized MailScheduler initialize() {
         if (mailQueue == null) {
             createMailSender();
             Thread mailer = new Thread(mailQueue);
             mailer.start();
         }
-        return mailQueue;
+        return new MailScheduler(mailQueue);
     }
 
     private void createMailSender() {
