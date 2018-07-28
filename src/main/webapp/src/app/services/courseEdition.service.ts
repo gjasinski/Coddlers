@@ -14,7 +14,7 @@ export class CourseEditionService {
 
   constructor(private http: HttpClient) { }
 
-  getEdition(editionId: number): Observable<CourseEdition> {
+  getCourseEdition(editionId: number): Observable<CourseEdition> {
     return this.http.get<CourseEdition>(`api/editions/${editionId}`)
       .pipe(
         map(obj => CourseEdition.fromJSON(obj))

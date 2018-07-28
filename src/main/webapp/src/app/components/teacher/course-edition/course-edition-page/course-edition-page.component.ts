@@ -10,6 +10,7 @@ import {LessonService} from "../../../../services/lesson.service";
 import {TaskService} from "../../../../services/task.service";
 import {Submission} from "../../../../models/submission";
 import {SubmissionService} from "../../../../services/submission.service";
+import {switchMap, tap} from "rxjs/operators";
 
 @Component({
   selector: 'app-edition-page',
@@ -22,7 +23,7 @@ export class CourseEditionPageComponent implements OnInit {
   private showLesson: boolean[];
   private courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
   private submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
-  private showSubmissions: Map<Task, boolean> = new Map<Task, boolean>();
+  private showSubmissionsMap: Map<Task, boolean> = new Map<Task, boolean>();
 
   constructor(private courseService: CourseService,
               private editionService: CourseEditionService,
@@ -33,41 +34,44 @@ export class CourseEditionPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    // TODO That's callback hell. People discovered promises and observables to prevent it. ;) Use pipe method and mergeMap aka flatMap operator to chain observables.
-    this.route.parent.params.subscribe(params => {
-      this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
-        this.course = course;
+    this.getCourseInfo();
+    this.getEditionInfo();
+  }
 
-        this.lessonService.getLessons(course.id).subscribe((lessons: Lesson[]) => {
-          lessons.forEach(lesson => {
-            this.taskService.getTasks(lesson.id).subscribe((tasks: Task[]) => {
-              this.courseMap.set(lesson, tasks);
-              tasks.forEach(task => {
-                this.showSubmissions.set(task, false);
-                this.submissionService.getSubmissions((task.id)).subscribe((submissions: Submission[]) => {
-                  this.submissionsMap.set(task, submissions);
-                })
+  getCourseInfo() {
+    this.route.parent.params.pipe(
+      switchMap(params => {
+        this.submissionsMap.clear();
+        this.courseMap.clear();
+        this.showSubmissionsMap.clear();
+        return this.courseService.getCourse(params.courseId);
+      }),
+      switchMap((course: Course) => {
+        this.course = course;
+        return this.lessonService.getLessons(course.id);
+      }),
+      tap((lessons: Lesson[]) => {
+        lessons.forEach(lesson => {
+          this.taskService.getTasks(lesson.id).subscribe((tasks: Task[]) => {
+            this.courseMap.set(lesson, tasks);
+            this.showLesson = new Array(this.courseMap.size).fill(false);
+            tasks.forEach(task => {
+              this.showSubmissionsMap.set(task, false);
+              this.submissionService.getSubmissions((task.id)).subscribe((submissions: Submission[]) => {
+                this.submissionsMap.set(task, submissions);
               })
             })
-          });
-
-          this.showLesson = new Array(this.courseMap.size).fill(false);
+          })
         })
-      });
-      // TODO Don't know why it's not working. (params.editionId = undefined)
-      // this.editionService.getCourseEdition(params.editionId).subscribe((edition: CourseEdition) => {
-      //   this.edition = edition;
-      // });
-    });
+      })
+    ).subscribe();
+  }
 
-    this.route.paramMap.subscribe(
-      params => {
-        let editionId: number = +params.get('editionId');
-        this.editionService.getEdition(editionId).subscribe((edition: CourseEdition) => {
-          this.edition = edition;
-        });
-      }
-    );
+  getEditionInfo() {
+    this.route.params.pipe(
+      switchMap(params => this.editionService.getCourseEdition(params.editionId)),
+      tap((edition: CourseEdition) => this.edition = edition)
+    ).subscribe();
   }
 
   swapShowLesson(index: number) {
@@ -83,10 +87,10 @@ export class CourseEditionPageComponent implements OnInit {
   }
 
   changeVisibilityForSubmissions(task: Task) {
-    this.showSubmissions.set(task, !this.showSubmissions.get(task));
+    this.showSubmissionsMap.set(task, !this.showSubmissionsMap.get(task));
   }
 
   shouldShowSubmissions(task: Task) {
-    return this.showSubmissions.get(task)
+    return this.showSubmissionsMap.get(task)
   }
 }
