@@ -1,4 +1,4 @@
-#DOCUMENTATION FOR MAIL ADAPTER
+# DOCUMENTATION FOR MAIL ADAPTER
 
 ## General info
 This module is thread safe
