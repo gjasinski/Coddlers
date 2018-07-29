@@ -3,13 +3,13 @@ package pl.coddlers.core.models.converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import pl.coddlers.exceptions.DbNotPopulatedWithDataException;
-import pl.coddlers.exceptions.WrongAccountTypeProvided;
 import pl.coddlers.core.models.dto.UserDto;
 import pl.coddlers.core.models.entity.AccountType;
 import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.AccountTypeRepository;
-import pl.coddlers.core.security.AccountTypeConstants;
+import pl.coddlers.core.security.AccountTypeEnum;
+import pl.coddlers.exceptions.DbNotPopulatedWithDataException;
+import pl.coddlers.exceptions.WrongAccountTypeProvided;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -30,7 +30,11 @@ public class UserConverter implements BaseConverter<User, UserDto> {
         dto.setUserMail(entity.getUserMail());
         dto.setFirstname(entity.getFirstname());
         dto.setLastname(entity.getLastname());
-        dto.setUserRoles(entity.getAccountTypes().stream().map(AccountType::getName).toArray(String[]::new));
+        dto.setUserRoles(entity.getAccountTypes().stream()
+                .map(accountType ->
+                     AccountTypeEnum.getEnumByName(accountType.getName())
+                )
+                .toArray(AccountTypeEnum[]::new));
 
         return dto;
     }
@@ -40,10 +44,9 @@ public class UserConverter implements BaseConverter<User, UserDto> {
         User userEntity = new User();
 
         String[] accountTypes = Arrays.stream(dto.getUserRoles())
-                .map(str -> {
-                    String strUpperCase = str.toUpperCase();
-                    if (!strUpperCase.equals(AccountTypeConstants.STUDENT) &&
-                            !strUpperCase.equals(AccountTypeConstants.TEACHER)) {
+                .map(accountTypeEnum -> {
+                    String strUpperCase = accountTypeEnum.getName();
+                    if (strUpperCase == null || accountTypeEnum == AccountTypeEnum.ROLE_ADMIN) {
                         throw new WrongAccountTypeProvided();
                     }
 
