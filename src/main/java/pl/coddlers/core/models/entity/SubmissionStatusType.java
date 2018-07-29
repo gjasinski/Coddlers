@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @NoArgsConstructor
-class SubmissionStatusType {
+public class SubmissionStatusType {
     @Id
     @Column(length = 50, nullable = false)
     private String name;

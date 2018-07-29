@@ -16,11 +16,4 @@ public class CourseDto {
 
     @Size(max = 255)
     private String description;
-
-    @NotNull
-    private Timestamp startDate;
-
-    @NotNull
-    private Timestamp endDate;
-
 }

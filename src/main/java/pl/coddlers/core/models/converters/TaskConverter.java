@@ -31,7 +31,7 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 		taskDto.setTitle(entity.getTitle());
 		taskDto.setDescription(entity.getDescription());
 		taskDto.setMaxPoints(entity.getMaxPoints());
-		taskDto.setSubmissionStatusType(entity.getSubmissionStatusType());
+		taskDto.setIsCodeTask(entity.getIsCodeTask());
 
 		return taskDto;
 	}
@@ -44,6 +44,7 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 			task.setId(dto.getId());
 		}
 
+		// TODO is it really necessary to have lessonId in TaskDto?
 		Lesson lesson = lessonRepository.findById(dto.getLessonId())
 				.orElseThrow(() -> new LessonNotFoundException(dto.getLessonId()));
 
@@ -51,12 +52,7 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 		task.setDescription(dto.getDescription());
 		task.setMaxPoints(dto.getMaxPoints());
 		task.setLesson(lesson);
-
-		if (dto.getSubmissionStatusType() == null) {
-			task.setSubmissionStatusType(SubmissionStatusType.NOT_SUBMITTED);
-		} else {
-			task.setSubmissionStatusType(dto.getSubmissionStatusType());
-		}
+		task.setIsCodeTask(dto.getIsCodeTask());
 
 		return task;
 	}

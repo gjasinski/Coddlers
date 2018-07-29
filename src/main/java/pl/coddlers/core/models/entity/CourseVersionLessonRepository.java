@@ -18,7 +18,7 @@ public class CourseVersionLessonRepository {
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = CourseVersion.class)
     @JoinColumn(name = "course_version_id")
-    private CourseVersion courseEdition;
+    private CourseVersion courseVersion;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Lesson.class)
     @JoinColumn(name = "lesson_id")

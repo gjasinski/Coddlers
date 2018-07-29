@@ -22,8 +22,8 @@ public class LessonService {
 		this.lessonConverter = lessonConverter;
 	}
 
-	public Collection<LessonDto> getAllCoursesLessons(long courseId) {
-		return lessonConverter.convertFromEntities(lessonRepository.findByCourseId(courseId));
+	public Collection<LessonDto> getAllCourseVersionLessons(long courseVersionId) {
+		return lessonConverter.convertFromEntities(lessonRepository.findByCourseVersion_Id(courseVersionId));
 	}
 
 	public Long createLesson(LessonDto lessonDto) {

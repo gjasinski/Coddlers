@@ -2,6 +2,7 @@ package pl.coddlers.core.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ public class CourseController {
 		this.courseService = courseService;
 	}
 
+	@PreAuthorize("hasRole('ROLE_TEACHER')")
 	@PostMapping
 	public ResponseEntity<Void> createCourse(@Valid @RequestBody CourseDto courseDto) {
 		Course course = courseService.createCourse(courseDto);
@@ -42,10 +44,9 @@ public class CourseController {
 		return ResponseEntity.created(location).build();
 	}
 
-	@GetMapping(params = {"startsAt", "number"})
-	public ResponseEntity<Collection<CourseDto>> getCourses(@RequestParam(value = "startsAt", required = false) Integer startsAt,
-	                                                        @RequestParam(value = "number", required = false) Integer number) {
-		return ResponseEntity.ok(courseService.getCourses(startsAt, number));
+	@GetMapping
+	public ResponseEntity<Collection<CourseDto>> getCourses() {
+		return ResponseEntity.ok(courseService.getCourses());
 	}
 
 	@GetMapping(value = "/{id}")

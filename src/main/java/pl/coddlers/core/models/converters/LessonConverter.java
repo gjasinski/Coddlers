@@ -26,12 +26,10 @@ public class LessonConverter implements BaseConverter<Lesson, LessonDto> {
 	public LessonDto convertFromEntity(Lesson entity) {
 		LessonDto lessonDto = new LessonDto();
 		lessonDto.setId(entity.getId());
-		lessonDto.setCourseId(entity.getCourse().getId());
+		lessonDto.setTitle(entity.getTitle());
 		lessonDto.setDescription(entity.getDescription());
 		lessonDto.setWeight(entity.getWeight());
-		lessonDto.setDueDate(entity.getDueDate());
-		lessonDto.setStartDate(entity.getStartDate());
-		lessonDto.setTitle(entity.getTitle());
+		lessonDto.setTimeInDays(entity.getTimeInDays());
 
 		return lessonDto;
 	}
@@ -44,15 +42,10 @@ public class LessonConverter implements BaseConverter<Lesson, LessonDto> {
 			lesson.setId(dto.getId());
 		}
 
-		Course course = courseRepository.getById(dto.getCourseId())
-				.orElseThrow(() -> new CourseNotFoundException(dto.getCourseId()));
-
-		lesson.setCourse(course);
+		lesson.setTitle(dto.getTitle());
 		lesson.setDescription(dto.getDescription());
 		lesson.setWeight(dto.getWeight());
-		lesson.setDueDate(dto.getDueDate());
-		lesson.setStartDate(dto.getStartDate());
-		lesson.setTitle(dto.getTitle());
+		lesson.setTimeInDays(dto.getTimeInDays());
 
 		// TODO only for prototype purposes
 		lesson.setGitStudentProjectId(dto.getGitStudentProjectId());

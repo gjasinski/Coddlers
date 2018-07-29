@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,7 +30,7 @@ public class CourseEdition {
 
     @JsonIgnore
     @OneToMany(mappedBy = "courseEdition", targetEntity = CourseEditionLesson.class)
-    private CourseEditionLesson courseEditionLesson;
+    private List<CourseEditionLesson> courseEditionLesson;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

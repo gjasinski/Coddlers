@@ -37,4 +37,9 @@ public class CourseVersion {
     @JsonIgnore
     @OneToMany(mappedBy = "courseVersion", targetEntity = CourseVersionLessonRepository.class)
     private List<CourseVersionLessonRepository> courseLessonRepositories;
+
+    public CourseVersion(Integer versionNumber, Course course) {
+        this.versionNumber = versionNumber;
+        this.course = course;
+    }
 }

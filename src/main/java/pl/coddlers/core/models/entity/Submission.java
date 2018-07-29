@@ -38,7 +38,7 @@ public class Submission {
 
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "user_id")
-    private User author;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = CourseEdition.class)
     @JoinColumn(name = "course_edition_id")

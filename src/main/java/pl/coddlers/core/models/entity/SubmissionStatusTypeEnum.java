@@ -1,18 +1,38 @@
 package pl.coddlers.core.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public enum SubmissionStatusTypeEnum {
-    NOT_SUBMITTED("NOT SUBMITTED"),
-    WAITING_FOR_REVIEW("WAITING FOR REVIEW"),
+    NOT_SUBMITTED("NOT_SUBMITTED"),
+    WAITING_FOR_REVIEW("WAITING_FOR_REVIEW"),
     GRADED("GRADED"),
-    CHANGES_REQUESTED("CHANGES REQUESTED");
+    CHANGES_REQUESTED("CHANGES_REQUESTED");
 
     private final String status;
+    private static final Map<String, SubmissionStatusTypeEnum> valuesMap = new HashMap<>();
 
-    SubmissionStatusType(String status) {
+    static {
+        valuesMap.put("NOT_SUBMITTED", NOT_SUBMITTED);
+        valuesMap.put("WAITING_FOR_REVIEW", WAITING_FOR_REVIEW);
+        valuesMap.put("GRADED", GRADED);
+        valuesMap.put("CHANGES_REQUESTED", CHANGES_REQUESTED);
+    }
+
+    SubmissionStatusTypeEnum(String status) {
         this.status = status;
     }
 
+    @JsonValue
     public String getStatus() {
         return status;
+    }
+
+    @JsonCreator
+    public SubmissionStatusTypeEnum getEnumByStatusName(String statusName) {
+        return valuesMap.get(statusName);
     }
 }

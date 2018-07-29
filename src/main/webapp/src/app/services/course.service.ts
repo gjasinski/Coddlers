@@ -15,7 +15,7 @@ export class CourseService {
   constructor(private http: HttpClient) { }
 
   public getCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>('api/courses?startsAt&number')
+    return this.http.get<Course[]>('api/courses')
       .pipe(
          map((objArray: any[]) => objArray.map(obj => Course.fromJSON(obj)))
       );

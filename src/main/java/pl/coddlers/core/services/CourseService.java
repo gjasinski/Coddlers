@@ -7,7 +7,12 @@ import pl.coddlers.core.exceptions.WrongDateException;
 import pl.coddlers.core.models.converters.CourseConverter;
 import pl.coddlers.core.models.dto.CourseDto;
 import pl.coddlers.core.models.entity.Course;
+import pl.coddlers.core.models.entity.CourseVersion;
+import pl.coddlers.core.models.entity.Teacher;
+import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseRepository;
+import pl.coddlers.core.repositories.CourseVersionRepository;
+import pl.coddlers.core.repositories.TeacherRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,13 +21,20 @@ import java.util.List;
 public class CourseService {
 
 	private final CourseRepository courseRepository;
-
 	private final CourseConverter courseConverter;
+	private final UserDetailsServiceImpl userDetailsService;
+	private final CourseVersionRepository courseVersionRepository;
+	private final TeacherRepository teacherRepository;
 
 	@Autowired
-	public CourseService(CourseRepository courseRepository, CourseConverter courseConverter) {
+	public CourseService(CourseRepository courseRepository, CourseConverter courseConverter,
+						 UserDetailsServiceImpl userDetailsService, CourseVersionRepository courseVersionRepository,
+						 TeacherRepository teacherRepository) {
 		this.courseRepository = courseRepository;
 		this.courseConverter = courseConverter;
+		this.userDetailsService = userDetailsService;
+		this.courseVersionRepository = courseVersionRepository;
+		this.teacherRepository = teacherRepository;
 	}
 
 	public CourseDto getCourseById(Long id) {
@@ -31,16 +43,20 @@ public class CourseService {
 		return courseConverter.convertFromEntity(course);
 	}
 
-	public Collection<CourseDto> getCourses(Integer page, Integer size) throws WrongDateException {
-		PageableValidation pageableValidation = new PageableValidation(page, size);
-		List<Course> courseList = courseRepository.getPaginatedCourses(pageableValidation.createPageRequest());
+	public Collection<CourseDto> getCourses() throws WrongDateException {
+		List<Course> courseList = courseRepository.getByUserId(userDetailsService.getCurrentUserEntity().getId());
 		return courseConverter.convertFromEntities(courseList);
 	}
 
 	public Course createCourse(final CourseDto courseDto) {
-		this.validateCourse(courseDto);
+		Course course = courseRepository.save(courseConverter.convertFromDto(courseDto));
+		User currentUser = userDetailsService.getCurrentUserEntity();
+		CourseVersion courseVersion = new CourseVersion(1, course);
+		Teacher teacher = new Teacher(course, currentUser, true);
+		courseVersionRepository.save(courseVersion);
+		teacherRepository.save(teacher);
 
-		return courseRepository.save(courseConverter.convertFromDto(courseDto));
+		return course;
 	}
 
 	public void updateCourse(final CourseDto courseDto) {
@@ -55,9 +71,4 @@ public class CourseService {
 		);
 	}
 
-	private void validateCourse(CourseDto courseDto) throws WrongDateException {
-		if (courseDto.getStartDate().after(courseDto.getEndDate())) {
-			throw new WrongDateException();
-		}
-	}
 }

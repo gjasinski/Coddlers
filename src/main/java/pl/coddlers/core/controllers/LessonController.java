@@ -49,7 +49,7 @@ public class LessonController {
 
 	@GetMapping(params = {"courseId"})
 	public ResponseEntity<Collection<LessonDto>> getLessons(@RequestParam(value = "courseId") Long courseId) {
-		return ResponseEntity.ok(lessonService.getAllCoursesLessons(courseId));
+		return ResponseEntity.ok(lessonService.getAllCourseVersionLessons(courseId));
 	}
 
 	@GetMapping(value = "{id}")

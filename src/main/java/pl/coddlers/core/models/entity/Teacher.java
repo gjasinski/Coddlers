@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 public class Teacher {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -23,4 +22,10 @@ public class Teacher {
     private User user;
 
     private Boolean isCourseOwner;
+
+    public Teacher(Course course, User user, Boolean isCourseOwner) {
+        this.course = course;
+        this.user = user;
+        this.isCourseOwner = isCourseOwner;
+    }
 }
