@@ -16,6 +16,9 @@ public class StudentLessonRepository {
     private Long id;
 
     @Column(nullable=false)
+    private Long gitRepositoryId;
+
+    @Column(nullable=false)
     private String repositoryUrl;
 
     @OneToMany(fetch = FetchType.LAZY)
