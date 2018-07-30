@@ -40,7 +40,7 @@ public class GitTaskService {
     private String gitlabApi;
 
     @Value("${gitlab.api.apiuser.private_token}")
-    private String private_token;
+    private String privateToken;
 
     @Value("${pl.coddlers.git.http.timeout.milliseconds}")
     private long timeout;
@@ -120,6 +120,6 @@ public class GitTaskService {
 
     private UriComponentsBuilder createComponentBuilder(String resourceUrl) {
         return UriComponentsBuilder.fromHttpUrl(resourceUrl)
-                .queryParam(PRIVATE_TOKEN, private_token);
+                .queryParam(PRIVATE_TOKEN, privateToken);
     }
 }
