@@ -44,7 +44,6 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 			task.setId(dto.getId());
 		}
 
-		// TODO is it really necessary to have lessonId in TaskDto?
 		Lesson lesson = lessonRepository.findById(dto.getLessonId())
 				.orElseThrow(() -> new LessonNotFoundException(dto.getLessonId()));
 

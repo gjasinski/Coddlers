@@ -21,7 +21,7 @@ import java.net.URI;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("api/courses")
+@RequestMapping("/api/courses")
 public class CourseController {
 
 	private final CourseService courseService;
