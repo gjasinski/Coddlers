@@ -36,6 +36,9 @@ import { SignInModalComponent } from './components/common/sign-in-modal/sign-in-
 import { SignUpModalComponent } from './components/common/sign-up-modal/sign-up-modal.component';
 import { StudentDashboardComponent } from './components/student/dashboard/student-dashboard.component';
 import { TeacherDashboardComponent } from './components/teacher/dashboard/teacher-dashboard.component';
+import {CourseEditionPageComponent} from './components/teacher/course-edition/course-edition-page/course-edition-page.component';
+import {CourseEditionService} from "./services/courseEdition.service";
+import {SubmissionService} from "./services/submission.service";
 
 @NgModule({
   declarations: [
@@ -55,6 +58,7 @@ import { TeacherDashboardComponent } from './components/teacher/dashboard/teache
     EditLessonPageComponent,
     EditCoursePageComponent,
     StudentLessonPageComponent,
+    CourseEditionPageComponent,
     LandingPageComponent,
     HasAnyAuthorityDirective,
     SignInModalComponent,
@@ -81,6 +85,8 @@ import { TeacherDashboardComponent } from './components/teacher/dashboard/teache
     CourseService,
     LessonService,
     TaskService,
+    CourseEditionService,
+    SubmissionService,
     DatePipe,
     AuthenticationService,
     AccountService,

@@ -1,0 +1,73 @@
+<div class="col-md-4">
+  <h1 routerLink="/courses/{{course?.id}}" style="cursor: pointer">{{course?.title}}</h1>
+</div>
+<div *ngIf="route.children.length === 0" class="content-container">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="row">
+        <div class="col-12">
+          <h2>CourseEdition - {{edition?.title}}</h2>
+          <h6>{{edition?.id}}/v{{edition?.courseVersion.versionNumber}}/{{edition?.startDate | date: 'dd MMMM yyyy'}} -
+            {{edition?.course.endDate | date: 'dd MMMM yyyy'}}</h6>
+
+          <div class="line"></div>
+          <br>
+
+          <h4>Submissions</h4>
+
+          <div *ngFor="let lesson of getKeys(courseMap); let i = index" [attr.data-index]="i">
+            <button class="btn lesson-button" (click)="swapShowLesson(i)">
+              <p class="float-left">{{lesson.title}}</p>
+              <p class="float-right">{{lesson.startDate | date: 'dd MMMM'}} -
+                {{lesson.dueDate | date: 'dd MMMM yyyy'}}</p>
+            </button>
+
+            <div *ngIf="shouldShowLesson(i)">
+              <button class="btn in-table-button">Go to lesson view</button>
+              <button class="btn">Edit lesson due date</button>
+
+              <div *ngFor="let task of courseMap.get(lesson)">
+                <br>
+                <h5 (click)="changeVisibilityForSubmissions(task)" style="cursor: pointer">{{task.title}}</h5>
+
+                <table *ngIf="shouldShowSubmissions(task)" class="table tasks-table">
+                  <thead>
+                  <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Submission time</th>
+                    <th scope="col">Status</th>
+                    <th>&nbsp;</th>
+                    <th scope="col">Points</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let submission of submissionsMap.get(task); let j = index" [attr.data-index]="j">
+                    <td>{{j+1}}</td>
+                    <td>{{submission.author.firstname}} {{submission.author.lastname}}</td>
+                    <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
+                    <td>{{submission.submissionStatusType.name}}</td>
+                    <td></td>
+                    <td>{{submission.points}}</td>
+                    <td>
+                      <div class="dots"></div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-md-2">
+      <label for="students-list">People</label>
+      <button id="students-list" class="btn btn-secondary float-md-right" role="button">Students</button>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

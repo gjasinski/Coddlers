@@ -18,6 +18,7 @@ import {TeacherDashboardComponent} from "./components/teacher/dashboard/teacher-
 import {LoggedGuardService} from "./auth/logged-guard.service";
 import {UserRouteAccessService} from "./auth/user-route-access.service";
 import {AccountTypesConstants} from "./constants/account-types.constants";
+import {CourseEditionPageComponent} from "./components/teacher/course-edition/course-edition-page/course-edition-page.component";
 
 
 export const ROUTES: Routes = [
@@ -65,6 +66,13 @@ export const ROUTES: Routes = [
           { path: 'edit-lesson', component: EditLessonPageComponent },
           { path: 'add-task', component: AddTaskPageComponent }
         ]
+      },
+      { path: 'editions/:editionId',
+        component: CourseEditionPageComponent,
+        data: {
+          authorities: [AccountTypesConstants.ROLE_TEACHER],
+        },
+        canActivate: [UserRouteAccessService]
       },
       { path: 'student/lessons/:lessonId', component: StudentLessonPageComponent }
     ]
