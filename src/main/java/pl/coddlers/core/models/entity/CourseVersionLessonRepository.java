@@ -14,6 +14,9 @@ public class CourseVersionLessonRepository {
     private Long id;
 
     @Column(nullable=false)
+    private Long gitRepositoryId;
+
+    @Column(nullable=false)
     private String repositoryUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = CourseVersion.class)
