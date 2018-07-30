@@ -1,11 +1,9 @@
 <ng-template #content let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title">Sign Up</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <h4 class="modal-title">Register an account</h4>
   </div>
   <div class="modal-body">
+    <p style="margin-bottom: 10px">How are you? :)</p>
     <form [formGroup]="formGroup" (ngSubmit)="signUp(formGroup.value)">
       <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary" [class.active]="formGroup.controls.userRole.value === 'student'">
@@ -45,8 +43,7 @@
       </div>
       <div class="alert alert-danger" *ngIf="formGroup.controls.passwordRepeat.errors?.MatchPassword">Password not match</div>
 
-      <input type="submit" class="btn btn-primary" value="Create" [disabled]="!formGroup.valid">
-      <button type="button" class="btn btn-outline-dark" (click)="c('closed'); $event.preventDefault();">Close</button>
+      <input type="submit" class="btn btn-primary" value="Register" [disabled]="!formGroup.valid">
     </form>
   </div>
 </ng-template>
