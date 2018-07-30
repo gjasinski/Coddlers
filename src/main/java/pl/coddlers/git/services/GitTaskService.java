@@ -14,12 +14,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.coddlers.git.models.Hook;
 import pl.coddlers.git.reposiories.HookRepository;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
 @Slf4j
 @Service
@@ -45,38 +47,44 @@ public class GitTaskService {
     @Value("${pl.coddlers.git.http.timeout.milliseconds}")
     private long timeout;
 
-    private ExecutorService executor = Executors.newFixedThreadPool(10);
+    private ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
 
     @Autowired
     public GitTaskService(HookRepository hookRepository) {
         this.hookRepository = hookRepository;
     }
 
-    public boolean createTask(long repositoryId, String taskName) {
-        Future<Boolean> develop = createBranch(repositoryId, taskName + DEVELOP);
-        Future<Boolean> master = createBranch(repositoryId, taskName + MASTER_POSTFIX);
-        try {
-            Boolean createdDevelop = develop.get(timeout, TimeUnit.MILLISECONDS);
-            Boolean createdMaster = master.get(timeout, TimeUnit.MILLISECONDS);
-            if (createdDevelop && createdMaster) {
-                registerHook(repositoryId, taskName);
-                return true;
-            } else {
-                log.debug("Cannot register hook - branch was not created");
-                return false;
-            }
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            log.error(e.toString());
-            return false;
-        }
+    public CompletableFuture<Boolean> createTask(long repositoryId, String taskName) {
+        return CompletableFuture.supplyAsync(createTaskSupplier(repositoryId, taskName), executor);
     }
 
-    private void registerHook(long repositoryId, String taskName) {
-        hookRepository.save(createHook(repositoryId, taskName + MASTER_POSTFIX));
+    private Supplier<Boolean> createTaskSupplier(long repositoryId, String taskName) {
+        return () -> {
+            Future<Boolean> develop = createBranch(repositoryId, taskName + DEVELOP);
+            Future<Boolean> master = createBranch(repositoryId, taskName + MASTER_POSTFIX);
+            try {
+                Boolean createdDevelop = develop.get(timeout, TimeUnit.MILLISECONDS);
+                Boolean createdMaster = master.get(timeout, TimeUnit.MILLISECONDS);
+                if (createdDevelop && createdMaster) {
+                    registerHook(repositoryId, taskName);
+                    return true;
+                } else {
+                    log.debug("Cannot register hook - branch was not created");
+                    return false;
+                }
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                log.error(e.toString());
+                return false;
+            }
+        };
     }
 
     private Future<Boolean> createBranch(long repositoryId, String branchName) {
-        return executor.submit(() -> {
+        return CompletableFuture.supplyAsync(createBranchSupplier(repositoryId, branchName), executor);
+    }
+
+    private Supplier<Boolean> createBranchSupplier(long repositoryId, String branchName) {
+        return () -> {
             String resourceUrl = createApiUrl(repositoryId);
 
             HttpHeaders headers = createHttpHeaders();
@@ -98,7 +106,11 @@ public class GitTaskService {
                 log.debug(exchange.getStatusCode().toString());
             }
             return exchange.getStatusCode().is2xxSuccessful();
-        });
+        };
+    }
+
+    private void registerHook(long repositoryId, String taskName) {
+        hookRepository.save(createHook(repositoryId, taskName + MASTER_POSTFIX));
     }
 
     private HttpHeaders createHttpHeaders() {

@@ -2,15 +2,23 @@ package pl.coddlers.core.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.coddlers.git.services.GitLessonService;
 import pl.coddlers.core.models.dto.LessonDto;
 import pl.coddlers.core.services.LessonService;
+import pl.coddlers.git.services.GitLessonService;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/lessons")
@@ -26,17 +34,20 @@ public class LessonController {
 		this.gitProjectService = gitProjectService;
 	}
 
-	@PostMapping
-	public ResponseEntity<Long> createLesson(@Valid @RequestBody LessonDto lessonDto) {
-		// TODO this code is only for prototype purposes
-		long tutorGitId = 20;
-		long gitTutorProjectId = gitProjectService.createLesson(tutorGitId, lessonDto.getTitle());
-		long studentId = 19;
-		long gitStudentProjectId = gitProjectService.forkLesson(gitTutorProjectId, studentId);
+    @PostMapping
+    public ResponseEntity<Long> createLesson(@Valid @RequestBody LessonDto lessonDto) {
+        // TODO this code is only for prototype purposes
+        long tutorGitId = 20;
+        long studentId = 19;
+        gitProjectService.createLesson(tutorGitId, lessonDto.getTitle())
+                .thenCompose((gitTutorProjectId) -> gitProjectService.forkLesson(gitTutorProjectId, studentId))
+                // TODO only for prototype purposes
+                .thenCompose((gitStudentProjectId) -> CompletableFuture.supplyAsync(() -> {
+                    lessonDto.setGitStudentProjectId(gitStudentProjectId);
+                    return gitStudentProjectId;
+                }));
 
-		// TODO only for prototype purposes
-		lessonDto.setGitStudentProjectId(gitStudentProjectId);
-		Long id = lessonService.createLesson(lessonDto);
+        Long id = lessonService.createLesson(lessonDto);
 
 		URI location = ServletUriComponentsBuilder
 				.fromCurrentRequest()
