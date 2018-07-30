@@ -1,26 +1,21 @@
 <ng-template #content let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title">Sign In</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <h4 class="modal-title">Log in to Coddlers</h4>
   </div>
   <div class="modal-body">
     <form [formGroup]="formGroup" (ngSubmit)="signIn(formGroup.value)">
       <div class="form-group">
-        <label for="email">Email address</label>
         <input formControlName="email" type="text" class="form-control"
-               id="email" placeholder="Enter email">
+               id="email" placeholder="john.smith@gmail.com">
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
         <input formControlName="password" type="password" class="form-control"
-               id="password" placeholder="Enter password">
+               id="password" placeholder="Password">
       </div>
       <div class="alert alert-danger" *ngIf="errorMsg != ''">{{ errorMsg }}</div>
 
-      <input type="submit" class="btn btn-primary" value="Sign in" [disabled]="!formGroup.valid">
-      <button type="button" class="btn btn-outline-dark" (click)="c('closed'); $event.preventDefault();">Close</button>
+      <input type="submit" class="btn btn-primary" value="Login" [disabled]="!formGroup.valid">
     </form>
+    <p>Forgot password?</p>
   </div>
 </ng-template>
