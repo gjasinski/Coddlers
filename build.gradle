@@ -1,20 +1,21 @@
 buildscript {
-	ext {
-		springBootVersion = '2.0.0.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath("com.moowork.gradle:gradle-node-plugin:1.2.0")
-	}
+    ext {
+        springBootVersion = '2.0.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("com.moowork.gradle:gradle-node-plugin:1.2.0")
+    }
 }
 
 apply plugin: 'java'
+apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
@@ -25,47 +26,55 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-	mavenCentral()
-	jcenter()
+    mavenCentral()
+    jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
-	runtime('com.h2database:h2')
-	compileOnly('org.projectlombok:lombok')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	compile('org.postgresql:postgresql:9.4-1206-jdbc42')
-	compile('io.springfox:springfox-swagger2:2.9.0')
-	compile('io.springfox:springfox-swagger-ui:2.9.0')
-	compile('org.springframework.boot:spring-boot-starter-security')
-	compile('io.jsonwebtoken:jjwt:0.9.0')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.apache.logging.log4j:log4j-core:2.11.0')
+    compile('org.postgresql:postgresql:9.4-1206-jdbc42')
+    compile('io.springfox:springfox-swagger2:2.9.0')
+    compile('io.springfox:springfox-swagger-ui:2.9.0')
+    compile('org.springframework.boot:spring-boot-starter-security')
+    compile('io.jsonwebtoken:jjwt:0.9.0')
+    compile('javax.mail:javax.mail-api:1.6.1')
+    compile('com.sun.mail:javax.mail:1.6.1')
+    compile('javax.activation:activation:1.1.1')
+    runtime('com.h2database:h2')
+    compileOnly('org.projectlombok:lombok')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.mockito:mockito-all:2.0.2-beta')
+    testCompile 'org.spockframework.spock:spock-core:spock-1.1'
+    testCompile 'org.spockframework.spock:spock-spring:spock-1.1'
+    testCompile 'com.jayway.awaitility:awaitility:1.7.0'
 }
 
 def webappDir = "$projectDir/src/main/webapp"
 sourceSets {
-	main {
-		resources {
-			srcDirs = ["$webappDir/dist", "$projectDir/src/main/resources"]
-		}
-	}
+    main {
+        resources {
+            srcDirs = ["$webappDir/dist", "$projectDir/src/main/resources"]
+        }
+    }
 }
 
 node {
-	version = '10.0.0'
-	npmVersion = '5.6.0'
-	download = true
-	workDir = file("${project.buildDir}/node")
-	nodeModulesDir = file("$webappDir")
+    version = '10.0.0'
+    npmVersion = '5.6.0'
+    download = true
+    workDir = file("${project.buildDir}/node")
+    nodeModulesDir = file("$webappDir")
 }
 
 task buildAngular(type: NpmTask) {
-	args = ['run', 'build']
+    args = ['run', 'build']
 }
 buildAngular.dependsOn(npm_install)
 
 processResources {
-	dependsOn "buildAngular"
+    dependsOn "buildAngular"
 }

@@ -20,22 +20,27 @@ import {StudentTaskPageComponent as StudentTaskPageComponent} from "./components
 import {AddTaskPageComponent} from "./components/teacher/task/add-task-page/add-task-page.component";
 import {TaskService} from "./services/task.service";
 import {EditTaskPageComponent} from "./components/teacher/task/edit-task-page/edit-task-page.component";
-import { AddLessonPageComponent } from './components/teacher/lesson/add-lesson-page/add-lesson-page.component';
-import { LessonPageComponent } from './components/teacher/lesson/lesson-page/lesson-page.component';
-import { EditLessonPageComponent } from './components/teacher/lesson/edit-lesson-page/edit-lesson-page.component';
+import {AddLessonPageComponent} from './components/teacher/lesson/add-lesson-page/add-lesson-page.component';
+import {LessonPageComponent} from './components/teacher/lesson/lesson-page/lesson-page.component';
+import {EditLessonPageComponent} from './components/teacher/lesson/edit-lesson-page/edit-lesson-page.component';
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
-import { StudentLessonPageComponent } from './components/student/lesson-page/student-lesson-page.component';
-import { LandingPageComponent } from './components/common/landing-page/landing-page.component';
-import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
+import {StudentLessonPageComponent} from './components/student/lesson-page/student-lesson-page.component';
+import {LandingPageComponent} from './components/common/landing-page/landing-page.component';
+import {HasAnyAuthorityDirective} from './auth/has-any-authority.directive';
 import {AuthenticationService} from "./auth/authentication.service";
 import {AuthExpiredInterceptor} from "./auth/auth-expired.interceptor";
 import {TokenInterceptor} from "./auth/token-interceptor";
 import {AccountService} from "./services/account.service";
-import { LoginModalComponent } from './components/common/login-modal/login-modal.component';
-import { RegisterModalComponent } from './components/common/register-modal/register-modal.component';
-import { StudentDashboardComponent } from './components/student/dashboard/student-dashboard.component';
-import { TeacherDashboardComponent } from './components/teacher/dashboard/teacher-dashboard.component';
+import {LoginModalComponent} from './components/common/login-modal/login-modal.component';
+import {RegisterModalComponent} from './components/common/register-modal/register-modal.component';
+import {StudentDashboardComponent} from './components/student/dashboard/student-dashboard.component';
+import {TeacherDashboardComponent} from './components/teacher/dashboard/teacher-dashboard.component';
+import {CourseEditionPageComponent} from './components/teacher/course-edition/course-edition-page/course-edition-page.component';
+import {CourseEditionService} from "./services/courseEdition.service";
+import {SubmissionService} from "./services/submission.service";
+import {EditLessonDueDateModalComponent} from "./components/teacher/course-edition/edit-lesson-due-date-modal/edit-lesson-due-date-modal.component";
+
 
 @NgModule({
   declarations: [
@@ -55,10 +60,12 @@ import { TeacherDashboardComponent } from './components/teacher/dashboard/teache
     EditLessonPageComponent,
     EditCoursePageComponent,
     StudentLessonPageComponent,
+    CourseEditionPageComponent,
     LandingPageComponent,
     HasAnyAuthorityDirective,
     LoginModalComponent,
     RegisterModalComponent,
+    EditLessonDueDateModalComponent,
     StudentDashboardComponent,
     TeacherDashboardComponent
   ],
@@ -81,6 +88,8 @@ import { TeacherDashboardComponent } from './components/teacher/dashboard/teache
     CourseService,
     LessonService,
     TaskService,
+    CourseEditionService,
+    SubmissionService,
     DatePipe,
     AuthenticationService,
     AccountService,

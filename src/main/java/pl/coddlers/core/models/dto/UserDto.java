@@ -3,6 +3,7 @@ package pl.coddlers.core.models.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import pl.coddlers.core.security.AccountTypeEnum;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -32,5 +33,5 @@ public class UserDto {
     private String lastname;
 
     @NotNull
-    private String[] userRoles;
+    private AccountTypeEnum[] userRoles;
 }
