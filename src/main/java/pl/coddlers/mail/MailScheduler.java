@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MailScheduler {
     private final MailQueue mailQueue;
 
-    public MailScheduler(MailQueue mailQueue) {
+    MailScheduler(MailQueue mailQueue) {
         this.mailQueue = mailQueue;
     }
 
