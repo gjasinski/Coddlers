@@ -56,11 +56,11 @@ export class RegisterModalComponent implements OnInit, OnDestroy {
 
   open() {
     this.modalRefNgb = this.modalService.open(this.modalRef);
-    this.modalRefNgb.result.then((result) => {
-      console.log(`closed ${result}`);
-    }, (reason) => {
-      console.log(`dismissed ${reason}`);
-    });
+    // this.modalRefNgb.result.then((result) => {
+    //   console.log(`closed ${result}`);
+    // }, (reason) => {
+    //   console.log(`dismissed ${reason}`);
+    // });
   }
 
   register(form): void {

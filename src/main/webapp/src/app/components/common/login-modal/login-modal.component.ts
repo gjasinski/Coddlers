@@ -52,11 +52,6 @@ export class LoginModalComponent implements OnInit, OnDestroy {
 
   open() {
     this.modalRefNgb = this.modalService.open(this.modalRef);
-    this.modalRefNgb.result.then((result) => {
-      console.log(`closed ${result}`);
-    }, (reason) => {
-      console.log(`dismissed ${reason}`);
-    });
   }
 
   login(form): void {
