@@ -18,13 +18,14 @@ import java.util.function.Supplier;
 
 @Service
 public class GitUserService {
-	private static final String PRIVATE_TOKEN = "private_token";
+    private static final String PRIVATE_TOKEN = "private_token";
 	private static final String SKIP_CONFIRMATION = "skip_confirmation";
 	private static final String NAME = "name";
 	private static final String USERNAME = "username";
 	private static final String PASSWORD = "password";
 	private static final String EMAIL = "email";
-	private RestTemplate restTemplate;
+    private static final String USERS = "/users";
+    private RestTemplate restTemplate;
 
 	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
 	private String gitlabApi;
@@ -45,7 +46,7 @@ public class GitUserService {
 
     private Supplier<Long> createUserSupplier(String email, String name, String username, String password) {
         return () -> {
-            String resourceUrl = gitlabApi + "/users";
+            String resourceUrl = gitlabApi + USERS;
 
             HttpHeaders headers = getHttpHeaders();
             UriComponentsBuilder builder = createComponentBuilder(resourceUrl)

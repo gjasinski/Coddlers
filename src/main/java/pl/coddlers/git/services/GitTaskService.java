@@ -27,12 +27,14 @@ import java.util.function.Supplier;
 @Service
 public class GitTaskService {
     private static final String MASTER_POSTFIX = "-master";
-    private static final String DEVELOP = "-develop";
+    private static final String DEVELOP_POSTFIX = "-develop";
     private static final String REPOSITORY_ID = "repositoryId";
     private static final String BRANCH = "branch";
     private static final String REF = "ref";
     private static final String MASTER = "master";
     private static final String PRIVATE_TOKEN = "private_token";
+    private static final String PROJECTS = "/projects/";
+    private static final String REPOSITORY_BRANCHES = "/repository/branches";
 
     private final HookRepository hookRepository;
 
@@ -60,7 +62,7 @@ public class GitTaskService {
 
     private Supplier<Boolean> createTaskSupplier(long repositoryId, String taskName) {
         return () -> {
-            Future<Boolean> develop = createBranch(repositoryId, taskName + DEVELOP);
+            Future<Boolean> develop = createBranch(repositoryId, taskName + DEVELOP_POSTFIX);
             Future<Boolean> master = createBranch(repositoryId, taskName + MASTER_POSTFIX);
             try {
                 Boolean createdDevelop = develop.get(timeout, TimeUnit.MILLISECONDS);
@@ -120,7 +122,7 @@ public class GitTaskService {
     }
 
     private String createApiUrl(long repositoryId) {
-        return gitlabApi + " /projects/" + repositoryId + "/repository/branches";
+        return gitlabApi + PROJECTS + repositoryId + REPOSITORY_BRANCHES;
     }
 
     private Hook createHook(Long projectId, String branchName) {

@@ -38,7 +38,7 @@ public class GitLessonService {
 	@Value("${pl.coddlers.git.host}:${pl.coddlers.git.port}${pl.coddlers.git.event.url}")
 	private String gitEventEndpoint;
 
-    @Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}" + "/" + PROJECTS)
+    @Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}" + "/" + PROJECTS + "/")
 	private String gitlabApiProjects;
 
 	@Value("${gitlab.api.apiuser.private_token}")
@@ -63,7 +63,7 @@ public class GitLessonService {
 
     private Supplier<Long> createLessonSupplier(long tutorGitId, String lessonName) {
         return () -> {
-            String resourceUrl = gitlabApiProjects + "/" + USER + tutorGitId;
+            String resourceUrl = gitlabApiProjects + USER + tutorGitId;
 
             HttpHeaders headers = getHttpHeaders();
 
@@ -91,7 +91,7 @@ public class GitLessonService {
 
     private Supplier<Long> forkLessonSupplier(Long lessonId, Long userId) {
         return () -> {
-            String resourceUrl = gitlabApiProjects + "/" + lessonId + FORK;
+            String resourceUrl = gitlabApiProjects + lessonId + FORK;
             HttpHeaders headers = getHttpHeaders();
 
             UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
@@ -111,7 +111,7 @@ public class GitLessonService {
     }
 
 	private void createGitHook(Long projectId) {
-		String resourceUrl = gitlabApiProjects + "/" + projectId + HOOKS;
+		String resourceUrl = gitlabApiProjects + projectId + HOOKS;
 		HttpHeaders headers = getHttpHeaders();
 
 		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
