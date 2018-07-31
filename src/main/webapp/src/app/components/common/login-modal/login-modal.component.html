@@ -3,7 +3,7 @@
     <h4 class="modal-title">Log in to Coddlers</h4>
   </div>
   <div class="modal-body">
-    <form [formGroup]="formGroup" (ngSubmit)="signIn(formGroup.value)">
+    <form [formGroup]="formGroup" (ngSubmit)="login(formGroup.value)">
       <div class="form-group">
         <input formControlName="email" type="text" class="form-control"
                id="email" placeholder="john.smith@gmail.com">

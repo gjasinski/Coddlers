@@ -4,20 +4,17 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {EventService} from "../../../services/event.service";
 import {AuthenticationService} from "../../../auth/authentication.service";
-import {Router} from "@angular/router";
 import {throwError} from "rxjs/internal/observable/throwError";
 import {Observable} from "rxjs/internal/Observable";
 import {catchError} from "rxjs/operators";
-import {User} from "../../../models/user";
-import {AccountTypesConstants} from "../../../constants/account-types.constants";
 import {PrincipalService} from "../../../auth/principal.service";
 
 @Component({
-  selector: 'cod-sign-in-modal',
-  templateUrl: './sign-in-modal.component.html',
-  styleUrls: ['./sign-in-modal.component.scss']
+  selector: 'cod-login-modal',
+  templateUrl: './login-modal.component.html',
+  styleUrls: ['./login-modal.component.scss']
 })
-export class SignInModalComponent implements OnInit, OnDestroy {
+export class LoginModalComponent implements OnInit, OnDestroy {
   private formGroup: FormGroup;
   private eventSubscription: Subscription;
   errorMsg: string = '';
@@ -31,18 +28,19 @@ export class SignInModalComponent implements OnInit, OnDestroy {
               private eventService: EventService,
               private formBuilder: FormBuilder,
               private authService: AuthenticationService,
-              private principalService: PrincipalService) {}
+              private principalService: PrincipalService) {
+  }
 
   ngOnInit() {
     this.formGroup = this.formBuilder.group({
-      'email': ['', Validators.compose([Validators.required, Validators.minLength(3),
+      'email': ['', Validators.compose([Validators.required, Validators.email, Validators.minLength(4),
         Validators.maxLength(50)])],
-      'password': ['', Validators.compose([Validators.required, Validators.minLength(3),
+      'password': ['', Validators.compose([Validators.required, Validators.minLength(4),
         Validators.maxLength(50)])]
     });
 
     this.eventSubscription = this.eventService.events.subscribe((str: string) => {
-      if (str === 'open-sign-in-modal') {
+      if (str === 'open-login-modal') {
         this.open();
       }
     });
@@ -61,7 +59,7 @@ export class SignInModalComponent implements OnInit, OnDestroy {
     });
   }
 
-  signIn(form): void {
+  login(form): void {
     this.authService.login(form.email, form.password)
       .pipe(
         catchError((err: any, caught: Observable<Response>) => {

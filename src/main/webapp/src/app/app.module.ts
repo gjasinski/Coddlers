@@ -32,8 +32,8 @@ import {AuthenticationService} from "./auth/authentication.service";
 import {AuthExpiredInterceptor} from "./auth/auth-expired.interceptor";
 import {TokenInterceptor} from "./auth/token-interceptor";
 import {AccountService} from "./services/account.service";
-import { SignInModalComponent } from './components/common/sign-in-modal/sign-in-modal.component';
-import { SignUpModalComponent } from './components/common/sign-up-modal/sign-up-modal.component';
+import { LoginModalComponent } from './components/common/login-modal/login-modal.component';
+import { RegisterModalComponent } from './components/common/register-modal/register-modal.component';
 import { StudentDashboardComponent } from './components/student/dashboard/student-dashboard.component';
 import { TeacherDashboardComponent } from './components/teacher/dashboard/teacher-dashboard.component';
 
@@ -57,8 +57,8 @@ import { TeacherDashboardComponent } from './components/teacher/dashboard/teache
     StudentLessonPageComponent,
     LandingPageComponent,
     HasAnyAuthorityDirective,
-    SignInModalComponent,
-    SignUpModalComponent,
+    LoginModalComponent,
+    RegisterModalComponent,
     StudentDashboardComponent,
     TeacherDashboardComponent
   ],

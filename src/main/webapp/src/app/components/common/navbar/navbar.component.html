@@ -19,15 +19,15 @@
       </ul>
 
       <ul class="navbar-nav justify-content-end">
-        <li *ngIf="!authService.isSignedIn()" class="nav-item" routerLinkActive="active">
-          <a class="nav-link" (click)="openSignInModal($event)">Login</a>
+        <li *ngIf="!authService.isLoggedIn()" class="nav-item" routerLinkActive="active">
+          <a class="nav-link" (click)="openLoginModal($event)">Login</a>
         </li>
 
-        <li *ngIf="!authService.isSignedIn()" class="nav-item" routerLinkActive="active">
-          <a class="nav-link" (click)="openSignUpModal($event)">Register</a>
+        <li *ngIf="!authService.isLoggedIn()" class="nav-item" routerLinkActive="active">
+          <a class="nav-link" (click)="openRegisterModal($event)">Register</a>
         </li>
 
-        <li *ngIf="authService.isSignedIn()" class="nav-item">
+        <li *ngIf="authService.isLoggedIn()" class="nav-item">
           <a class="nav-link" (click)="logout($event)">Logout</a>
         </li>
       </ul>

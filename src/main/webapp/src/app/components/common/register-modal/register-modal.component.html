@@ -3,8 +3,8 @@
     <h4 class="modal-title">Register an account</h4>
   </div>
   <div class="modal-body">
-    <p style="margin-bottom: 10px">How are you? :)</p>
-    <form [formGroup]="formGroup" (ngSubmit)="signUp(formGroup.value)">
+    <p>How are you? :)</p>
+    <form [formGroup]="formGroup" (ngSubmit)="register(formGroup.value)">
       <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary" [class.active]="formGroup.controls.userRole.value === 'student'">
           <input formControlName="userRole" value="student" type="radio" name="userRole"
@@ -17,10 +17,10 @@
       </div>
 
       <div class="form-group">
-        <input formControlName="firstname" type="text" class="form-control" id="firstname" placeholder="First name">
-      </div>
-      <div class="form-group">
-        <input formControlName="lastname" type="text" class="form-control" id="lastname" placeholder="Last name">
+        <input formControlName="firstname" type="text" class="form-control form-control-firstName" id="firstname" placeholder="First name">
+      <!--</div>-->
+      <!--<div class="form-group">-->
+        <input formControlName="lastname" type="text" class="form-control form-control-lastName" id="lastname" placeholder="Last name">
       </div>
       <div class="form-group">
         <input formControlName="email" type="text" class="form-control" id="email" placeholder="Email">
