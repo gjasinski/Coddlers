@@ -2,12 +2,10 @@ package pl.coddlers.core.models.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.coddlers.core.exceptions.CourseNotFoundException;
 import pl.coddlers.core.models.dto.LessonDto;
 import pl.coddlers.core.models.entity.Lesson;
-import pl.coddlers.core.models.entity.Course;
-import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.CourseRepository;
+import pl.coddlers.core.repositories.LessonRepository;
 
 @Component
 public class LessonConverter implements BaseConverter<Lesson, LessonDto> {

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.dto.TaskDto;
 import pl.coddlers.core.models.entity.Lesson;
-import pl.coddlers.core.models.entity.SubmissionStatusType;
 import pl.coddlers.core.models.entity.Task;
 import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.TaskRepository;
