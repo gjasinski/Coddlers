@@ -11,15 +11,21 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.coddlers.git.Exceptions.GitErrorHandler;
 import pl.coddlers.git.models.ResponseWithIdDto;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Supplier;
+
 @Service
 public class GitUserService {
-	private static final String PRIVATE_TOKEN = "private_token";
+    private static final String PRIVATE_TOKEN = "private_token";
 	private static final String SKIP_CONFIRMATION = "skip_confirmation";
 	private static final String NAME = "name";
 	private static final String USERNAME = "username";
 	private static final String PASSWORD = "password";
 	private static final String EMAIL = "email";
-	private RestTemplate restTemplate;
+    private static final String USERS = "/users";
+    private RestTemplate restTemplate;
 
 	@Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
 	private String gitlabApi;
@@ -27,33 +33,40 @@ public class GitUserService {
 	@Value("${gitlab.api.apiuser.private_token}")
 	private String privateToken;
 
-	public GitUserService() {
-		this.restTemplate = new RestTemplate();
-		this.restTemplate.setErrorHandler(new GitErrorHandler());
-	}
+    private ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
 
-	public Long createUser(String email, String name, String username, String password) {
-		String resourceUrl = gitlabApi + "/users";
+    public GitUserService() {
+        this.restTemplate = new RestTemplate();
+        this.restTemplate.setErrorHandler(new GitErrorHandler());
+    }
 
-		HttpHeaders headers = getHttpHeaders();
-		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-				.queryParam(EMAIL, email)
-				.queryParam(PASSWORD, password)
-				.queryParam(USERNAME, username)
-				.queryParam(NAME, name)
-				.queryParam(SKIP_CONFIRMATION, Boolean.TRUE);
+    public CompletableFuture<Long> createUser(String email, String name, String username, String password) {
+        return CompletableFuture.supplyAsync(createUserSupplier(email, name, username, password), executor);
+    }
 
+    private Supplier<Long> createUserSupplier(String email, String name, String username, String password) {
+        return () -> {
+            String resourceUrl = gitlabApi + USERS;
 
-		HttpEntity<?> entity = new HttpEntity<>(headers);
+            HttpHeaders headers = getHttpHeaders();
+            UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
+                    .queryParam(EMAIL, email)
+                    .queryParam(PASSWORD, password)
+                    .queryParam(USERNAME, username)
+                    .queryParam(NAME, name)
+                    .queryParam(SKIP_CONFIRMATION, Boolean.TRUE);
 
-		return restTemplate.exchange(
-				builder.build().toUriString(),
-				HttpMethod.POST,
-				entity,
-				ResponseWithIdDto.class)
-				.getBody()
-				.getId();
-	}
+            HttpEntity<?> entity = new HttpEntity<>(headers);
+
+            return restTemplate.exchange(
+                    builder.build().toUriString(),
+                    HttpMethod.POST,
+                    entity,
+                    ResponseWithIdDto.class)
+                    .getBody()
+                    .getId();
+        };
+    }
 
 	private HttpHeaders getHttpHeaders() {
 		HttpHeaders headers = new HttpHeaders();

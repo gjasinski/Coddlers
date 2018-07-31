@@ -1,5 +1,5 @@
 <div class="col-md-4">
-  <h1 routerLink="/courses/{{course?.id}}" style="cursor: pointer">{{course?.title}}</h1>
+  <h1 routerLink="/courses/{{course?.id}}">{{course?.title}}</h1>
 </div>
 <div *ngIf="route.children.length === 0" class="content-container">
   <div class="row">
@@ -23,12 +23,12 @@
             </button>
 
             <div *ngIf="shouldShowLesson(i)">
-              <button class="btn in-table-button">Go to lesson view</button>
-              <button class="btn">Edit lesson due date</button>
+              <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
+              <button class="btn" (click)="openEditLessonDueDateModal($event)">Edit lesson due date</button>
 
               <div *ngFor="let task of courseMap.get(lesson)">
                 <br>
-                <h5 (click)="changeVisibilityForSubmissions(task)" style="cursor: pointer">{{task.title}}</h5>
+                <h5 (click)="changeVisibilityForSubmissions(task)">{{task.title}}</h5>
 
                 <table *ngIf="shouldShowSubmissions(task)" class="table tasks-table">
                   <thead>
@@ -48,7 +48,9 @@
                     <td>{{submission.author.firstname}} {{submission.author.lastname}}</td>
                     <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
                     <td>{{submission.submissionStatusType.name}}</td>
-                    <td></td>
+                    <td>
+                      <img src='assets/img/{{submission.submissionStatusType.name}}.png'/>
+                    </td>
                     <td>{{submission.points}}</td>
                     <td>
                       <div class="dots"></div>
@@ -71,3 +73,4 @@
 </div>
 
 <router-outlet></router-outlet>
+<cod-edit-lesson-due-date-modal></cod-edit-lesson-due-date-modal>

@@ -4,13 +4,14 @@ import {Lesson} from "../../../../models/lesson";
 import {CourseEdition} from "../../../../models/courseEdition";
 import {Task} from "../../../../models/task";
 import {CourseService} from "../../../../services/course.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {CourseEditionService} from "../../../../services/courseEdition.service";
 import {LessonService} from "../../../../services/lesson.service";
 import {TaskService} from "../../../../services/task.service";
 import {Submission} from "../../../../models/submission";
 import {SubmissionService} from "../../../../services/submission.service";
 import {switchMap, tap} from "rxjs/operators";
+import {EventService} from "../../../../services/event.service";
 
 @Component({
   selector: 'app-edition-page',
@@ -30,6 +31,8 @@ export class CourseEditionPageComponent implements OnInit {
               private lessonService: LessonService,
               private taskService: TaskService,
               private submissionService: SubmissionService,
+              private router: Router,
+              public eventService: EventService,
               private route: ActivatedRoute) {
   }
 
@@ -92,5 +95,13 @@ export class CourseEditionPageComponent implements OnInit {
 
   shouldShowSubmissions(task: Task) {
     return this.showSubmissionsMap.get(task)
+  }
+
+  navigateToLesson(lesson: Lesson) {
+    this.router.navigate(["courses", this.course.id, "lessons", lesson.id]);
+  }
+
+  openEditLessonDueDateModal() {
+    this.eventService.emit('open-edit-lesson-due-date-modal');
   }
 }
