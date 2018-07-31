@@ -24,7 +24,7 @@
 
             <div *ngIf="shouldShowLesson(i)">
               <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
-              <button class="btn">Edit lesson due date</button>
+              <button class="btn" (click)="openEditLessonDueDateModal($event)">Edit lesson due date</button>
 
               <div *ngFor="let task of courseMap.get(lesson)">
                 <br>
@@ -73,3 +73,4 @@
 </div>
 
 <router-outlet></router-outlet>
+<cod-edit-lesson-due-date-modal></cod-edit-lesson-due-date-modal>

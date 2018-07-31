@@ -11,6 +11,7 @@ import {TaskService} from "../../../../services/task.service";
 import {Submission} from "../../../../models/submission";
 import {SubmissionService} from "../../../../services/submission.service";
 import {switchMap, tap} from "rxjs/operators";
+import {EventService} from "../../../../services/event.service";
 
 @Component({
   selector: 'app-edition-page',
@@ -31,6 +32,7 @@ export class CourseEditionPageComponent implements OnInit {
               private taskService: TaskService,
               private submissionService: SubmissionService,
               private router: Router,
+              public eventService: EventService,
               private route: ActivatedRoute) {
   }
 
@@ -97,5 +99,9 @@ export class CourseEditionPageComponent implements OnInit {
 
   navigateToLesson(lesson: Lesson) {
     this.router.navigate(["courses", this.course.id, "lessons", lesson.id]);
+  }
+
+  openEditLessonDueDateModal() {
+    this.eventService.emit('open-edit-lesson-due-date-modal');
   }
 }
