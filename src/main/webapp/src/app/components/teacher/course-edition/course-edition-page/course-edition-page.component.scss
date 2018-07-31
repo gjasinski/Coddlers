@@ -1,0 +1,27 @@
+h1 {
+  color: white;
+  cursor: pointer
+}
+
+h5 {
+  cursor: pointer;
+}
+
+.lesson-button {
+  width: 100%;
+  margin: 4px;
+}
+
+.in-table-button {
+  margin: 4px;
+}
+
+.dots:after {
+  content: '\2807';
+  cursor: pointer;
+}
+
+img {
+  width: 1.2rem;
+  height: 1rem;
+}
