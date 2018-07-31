@@ -35,4 +35,30 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "account_type_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
     private Set<AccountType> accountTypes = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
+    private Set<CourseEdition> courseEditions = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = Teacher.class)
+    private Set<Teacher> teacherInCourse = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_groups",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id")})
+    private Set<Group> groups = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = StudentLessonRepository.class)
+    private Set<StudentLessonRepository> studentLessonRepositories = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = Submission.class)
+    private Set<Submission> submissions = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = CourseGrade.class)
+    private Set<CourseGrade> courseGrades = new HashSet<>();
 }

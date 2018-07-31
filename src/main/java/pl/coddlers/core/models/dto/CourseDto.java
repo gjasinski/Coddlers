@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.sql.Timestamp;
 
 @Data
 public class CourseDto {
@@ -16,11 +15,4 @@ public class CourseDto {
 
     @Size(max = 255)
     private String description;
-
-    @NotNull
-    private Timestamp startDate;
-
-    @NotNull
-    private Timestamp endDate;
-
 }

@@ -22,7 +22,7 @@ public class SubmissionConverter implements BaseConverter<Submission, Submission
 		SubmissionDto submissionDto = new SubmissionDto();
 		submissionDto.setId(entity.getId());
 		submissionDto.setTask(entity.getTask());
-		submissionDto.setAuthor(entity.getAuthor());
+		submissionDto.setUser(entity.getUser());
 		submissionDto.setSubmissionTime(entity.getSubmissionTime());
 		submissionDto.setPoints(entity.getPoints());
 		submissionDto.setSubmissionStatusType(entity.getSubmissionStatusType());
@@ -38,7 +38,7 @@ public class SubmissionConverter implements BaseConverter<Submission, Submission
 			submission.setId(dto.getId());
 		}
 
-		submission.setAuthor(dto.getAuthor());
+		submission.setUser(dto.getUser());
 		submission.setSubmissionTime(dto.getSubmissionTime());
 		submission.setPoints(dto.getPoints());
 		submission.setTask(dto.getTask());

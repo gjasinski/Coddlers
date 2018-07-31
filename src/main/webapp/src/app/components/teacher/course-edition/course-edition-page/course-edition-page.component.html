@@ -45,7 +45,7 @@
                   <tbody>
                   <tr *ngFor="let submission of submissionsMap.get(task); let j = index" [attr.data-index]="j">
                     <td>{{j+1}}</td>
-                    <td>{{submission.author.firstname}} {{submission.author.lastname}}</td>
+                    <td>{{submission.user.firstname}} {{submission.user.lastname}}</td>
                     <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
                     <td>{{submission.submissionStatusType.name}}</td>
                     <td>

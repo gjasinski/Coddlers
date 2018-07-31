@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,20 +21,15 @@ public class Course {
 
     private String description;
 
-    @Column(nullable = false)
-    private Timestamp startDate;
-
-    @Column(nullable = false)
-    private Timestamp endDate;
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", targetEntity = CourseVersion.class)
+    private List<CourseVersion> courseVersion = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "course", targetEntity = Lesson.class)
-    private List<Lesson> lessonList = new ArrayList<>();
+    @OneToMany(mappedBy = "course", targetEntity = CourseGrade.class)
+    private List<CourseGrade> courseGrades = new ArrayList<>();
 
-    public Course(String title, String description, Timestamp startDate, Timestamp endDate) {
-        this.title = title;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", targetEntity = Teacher.class)
+    private List<Teacher> teachers = new ArrayList<>();
 }

@@ -16,7 +16,7 @@ public class SubmissionDto {
     private Task task;
 
     @NotNull
-    private User author;
+    private User user;
 
     @NotNull
     private Timestamp submissionTime;

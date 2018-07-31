@@ -25,4 +25,21 @@ public class CourseVersion {
     @JsonIgnore
     @OneToMany(mappedBy = "courseVersion", targetEntity = CourseEdition.class)
     private List<CourseEdition> courseEditions;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseVersion", targetEntity = Lesson.class)
+    private List<Lesson> lessons;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseVersion", targetEntity = Note.class)
+    private List<Note> notes;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseVersion", targetEntity = CourseVersionLessonRepository.class)
+    private List<CourseVersionLessonRepository> courseLessonRepositories;
+
+    public CourseVersion(Integer versionNumber, Course course) {
+        this.versionNumber = versionNumber;
+        this.course = course;
+    }
 }

@@ -6,7 +6,6 @@ import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.dto.TaskDto;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.Task;
-import pl.coddlers.core.models.entity.TaskStatus;
 import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.TaskRepository;
 
@@ -31,7 +30,7 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 		taskDto.setTitle(entity.getTitle());
 		taskDto.setDescription(entity.getDescription());
 		taskDto.setMaxPoints(entity.getMaxPoints());
-		taskDto.setTaskStatus(entity.getTaskStatus());
+		taskDto.setIsCodeTask(entity.getIsCodeTask());
 
 		return taskDto;
 	}
@@ -51,12 +50,7 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 		task.setDescription(dto.getDescription());
 		task.setMaxPoints(dto.getMaxPoints());
 		task.setLesson(lesson);
-
-		if (dto.getTaskStatus() == null) {
-			task.setTaskStatus(TaskStatus.NOT_SUBMITTED);
-		} else {
-			task.setTaskStatus(dto.getTaskStatus());
-		}
+		task.setIsCodeTask(dto.getIsCodeTask());
 
 		return task;
 	}

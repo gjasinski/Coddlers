@@ -37,12 +37,12 @@ public class LessonController {
     @PostMapping
     public ResponseEntity<Long> createLesson(@Valid @RequestBody LessonDto lessonDto) throws ExecutionException, InterruptedException {
         // TODO this code is only for prototype purposes
-        long tutorGitId = 20;
-        long studentId = 19;
-        Long gitStudentProjectId = gitProjectService.createLesson(tutorGitId, lessonDto.getTitle())
-                .thenCompose((gitTutorProjectId) -> gitProjectService.forkLesson(gitTutorProjectId, studentId)).get();
+//        long tutorGitId = 20;
+//        long studentId = 19;
+//        Long gitStudentProjectId = gitProjectService.createLesson(tutorGitId, lessonDto.getTitle())
+//                .thenCompose((gitTutorProjectId) -> gitProjectService.forkLesson(gitTutorProjectId, studentId)).get();
         // TODO only for prototype purposes
-        lessonDto.setGitStudentProjectId(gitStudentProjectId);
+//        lessonDto.setGitStudentProjectId(gitStudentProjectId);
 
         Long id = lessonService.createLesson(lessonDto);
 
@@ -55,10 +55,11 @@ public class LessonController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(params = {"courseId"})
-    public ResponseEntity<Collection<LessonDto>> getLessons(@RequestParam(value = "courseId") Long courseId) {
-        return ResponseEntity.ok(lessonService.getAllCoursesLessons(courseId));
-    }
+	@GetMapping(params = {"courseId", "courseVersion"})
+	public ResponseEntity<Collection<LessonDto>> getLessons(@RequestParam(value = "courseId") Long courseId,
+                                                            @RequestParam(value = "courseVersion") Integer courseVersion) {
+		return ResponseEntity.ok(lessonService.getAllCourseVersionLessons(courseId, courseVersion));
+	}
 
     @GetMapping(value = "{id}")
     public ResponseEntity<LessonDto> getLesson(@PathVariable Long id) {

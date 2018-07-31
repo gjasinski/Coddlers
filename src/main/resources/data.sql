@@ -12,3 +12,9 @@ INSERT INTO user_account_type (user_id, account_type_name) VALUES
   (1, 'ROLE_ADMIN'),
   (2, 'ROLE_STUDENT'),
   (3, 'ROLE_TEACHER');
+
+INSERT INTO submission_status_type (name) VALUES
+  ('NOT_SUBMITTED'),
+  ('WAITING_FOR_REVIEW'),
+  ('GRADED'),
+  ('CHANGES_REQUESTED');
