@@ -1,14 +1,14 @@
 <div class="col-md-4">
-  <h1 routerLink="/courses/{{course.id}}">{{course.title}}</h1>
+  <h1 routerLink="/courses/{{course?.id}}">{{course?.title}}</h1>
 </div>
 <div *ngIf="route.children.length === 0" class="content-container">
   <div class="row">
     <div class="col-md-10">
       <div class="row">
         <div class="col-12">
-          <h2>CourseEdition - {{edition.title}}</h2>
-          <h6>{{edition.id}}/v{{edition.courseVersion.versionNumber}}/{{edition.startDate | date: 'dd MMMM yyyy'}} -
-            {{edition.course.endDate | date: 'dd MMMM yyyy'}}</h6>
+          <h2>CourseEdition - {{edition?.title}}</h2>
+          <h6>{{edition?.id}}/v{{edition?.courseVersion.versionNumber}}/{{edition?.startDate | date: 'dd MMMM yyyy'}} -
+            {{edition?.course.endDate | date: 'dd MMMM yyyy'}}</h6>
 
           <div class="line"></div>
           <br>
@@ -48,7 +48,9 @@
                     <td>{{submission.author.firstname}} {{submission.author.lastname}}</td>
                     <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
                     <td>{{submission.submissionStatusType.name}}</td>
-                    <td></td>
+                    <td>
+                      <img src='assets/img/{{submission.submissionStatusType.name}}.png'/>
+                    </td>
                     <td>{{submission.points}}</td>
                     <td>
                       <div class="dots"></div>
