@@ -21,9 +21,7 @@ export class AddCoursePageComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(100)])],
-      'description': '',
-      'startDate': [null, Validators.required],
-      'endDate': [null, Validators.required]
+      'description': ''
     });
   }
 
@@ -31,9 +29,7 @@ export class AddCoursePageComponent implements OnInit {
     this.courseService.createCourse(new Course(
       null,
       course.title,
-      course.description,
-      new Date(course.startDate.year, course.startDate.month - 1, course.startDate.day),
-      new Date(course.endDate.year, course.endDate.month - 1, course.endDate.day)
+      course.description
       )
     ).subscribe(obj => {
       this._location.back();
