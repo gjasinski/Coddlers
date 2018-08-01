@@ -13,12 +13,12 @@ export class NavbarComponent {
   constructor(public authService: AuthenticationService,
               public eventService: EventService) {}
 
-  openSignInModal(): void {
-    this.eventService.emit('open-sign-in-modal');
+  openLoginModal(): void {
+    this.eventService.emit('open-login-modal');
   }
 
-  openSignUpModal(): void {
-    this.eventService.emit('open-sign-up-modal');
+  openRegisterModal(): void {
+    this.eventService.emit('open-register-modal');
   }
 
   logout(): void {

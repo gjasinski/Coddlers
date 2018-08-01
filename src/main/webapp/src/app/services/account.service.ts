@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {User} from "../models/user";
-import {Observable, ObservableLike} from "rxjs/index";
+import {Observable} from "rxjs/index";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map, tap} from "rxjs/operators";
 import {Router} from "@angular/router";
-import {Course} from "../models/course";
 
 @Injectable()
 export class AccountService {
