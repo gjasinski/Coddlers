@@ -56,7 +56,7 @@ export class AuthenticationService {
     }
   }
 
-  isSignedIn(): boolean {
+  isLoggedIn(): boolean {
     return localStorage.getItem('jwt') !== null;
   }
 

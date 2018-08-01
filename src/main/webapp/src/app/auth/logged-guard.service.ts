@@ -14,7 +14,7 @@ export class LoggedGuardService implements CanActivate {
               private principalService: PrincipalService) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.authService.isSignedIn()) {
+    if (this.authService.isLoggedIn()) {
       return this.principalService.redirectToRoleRootRoute()
         .then(() => false);
 

@@ -9,14 +9,13 @@ import {User} from "../../../models/user";
 import {AccountTypesConstants} from "../../../constants/account-types.constants";
 
 @Component({
-  selector: 'cod-sign-up-modal',
-  templateUrl: './sign-up-modal.component.html',
-  styleUrls: ['./sign-up-modal.component.scss']
+  selector: 'cod-register-modal',
+  templateUrl: './register-modal.component.html',
+  styleUrls: ['./register-modal.component.scss']
 })
-export class SignUpModalComponent implements OnInit, OnDestroy {
+export class RegisterModalComponent implements OnInit, OnDestroy {
   private formGroup: FormGroup;
   private eventSubscription: Subscription;
-  private selectedRole: string = 'student';
 
   @ViewChild('content')
   private modalRef: TemplateRef<any>;
@@ -26,25 +25,26 @@ export class SignUpModalComponent implements OnInit, OnDestroy {
   constructor(private modalService: NgbModal,
               private eventService: EventService,
               private formBuilder: FormBuilder,
-              private accountService: AccountService) { }
+              private accountService: AccountService) {
+  }
 
   ngOnInit(): void {
     this.formGroup = this.formBuilder.group({
       'userRole': ['student', Validators.compose([Validators.required])],
       'firstname': ['', Validators.compose([Validators.required, Validators.minLength(1)])],
       'lastname': ['', Validators.compose([Validators.required, Validators.minLength(1)])],
-      'email': ['', Validators.compose([Validators.required, Validators.minLength(3),
+      'email': ['', Validators.compose([Validators.required, Validators.email, Validators.minLength(4),
         Validators.maxLength(50)])],
-      'password': ['', Validators.compose([Validators.required, Validators.minLength(3),
+      'password': ['', Validators.compose([Validators.required, Validators.minLength(4),
         Validators.maxLength(50)])],
-      'passwordRepeat': ['', Validators.compose([Validators.required, Validators.minLength(3),
+      'passwordRepeat': ['', Validators.compose([Validators.required, Validators.minLength(4),
         Validators.maxLength(50)])],
     }, {
       validator: PasswordValidation.MatchPassword
     });
 
     this.eventSubscription = this.eventService.events.subscribe((str: string) => {
-      if (str === 'open-sign-up-modal') {
+      if (str === 'open-register-modal') {
         this.open();
       }
     });
@@ -56,14 +56,14 @@ export class SignUpModalComponent implements OnInit, OnDestroy {
 
   open() {
     this.modalRefNgb = this.modalService.open(this.modalRef);
-    this.modalRefNgb.result.then((result) => {
-      console.log(`closed ${result}`);
-    }, (reason) => {
-      console.log(`dismissed ${reason}`);
-    });
+    // this.modalRefNgb.result.then((result) => {
+    //   console.log(`closed ${result}`);
+    // }, (reason) => {
+    //   console.log(`dismissed ${reason}`);
+    // });
   }
 
-  signUp(form): void {
+  register(form): void {
     console.log(form);
 
     let userRoles: string[] = [];
