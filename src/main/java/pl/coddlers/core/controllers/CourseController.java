@@ -31,7 +31,7 @@ public class CourseController {
 		this.courseService = courseService;
 	}
 
-	@PreAuthorize("hasRole('ROLE_TEACHER')")
+	@PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<Void> createCourse(@Valid @RequestBody CourseDto courseDto) {
 		Course course = courseService.createCourse(courseDto);
@@ -49,11 +49,13 @@ public class CourseController {
 		return ResponseEntity.ok(courseService.getCourses());
 	}
 
+	// TODO should be secured, it cannot be secured with simple annotation
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<CourseDto> getCourse(@PathVariable Long id) {
 		return ResponseEntity.ok(courseService.getCourseById(id));
 	}
 
+	@PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
 	@PutMapping
 	public ResponseEntity<Void> updateCourse(@Valid @RequestBody CourseDto courseDto) {
 		courseService.updateCourse(courseDto);

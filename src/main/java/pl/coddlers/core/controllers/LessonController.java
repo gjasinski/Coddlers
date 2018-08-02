@@ -57,7 +57,7 @@ public class LessonController {
 
 	@GetMapping(params = {"courseId", "courseVersion"})
 	public ResponseEntity<Collection<LessonDto>> getLessons(@RequestParam(value = "courseId") Long courseId,
-                                                            @RequestParam(value = "courseVersion") Integer courseVersion) {
+                                                            @RequestParam(value = "courseVersion", required = false) Integer courseVersion) {
 		return ResponseEntity.ok(lessonService.getAllCourseVersionLessons(courseId, courseVersion));
 	}
 
