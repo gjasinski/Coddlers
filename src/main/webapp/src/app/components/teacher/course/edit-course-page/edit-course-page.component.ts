@@ -4,10 +4,9 @@ import {CourseService} from "../../../../services/course.service";
 import {Location} from '@angular/common';
 import {Course} from "../../../../models/course";
 import {ActivatedRoute} from "@angular/router";
-import {DatePipe} from '@angular/common';
 
 @Component({
-  selector: 'cod-edit-task-page',
+  selector: 'cod-edit-course-page',
   templateUrl: './edit-course-page.component.html',
   styleUrls: ['./edit-course-page.component.scss']
 })
@@ -18,8 +17,7 @@ export class EditCoursePageComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private courseService: CourseService,
               private route: ActivatedRoute,
-              private _location: Location,
-              private datePipe: DatePipe) {
+              private _location: Location) {
   }
 
   ngOnInit(): void {
@@ -31,17 +29,7 @@ export class EditCoursePageComponent implements OnInit {
 
             this.formGroup.setValue({
               title: this.course.title,
-              description: this.course.description,
-              startDate: {
-                day: this.course.startDate.getDate(),
-                month: this.course.startDate.getMonth() + 1,
-                year: this.course.startDate.getFullYear()
-              },
-              endDate: {
-                day: this.course.endDate.getDate(),
-                month: this.course.endDate.getMonth() + 1,
-                year: this.course.endDate.getFullYear()
-              },
+              description: this.course.description
             });
           }
         );
@@ -50,16 +38,12 @@ export class EditCoursePageComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(100)])],
-      'description': '',
-      'startDate': [null, Validators.required],
-      'endDate': [null, Validators.required]
+      'description': ''
     });
   }
 
   updateCourse(course) {
-    this.courseService.updateCourse(new Course(this.course.id, course.title, course.description,
-      new Date(course.startDate.year, course.startDate.month - 1, course.startDate.day),
-      new Date(course.endDate.year, course.endDate.month - 1, course.endDate.day))
+    this.courseService.updateCourse(new Course(this.course.id, course.title, course.description)
     ).subscribe(obj => {
       this._location.back();
     });
