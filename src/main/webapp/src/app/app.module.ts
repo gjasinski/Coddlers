@@ -7,7 +7,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {RouterModule} from '@angular/router';
 import {ROUTES} from "./app.routes";
 import {CourseService} from "./services/course.service";
-import {CoursesComponent} from "./components/common/courses/courses.component";
+import {CoursesComponent} from "./components/teacher/course/courses/courses.component";
 import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {CourseFilterPipe} from "./filters/course-filter.pipe";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";

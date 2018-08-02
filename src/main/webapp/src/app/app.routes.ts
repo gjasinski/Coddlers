@@ -1,5 +1,5 @@
 import {Routes} from "@angular/router";
-import {CoursesComponent} from "./components/common/courses/courses.component";
+import {CoursesComponent} from "./components/teacher/course/courses/courses.component";
 import {CoursePageComponent} from "./components/teacher/course/course-page/course-page.component";
 import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {AddCoursePageComponent} from "./components/teacher/course/add-course-page/add-course-page.component";
@@ -28,45 +28,49 @@ export const ROUTES: Routes = [
     canActivate: [LoggedGuardService]
   },
   // TODO make separate modules for this
-  { path: 'student',
+  {
+    path: 'student',
+    data: {
+      authorities: [AccountTypesConstants.ROLE_STUDENT],
+    },
+    canActivate: [UserRouteAccessService],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        component: StudentDashboardComponent,
-        data: {
-          authorities: [AccountTypesConstants.ROLE_STUDENT],
-        },
-        canActivate: [UserRouteAccessService]
+        component: StudentDashboardComponent
       }
     ]
   },
-  { path: 'teacher',
+  {
+    path: 'teacher',
+    data: {
+      authorities: [AccountTypesConstants.ROLE_TEACHER],
+    },
+    canActivate: [UserRouteAccessService],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        component: TeacherDashboardComponent,
-        data: {
-          authorities: [AccountTypesConstants.ROLE_TEACHER],
-        },
-        canActivate: [UserRouteAccessService]
+        component: TeacherDashboardComponent
+      },
+      {
+        path: 'courses',
+        component: CoursesComponent,
+        children: [
+          {
+            path: ':courseId',
+            component: CoursePageComponent
+          }
+        ]
       },
       {
         path: 'add-course',
-        component: AddCoursePageComponent ,
-        data: {
-          authorities: [AccountTypesConstants.ROLE_TEACHER],
-        },
-        canActivate: [UserRouteAccessService]
+        component: AddCoursePageComponent
       },
       {
         path: 'edit-course/:courseId',
         component: EditCoursePageComponent,
-        data: {
-          authorities: [AccountTypesConstants.ROLE_TEACHER],
-        },
-        canActivate: [UserRouteAccessService]
       }
     ]
   },
@@ -92,7 +96,6 @@ export const ROUTES: Routes = [
       { path: 'student/lessons/:lessonId', component: StudentLessonPageComponent }
     ]
   },
-  { path: 'courses', component: CoursesComponent },
   { path: 'teacher/task/:taskId', component: TeacherTaskPageComponent },
   { path: 'student/task/:taskId', component: StudentTaskPageComponent },
   { path: 'edit-task/:taskId', component: EditTaskPageComponent },

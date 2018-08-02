@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {CourseService} from "../../../services/course.service";
-import {Course} from "../../../models/course";
+import {CourseService} from "../../../../services/course.service";
+import {Course} from "../../../../models/course";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'cod-courses',
@@ -10,7 +11,8 @@ import {Course} from "../../../models/course";
 export class CoursesComponent implements OnInit {
   private courses: Course[];
 
-  constructor(private courseService: CourseService) {
+  constructor(private courseService: CourseService,
+              private route: ActivatedRoute,) {
   }
 
   ngOnInit(): void {
