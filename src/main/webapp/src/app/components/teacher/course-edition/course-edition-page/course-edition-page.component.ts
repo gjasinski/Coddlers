@@ -5,7 +5,7 @@ import {CourseEdition} from "../../../../models/courseEdition";
 import {Task} from "../../../../models/task";
 import {CourseService} from "../../../../services/course.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {CourseEditionService} from "../../../../services/courseEdition.service";
+import {CourseEditionService} from "../../../../services/course-edition.service";
 import {LessonService} from "../../../../services/lesson.service";
 import {TaskService} from "../../../../services/task.service";
 import {Submission} from "../../../../models/submission";

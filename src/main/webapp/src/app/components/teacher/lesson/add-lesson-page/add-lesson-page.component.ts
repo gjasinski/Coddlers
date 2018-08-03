@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LessonService} from "../../../../services/lesson.service";
 import {Location} from "@angular/common";
@@ -12,21 +12,24 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class AddLessonPageComponent implements OnInit {
   private formGroup: FormGroup;
+  private courseVersionNumber: number;
 
   constructor(private formBuilder: FormBuilder,
               private lessonService: LessonService,
               private _location: Location,
               private router: Router,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
+    this.courseVersionNumber = +this.route.snapshot.queryParamMap.get('courseVersionNumber');
+
     this.formGroup = this.formBuilder.group({
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(100)])],
       'description': '',
-      'startDate': [null, Validators.required],
-      'endDate': [null, Validators.required],
-      'weight': [1, Validators.required]
+      'weight': [1, Validators.required],
+      'timeDays': [1, Validators.required]
     });
   }
 
@@ -34,15 +37,15 @@ export class AddLessonPageComponent implements OnInit {
     this.route.parent.params.subscribe(params => {
       this.lessonService.createLesson(new Lesson(
         null,
-        params.courseId,
         lesson.title,
         lesson.description,
         lesson.weight,
-        new Date(lesson.startDate.year, lesson.startDate.month - 1, lesson.startDate.day),
-        new Date(lesson.endDate.year, lesson.endDate.month - 1, lesson.endDate.day)
+        lesson.timeDays,
+        params.courseId,
+        this.courseVersionNumber
       )).subscribe(obj => {
-        this.lessonService.getLessons(params.courseId);
-        this.router.navigate(['/courses', params.courseId]);
+        this.lessonService.getLessonsByCourseVersion(params.courseId, this.courseVersionNumber);
+        this.router.navigate(['/teacher', 'courses', params.courseId]);
       });
 
     });

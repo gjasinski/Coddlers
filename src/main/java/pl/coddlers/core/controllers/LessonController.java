@@ -2,6 +2,7 @@ package pl.coddlers.core.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,7 @@ public class LessonController {
         this.gitProjectService = gitProjectService;
     }
 
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<Long> createLesson(@Valid @RequestBody LessonDto lessonDto) throws ExecutionException, InterruptedException {
         // TODO this code is only for prototype purposes
@@ -55,17 +57,20 @@ public class LessonController {
         return ResponseEntity.created(location).build();
     }
 
+    // TODO prevent students and teachers to get lessons not assigned to them
 	@GetMapping(params = {"courseId", "courseVersion"})
 	public ResponseEntity<Collection<LessonDto>> getLessons(@RequestParam(value = "courseId") Long courseId,
                                                             @RequestParam(value = "courseVersion", required = false) Integer courseVersion) {
 		return ResponseEntity.ok(lessonService.getAllCourseVersionLessons(courseId, courseVersion));
 	}
 
+	// TODO prevent students and teachers to get lessons not assigned to them
     @GetMapping(value = "{id}")
     public ResponseEntity<LessonDto> getLesson(@PathVariable Long id) {
         return ResponseEntity.ok(lessonService.getLessonById(id));
     }
 
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<LessonDto> updateLesson(@PathVariable Long id, @Valid @RequestBody LessonDto lessonDto) {
         return ResponseEntity.ok(lessonService.updateLesson(id, lessonDto));

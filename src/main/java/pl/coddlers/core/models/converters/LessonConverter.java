@@ -1,15 +1,20 @@
 package pl.coddlers.core.models.converters;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.coddlers.core.exceptions.CourseNotFoundException;
 import pl.coddlers.core.exceptions.CourseVersionNotFound;
+import pl.coddlers.core.exceptions.InternalServerErrorException;
 import pl.coddlers.core.models.dto.LessonDto;
+import pl.coddlers.core.models.entity.Course;
 import pl.coddlers.core.models.entity.CourseVersion;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.repositories.CourseRepository;
 import pl.coddlers.core.repositories.CourseVersionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
 
+@Slf4j
 @Component
 public class LessonConverter implements BaseConverter<Lesson, LessonDto> {
 
@@ -33,7 +38,18 @@ public class LessonConverter implements BaseConverter<Lesson, LessonDto> {
 		lessonDto.setDescription(entity.getDescription());
 		lessonDto.setWeight(entity.getWeight());
 		lessonDto.setTimeInDays(entity.getTimeInDays());
-		lessonDto.setCourseVersionId(entity.getCourseVersion().getId());
+		lessonDto.setCourseVersionNumber(entity.getCourseVersion().getVersionNumber());
+
+		Long courseVersionId = entity.getCourseVersion().getId();
+		Course course = courseRepository.getByCourseVersionId(courseVersionId).orElseThrow(
+				() -> {
+					log.error("Error occurs while attempt to get course entity by CourseVersionId = "+courseVersionId);
+					return new InternalServerErrorException("Something went wrong while retrieving lessons from db. " +
+							"Please contact with administrator.");
+				}
+		);
+
+		lessonDto.setCourseId(course.getId());
 
 		return lessonDto;
 	}
@@ -52,10 +68,10 @@ public class LessonConverter implements BaseConverter<Lesson, LessonDto> {
 		lesson.setTimeInDays(dto.getTimeInDays());
 
 		// TODO only for prototype purposes
-		lesson.setGitStudentProjectId(dto.getGitStudentProjectId());
+		// lesson.setGitStudentProjectId(dto.getGitStudentProjectId());
 
-		CourseVersion courseVersion = courseVersionRepository.findById(dto.getCourseVersionId()).orElseThrow(
-				() -> new CourseVersionNotFound(dto.getCourseVersionId()));
+		CourseVersion courseVersion = courseVersionRepository.findByCourse_IdAndVersionNumber(dto.getCourseId(), dto.getCourseVersionNumber())
+				.orElseThrow(() -> new CourseVersionNotFound(dto.getCourseId(), dto.getCourseVersionNumber()));
 		lesson.setCourseVersion(courseVersion);
 
 		return lesson;

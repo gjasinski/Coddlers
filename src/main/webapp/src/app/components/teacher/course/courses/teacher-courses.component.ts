@@ -5,10 +5,10 @@ import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'cod-courses',
-  templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.scss']
+  templateUrl: './teacher-courses.component.html',
+  styleUrls: ['./teacher-courses.component.scss']
 })
-export class CoursesComponent implements OnInit {
+export class TeacherCoursesComponent implements OnInit {
   private courses: Course[];
 
   constructor(private courseService: CourseService,

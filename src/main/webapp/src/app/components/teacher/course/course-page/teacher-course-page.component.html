@@ -6,7 +6,6 @@
       <div class="line"></div>
       <br>
 
-      <p>{{course?.startDate | date: 'dd-MM-yyyy'}} - {{course?.endDate | date: 'dd-MM-yyyy'}}</p>
       <h3>Description</h3>
       <p>{{course?.description}}</p>
     </div>
@@ -21,15 +20,13 @@
       <div class="lesson-container">
         <div class="lesson-header">
           <h3>Lessons</h3>
-          <button routerLink="add-lesson" class="btn btn-primary float-md-right" role="button">Add new lesson</button>
+          <button (click)="addLesson()" class="btn btn-primary float-md-right" role="button">Add new lesson</button>
         </div>
         <div class="lessons-body">
           <ul class="lesson-list">
-            <li class="lesson-item card" *ngFor="let lesson of lessons">
+            <li class="lesson-item card" *ngFor="let lesson of lessons; let i = index">
               <a [routerLink]="['lessons/', lesson.id]" class="card-body">
-                <h4>{{lesson.title}}</h4>
-                <span class="start-date">Start date: {{lesson.startDate | date: 'dd-MM-yyyy'}}</span> -
-                <span class="start-date">Due date: {{lesson.dueDate | date: 'dd-MM-yyyy'}}</span>
+                <h4>Lesson {{i+1}}: {{lesson.title}}</h4>
               </a>
             </li>
           </ul>
