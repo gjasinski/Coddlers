@@ -45,10 +45,10 @@ public class User {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "user_groups",
+            name = "users_groups_relation",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id")})
-    private Set<Group> groups = new HashSet<>();
+    private Set<UsersGroup> userGroups = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = StudentLessonRepository.class)

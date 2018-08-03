@@ -51,11 +51,26 @@ export const ROUTES: Routes = [
           authorities: [AccountTypesConstants.ROLE_TEACHER],
         },
         canActivate: [UserRouteAccessService]
+      },
+      {
+        path: 'add-course',
+        component: AddCoursePageComponent ,
+        data: {
+          authorities: [AccountTypesConstants.ROLE_TEACHER],
+        },
+        canActivate: [UserRouteAccessService]
+      },
+      {
+        path: 'edit-course/:courseId',
+        component: EditCoursePageComponent,
+        data: {
+          authorities: [AccountTypesConstants.ROLE_TEACHER],
+        },
+        canActivate: [UserRouteAccessService]
       }
     ]
   },
   // TODO refactor routes below
-  { path: 'add-course', component: AddCoursePageComponent },
   { path: 'courses/:courseId',
     component: CoursePageComponent,
     children: [
@@ -81,6 +96,5 @@ export const ROUTES: Routes = [
   { path: 'teacher/task/:taskId', component: TeacherTaskPageComponent },
   { path: 'student/task/:taskId', component: StudentTaskPageComponent },
   { path: 'edit-task/:taskId', component: EditTaskPageComponent },
-  { path: 'edit-course/:courseId', component: EditCoursePageComponent },
   { path: '**', component: PageNotFoundComponent }
 ];

@@ -10,7 +10,8 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
-public class Group {
+@Table(name="users_group")
+public class UsersGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,6 +19,6 @@ public class Group {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "groups")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "userGroups")
     private Set<User> users = new HashSet<>();
 }
