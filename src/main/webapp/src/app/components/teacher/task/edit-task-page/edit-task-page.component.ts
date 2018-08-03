@@ -51,7 +51,7 @@ export class EditTaskPageComponent implements OnInit {
         task.title,
         task.description,
         task.maxPoints,
-        this.task.taskStatus.toUpperCase()
+        this.task.isCodeTask
       )
     ).subscribe(obj => {
       this._location.back();
