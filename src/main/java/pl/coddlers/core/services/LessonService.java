@@ -12,6 +12,7 @@ import pl.coddlers.core.repositories.CourseVersionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class LessonService {
@@ -29,8 +30,19 @@ public class LessonService {
 	}
 
 	public Collection<LessonDto> getAllCourseVersionLessons(Long courseId, Integer courseVersionNumber) {
-		CourseVersion courseVersion = courseVersionRepository.findByCourse_IdAndVersionNumber(courseId, courseVersionNumber)
-		.orElseThrow(() -> new CourseVersionNotFound(courseId, courseVersionNumber));
+		CourseVersion courseVersion;
+
+		if (courseVersionNumber == null) {
+			List<CourseVersion> courseVersionList = courseVersionRepository.findByCourse_IdOrderByVersionNumberDesc(courseId);
+			try {
+				courseVersion = courseVersionList.get(0);
+			} catch (IndexOutOfBoundsException e) {
+				throw new CourseVersionNotFound(courseId, 1);
+			}
+		} else {
+			courseVersion = courseVersionRepository.findByCourse_IdAndVersionNumber(courseId, courseVersionNumber)
+					.orElseThrow(() -> new CourseVersionNotFound(courseId, courseVersionNumber));
+		}
 
 		return getAllCourseVersionLessons(courseVersion.getId());
 	}

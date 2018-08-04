@@ -12,10 +12,10 @@ import {TaskService} from "../../../../services/task.service";
 
 @Component({
   selector: 'cod-lessons-page',
-  templateUrl: './lessons-page.component.html',
-  styleUrls: ['./lessons-page.component.scss']
+  templateUrl: './teacher-lesson-page.component.html',
+  styleUrls: ['./teacher-lesson-page.component.scss']
 })
-export class LessonPageComponent implements OnInit {
+export class TeacherLessonPageComponent implements OnInit {
   private lesson: Lesson;
   private course: Course;
   private tasks: Task[] = [];
@@ -29,7 +29,7 @@ export class LessonPageComponent implements OnInit {
 
   ngOnInit() {
     this.router.events.pipe(
-      filter(e => (e instanceof NavigationEnd && e.url.split('/').length === 5)),
+      filter(e => (e instanceof NavigationEnd && e.url.split('/').length === 6)),
       switchMap(() => {
         return this.getLessonsAndTasks();
       }),
@@ -77,7 +77,7 @@ export class LessonPageComponent implements OnInit {
 
   back(e) {
     e.preventDefault();
-    this._location.back();
+    this.router.navigate(['../../'], {relativeTo: this.route});
   }
 
 }

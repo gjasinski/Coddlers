@@ -35,7 +35,7 @@ public class Lesson {
     private List<Task> tasks = new ArrayList<>();
 
     @JsonIgnore
-    @ManyToOne(targetEntity = CourseVersion.class)
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = CourseVersion.class)
     private CourseVersion courseVersion;
 
     @JsonIgnore

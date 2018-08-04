@@ -1,6 +1,6 @@
 import {Routes} from "@angular/router";
-import {CoursesComponent} from "./components/common/courses/courses.component";
-import {CoursePageComponent} from "./components/teacher/course/course-page/course-page.component";
+import {TeacherCoursesComponent} from "./components/teacher/course/courses/teacher-courses.component";
+import {TeacherCoursePageComponent} from "./components/teacher/course/course-page/teacher-course-page.component";
 import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {AddCoursePageComponent} from "./components/teacher/course/add-course-page/add-course-page.component";
 import {TeacherTaskPageComponent as TeacherTaskPageComponent} from "./components/teacher/task/task-page/teacher-task-page.component";
@@ -8,7 +8,7 @@ import {StudentTaskPageComponent as StudentTaskPageComponent} from "./components
 import {AddTaskPageComponent} from "./components/teacher/task/add-task-page/add-task-page.component";
 import {EditTaskPageComponent} from "./components/teacher/task/edit-task-page/edit-task-page.component";
 import {AddLessonPageComponent} from "./components/teacher/lesson/add-lesson-page/add-lesson-page.component";
-import {LessonPageComponent} from "./components/teacher/lesson/lesson-page/lesson-page.component";
+import {TeacherLessonPageComponent} from "./components/teacher/lesson/lesson-page/teacher-lesson-page.component";
 import {EditLessonPageComponent} from "./components/teacher/lesson/edit-lesson-page/edit-lesson-page.component";
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {StudentLessonPageComponent} from "./components/student/lesson-page/student-lesson-page.component";
@@ -28,55 +28,69 @@ export const ROUTES: Routes = [
     canActivate: [LoggedGuardService]
   },
   // TODO make separate modules for this
-  { path: 'student',
+  {
+    path: 'student',
+    data: {
+      authorities: [AccountTypesConstants.ROLE_STUDENT],
+    },
+    canActivate: [UserRouteAccessService],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        component: StudentDashboardComponent,
-        data: {
-          authorities: [AccountTypesConstants.ROLE_STUDENT],
-        },
-        canActivate: [UserRouteAccessService]
+        component: StudentDashboardComponent
       }
     ]
   },
-  { path: 'teacher',
+  {
+    path: 'teacher',
+    data: {
+      authorities: [AccountTypesConstants.ROLE_TEACHER],
+    },
+    canActivate: [UserRouteAccessService],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        component: TeacherDashboardComponent,
-        data: {
-          authorities: [AccountTypesConstants.ROLE_TEACHER],
-        },
-        canActivate: [UserRouteAccessService]
+        component: TeacherDashboardComponent
+      },
+      {
+        path: 'courses',
+        component: TeacherCoursesComponent,
+        children: [
+          {
+            path: ':courseId',
+            component: TeacherCoursePageComponent,
+            children: [
+              { path: 'add-lesson', component: AddLessonPageComponent },
+              {
+                path: 'lessons/:lessonId',
+                component: TeacherLessonPageComponent,
+                children: [
+                  {path: 'edit-lesson', component: EditLessonPageComponent}
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         path: 'add-course',
-        component: AddCoursePageComponent ,
-        data: {
-          authorities: [AccountTypesConstants.ROLE_TEACHER],
-        },
-        canActivate: [UserRouteAccessService]
+        component: AddCoursePageComponent
       },
       {
         path: 'edit-course/:courseId',
         component: EditCoursePageComponent,
-        data: {
-          authorities: [AccountTypesConstants.ROLE_TEACHER],
-        },
-        canActivate: [UserRouteAccessService]
       }
     ]
   },
   // TODO refactor routes below
   { path: 'courses/:courseId',
-    component: CoursePageComponent,
+    component: TeacherCoursePageComponent,
     children: [
       { path: 'add-lesson', component: AddLessonPageComponent },
       { path: 'lessons/:lessonId',
-        component: LessonPageComponent,
+        component: TeacherLessonPageComponent,
         children: [
           { path: 'edit-lesson', component: EditLessonPageComponent },
           { path: 'add-task', component: AddTaskPageComponent }
@@ -92,7 +106,6 @@ export const ROUTES: Routes = [
       { path: 'student/lessons/:lessonId', component: StudentLessonPageComponent }
     ]
   },
-  { path: 'courses', component: CoursesComponent },
   { path: 'teacher/task/:taskId', component: TeacherTaskPageComponent },
   { path: 'student/task/:taskId', component: StudentTaskPageComponent },
   { path: 'edit-task/:taskId', component: EditTaskPageComponent },

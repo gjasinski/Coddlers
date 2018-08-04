@@ -7,12 +7,12 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {RouterModule} from '@angular/router';
 import {ROUTES} from "./app.routes";
 import {CourseService} from "./services/course.service";
-import {CoursesComponent} from "./components/common/courses/courses.component";
+import {TeacherCoursesComponent} from "./components/teacher/course/courses/teacher-courses.component";
 import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {CourseFilterPipe} from "./filters/course-filter.pipe";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NavbarComponent} from "./components/common/navbar/navbar.component";
-import {CoursePageComponent} from "./components/teacher/course/course-page/course-page.component";
+import {TeacherCoursePageComponent} from "./components/teacher/course/course-page/teacher-course-page.component";
 import {LessonService} from "./services/lesson.service";
 import {AddCoursePageComponent} from "./components/teacher/course/add-course-page/add-course-page.component";
 import {TeacherTaskPageComponent as TeacherTaskPageComponent} from "./components/teacher/task/task-page/teacher-task-page.component";
@@ -21,7 +21,7 @@ import {AddTaskPageComponent} from "./components/teacher/task/add-task-page/add-
 import {TaskService} from "./services/task.service";
 import {EditTaskPageComponent} from "./components/teacher/task/edit-task-page/edit-task-page.component";
 import {AddLessonPageComponent} from './components/teacher/lesson/add-lesson-page/add-lesson-page.component';
-import {LessonPageComponent} from './components/teacher/lesson/lesson-page/lesson-page.component';
+import {TeacherLessonPageComponent} from './components/teacher/lesson/lesson-page/teacher-lesson-page.component';
 import {EditLessonPageComponent} from './components/teacher/lesson/edit-lesson-page/edit-lesson-page.component';
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
@@ -37,7 +37,7 @@ import {RegisterModalComponent} from './components/common/register-modal/registe
 import {StudentDashboardComponent} from './components/student/dashboard/student-dashboard.component';
 import {TeacherDashboardComponent} from './components/teacher/dashboard/teacher-dashboard.component';
 import {CourseEditionPageComponent} from './components/teacher/course-edition/course-edition-page/course-edition-page.component';
-import {CourseEditionService} from "./services/courseEdition.service";
+import {CourseEditionService} from "./services/course-edition.service";
 import {SubmissionService} from "./services/submission.service";
 import {EditLessonDueDateModalComponent} from "./components/teacher/course-edition/edit-lesson-due-date-modal/edit-lesson-due-date-modal.component";
 
@@ -45,18 +45,18 @@ import {EditLessonDueDateModalComponent} from "./components/teacher/course-editi
 @NgModule({
   declarations: [
     AppComponent,
-    CoursesComponent,
+    TeacherCoursesComponent,
     PageNotFoundComponent,
     CourseFilterPipe,
     NavbarComponent,
-    CoursePageComponent,
+    TeacherCoursePageComponent,
     AddCoursePageComponent,
     TeacherTaskPageComponent,
     StudentTaskPageComponent,
     AddTaskPageComponent,
     EditTaskPageComponent,
     AddLessonPageComponent,
-    LessonPageComponent,
+    TeacherLessonPageComponent,
     EditLessonPageComponent,
     EditCoursePageComponent,
     StudentLessonPageComponent,

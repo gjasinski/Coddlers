@@ -24,7 +24,10 @@ public class LessonDto {
     private Integer timeInDays;
 
     @NotNull
-    private Long courseVersionId;
+    private Long courseId;
+
+    @NotNull
+    private Integer courseVersionNumber;
 
     // TODO only for prototype purposes
     @JsonIgnore
