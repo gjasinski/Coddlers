@@ -3,7 +3,6 @@
     <h4 class="modal-title">Register an account</h4>
   </div>
   <div class="modal-body">
-    <p>How are you? :)</p>
     <form [formGroup]="formGroup" (ngSubmit)="register(formGroup.value)">
       <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary" [class.active]="formGroup.controls.userRole.value === 'student'">
@@ -18,8 +17,6 @@
 
       <div class="form-group">
         <input formControlName="firstname" type="text" class="form-control form-control-firstName" id="firstname" placeholder="First name">
-      <!--</div>-->
-      <!--<div class="form-group">-->
         <input formControlName="lastname" type="text" class="form-control form-control-lastName" id="lastname" placeholder="Last name">
       </div>
       <div class="form-group">

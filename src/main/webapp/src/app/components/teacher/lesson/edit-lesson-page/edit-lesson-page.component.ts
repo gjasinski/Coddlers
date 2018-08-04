@@ -25,9 +25,8 @@ export class EditLessonPageComponent implements OnInit {
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(100)])],
       'description': '',
-      'startDate': [null, Validators.required],
-      'endDate': [null, Validators.required],
-      'weight': [1, Validators.required]
+      'weight': [1, Validators.required],
+      'timeDays': [1, Validators.required]
     });
 
     this.route.parent.params.subscribe(params => {
@@ -43,33 +42,23 @@ export class EditLessonPageComponent implements OnInit {
     this.lessonService.updateLesson(this.lesson.id,
       new Lesson(
         this.lesson.id,
-        this.lesson.courseId,
         lesson.title,
         lesson.description,
         lesson.weight,
-        new Date(lesson.startDate.year, lesson.startDate.month - 1, lesson.startDate.day),
-        new Date(lesson.endDate.year, lesson.endDate.month - 1, lesson.endDate.day)
-      )).subscribe(obj => {
-
-      this.router.navigate(['/courses', this.lesson.courseId, 'lessons', this.lesson.id]);
+        lesson.timeDays,
+        this.lesson.courseId,
+        this.lesson.courseVersionNumber
+      )).subscribe(() => {
+      this.router.navigate(['/teacher', 'courses', this.lesson.courseId, 'lessons', this.lesson.id]);
     });
   }
 
-  private setForm(assigment: Lesson) {
+  private setForm(lesson: Lesson) {
       this.formGroup.setValue({
-      title: assigment.title,
-      description: assigment.description,
-      startDate: {
-        day: assigment.startDate.getDate(),
-        month: assigment.startDate.getMonth() + 1,
-        year: assigment.startDate.getFullYear()
-      },
-      endDate: {
-        day: assigment.dueDate.getDate(),
-        month: assigment.dueDate.getMonth() + 1,
-        year: assigment.dueDate.getFullYear()
-      },
-      weight: assigment.weight
+      title: lesson.title,
+      description: lesson.description,
+      weight: lesson.weight,
+      timeDays: lesson.timeInDays,
     });
   }
 
