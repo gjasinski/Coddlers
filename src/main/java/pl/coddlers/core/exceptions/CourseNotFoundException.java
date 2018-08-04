@@ -11,8 +11,4 @@ public class CourseNotFoundException extends RuntimeException {
 	public CourseNotFoundException(Long id) {
 		super(NOT_FOUND + id);
 	}
-
-	public CourseNotFoundException() {
-		super("");
-	}
 }

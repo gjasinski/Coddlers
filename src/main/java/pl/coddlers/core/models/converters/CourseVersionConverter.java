@@ -18,6 +18,9 @@ public class CourseVersionConverter implements BaseConverter<CourseVersion, Cour
 
     @Override
     public CourseVersion convertFromDto(CourseVersionDto dto) {
-        return null;
+        CourseVersion courseVersion = new CourseVersion();
+        courseVersion.setVersionNumber(dto.getVersionNumber());
+
+        return courseVersion;
     }
 }

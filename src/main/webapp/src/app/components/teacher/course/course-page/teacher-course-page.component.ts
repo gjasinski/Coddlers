@@ -13,7 +13,7 @@ import {throwError} from "rxjs/internal/observable/throwError";
 
 
 @Component({
-  selector: 'cod-course-page',
+  selector: 'cod-teacher-course-page',
   templateUrl: './teacher-course-page.component.html',
   styleUrls: ['./teacher-course-page.component.scss']
 })

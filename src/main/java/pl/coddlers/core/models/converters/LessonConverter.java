@@ -3,7 +3,6 @@ package pl.coddlers.core.models.converters;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.coddlers.core.exceptions.CourseNotFoundException;
 import pl.coddlers.core.exceptions.CourseVersionNotFound;
 import pl.coddlers.core.exceptions.InternalServerErrorException;
 import pl.coddlers.core.models.dto.LessonDto;
