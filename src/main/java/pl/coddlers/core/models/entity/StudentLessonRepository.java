@@ -21,7 +21,7 @@ public class StudentLessonRepository {
     @Column(nullable=false)
     private String repositoryUrl;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "studentLessonRepository", targetEntity = Submission.class)
     private List<Submission> submissions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Lesson.class)
