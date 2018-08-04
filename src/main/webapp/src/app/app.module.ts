@@ -16,7 +16,6 @@ import {CoursePageComponent} from "./components/teacher/course/course-page/cours
 import {LessonService} from "./services/lesson.service";
 import {AddCoursePageComponent} from "./components/teacher/course/add-course-page/add-course-page.component";
 import {TaskService} from "./services/task.service";
-import {EditTaskPageComponent} from "./components/teacher/task/edit-task-page/edit-task-page.component";
 import {AddLessonPageComponent} from './components/teacher/lesson/add-lesson-page/add-lesson-page.component';
 import {LessonPageComponent} from './components/teacher/lesson/lesson-page/lesson-page.component';
 import {EditLessonPageComponent} from './components/teacher/lesson/edit-lesson-page/edit-lesson-page.component';
@@ -38,6 +37,7 @@ import {CourseEditionService} from "./services/courseEdition.service";
 import {SubmissionService} from "./services/submission.service";
 import {EditLessonDueDateModalComponent} from "./components/teacher/course-edition/edit-lesson-due-date-modal/edit-lesson-due-date-modal.component";
 import {AddTaskModalComponent} from "./components/teacher/task/add-task-modal/add-task-modal.component";
+import {EditTaskModalComponent} from "./components/teacher/task/edit-task-modal/edit-task-modal.component";
 
 
 @NgModule({
@@ -50,7 +50,7 @@ import {AddTaskModalComponent} from "./components/teacher/task/add-task-modal/ad
     CoursePageComponent,
     AddCoursePageComponent,
     AddTaskModalComponent,
-    EditTaskPageComponent,
+    EditTaskModalComponent,
     AddLessonPageComponent,
     LessonPageComponent,
     EditLessonPageComponent,

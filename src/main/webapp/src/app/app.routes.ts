@@ -3,7 +3,6 @@ import {CoursesComponent} from "./components/common/courses/courses.component";
 import {CoursePageComponent} from "./components/teacher/course/course-page/course-page.component";
 import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {AddCoursePageComponent} from "./components/teacher/course/add-course-page/add-course-page.component";
-import {EditTaskPageComponent} from "./components/teacher/task/edit-task-page/edit-task-page.component";
 import {AddLessonPageComponent} from "./components/teacher/lesson/add-lesson-page/add-lesson-page.component";
 import {LessonPageComponent} from "./components/teacher/lesson/lesson-page/lesson-page.component";
 import {EditLessonPageComponent} from "./components/teacher/lesson/edit-lesson-page/edit-lesson-page.component";
@@ -89,6 +88,5 @@ export const ROUTES: Routes = [
     ]
   },
   { path: 'courses', component: CoursesComponent },
-  { path: 'edit-task/:taskId', component: EditTaskPageComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
