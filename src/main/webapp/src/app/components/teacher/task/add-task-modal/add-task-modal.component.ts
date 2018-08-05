@@ -6,6 +6,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Task} from "../../../../models/task";
 import {TaskService} from "../../../../services/task.service";
 import {ActivatedRoute} from "@angular/router";
+import {Event} from "../../../../models/event";
 
 @Component({
   selector: 'cod-add-task-modal',
@@ -29,10 +30,6 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.route.parent.params.subscribe(params => {
-      this.lessonId = params.lessonId;
-    });
-
     this.formGroup = this.formBuilder.group({
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(100)])],
@@ -41,9 +38,10 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
       'isCodeTask': true
     });
 
-    this.eventSubscription = this.eventService.events.subscribe((str: string) => {
-      if (str === 'open-add-task-modal') {
+    this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
+      if (event.eventType === 'open-add-task-modal') {
         this.open();
+        this.lessonId = event.eventData;
       }
     });
   }

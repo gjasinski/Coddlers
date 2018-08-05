@@ -4,8 +4,10 @@ import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {EventService} from "../../../../services/event.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Task} from "../../../../models/task";
+import {Event} from "../../../../models/event";
 import {TaskService} from "../../../../services/task.service";
 import {ActivatedRoute} from "@angular/router";
+import {filter, switchMap, tap} from "rxjs/operators";
 
 @Component({
   selector: 'cod-edit-task-modal',
@@ -37,22 +39,19 @@ export class EditTaskModalComponent implements OnInit, OnDestroy {
       'isCodeTask': true
     });
 
-    this.eventSubscription = this.eventService.events.subscribe((str: string) => {
-      if (str === 'open-edit-task-modal') {
-        this.open();
-      }
-    });
-
-    this.eventSubscription = this.eventService.eventsTask.subscribe((task: Task) => {
-      this.task = task;
-
-      this.formGroup.setValue({
-        'title': this.task.title,
-        'description': this.task.description,
-        'maxPoints': this.task.maxPoints,
-        'isCodeTask': this.task.isCodeTask
-      });
-    });
+    this.eventSubscription = this.eventService.events.pipe(
+      filter((event: Event) => event.eventType === 'open-edit-task-modal'),
+      switchMap((event: Event) =>
+        this.taskService.getTask(event.eventData)
+      ),
+      tap((task: Task) => this.formGroup.setValue({
+          'title': task.title,
+          'description': task.description,
+          'maxPoints': task.maxPoints,
+          'isCodeTask': task.isCodeTask
+        })
+      )
+    ).subscribe(() => this.open());
   }
 
   ngOnDestroy() {

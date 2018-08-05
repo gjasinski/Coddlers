@@ -8,6 +8,7 @@ import {throwError} from "rxjs/internal/observable/throwError";
 import {Observable} from "rxjs/internal/Observable";
 import {catchError} from "rxjs/operators";
 import {PrincipalService} from "../../../auth/principal.service";
+import {Event} from "../../../models/event";
 
 @Component({
   selector: 'cod-login-modal',
@@ -39,8 +40,8 @@ export class LoginModalComponent implements OnInit, OnDestroy {
         Validators.maxLength(50)])]
     });
 
-    this.eventSubscription = this.eventService.events.subscribe((str: string) => {
-      if (str === 'open-login-modal') {
+    this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
+      if (event.eventType === 'open-login-modal') {
         this.open();
       }
     });

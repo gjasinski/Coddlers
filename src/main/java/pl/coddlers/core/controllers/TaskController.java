@@ -55,6 +55,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
 
+    // TODO check if user is assigned to lesson connected to this task
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> updateTask(@PathVariable Long id, @Valid @RequestBody TaskDto taskDto) {

@@ -3,6 +3,7 @@ import {Course} from "../../../../models/course";
 import {Lesson} from "../../../../models/lesson";
 import {CourseEdition} from "../../../../models/courseEdition";
 import {Task} from "../../../../models/task";
+import {Event} from "../../../../models/event";
 import {CourseService} from "../../../../services/course.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CourseEditionService} from "../../../../services/course-edition.service";
@@ -101,7 +102,7 @@ export class CourseEditionPageComponent implements OnInit {
     this.router.navigate(["courses", this.course.id, "lessons", lesson.id]);
   }
 
-  openEditLessonDueDateModal() {
-    this.eventService.emit('open-edit-lesson-due-date-modal');
+  openEditLessonDueDateModal(lesson: Lesson) {
+    this.eventService.emit(new Event('open-edit-lesson-due-date-modal', lesson.id));
   }
 }
