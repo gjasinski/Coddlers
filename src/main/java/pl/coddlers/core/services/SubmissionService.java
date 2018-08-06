@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.models.converters.SubmissionConverter;
 import pl.coddlers.core.models.dto.SubmissionDto;
+import pl.coddlers.core.models.entity.Submission;
 import pl.coddlers.core.repositories.SubmissionRepository;
 
 import java.util.Collection;
@@ -21,7 +22,10 @@ public class SubmissionService {
 		this.submissionConverter = submissionConverter;
 	}
 
-	public Collection<SubmissionDto> getAllTasksSubmissions(long taskId) {
-		return submissionConverter.convertFromEntities(submissionRepository.findByTaskId(taskId));
+	public Collection<SubmissionDto> getAllTaskSubmissions(long taskId) {
+        Collection<Submission> submissions = submissionRepository.findByTaskId(taskId);
+        submissions.forEach(submission -> System.out.println("SERVICE: submission = " + submission));
+
+		return submissionConverter.convertFromEntities(submissions);
 	}
 }

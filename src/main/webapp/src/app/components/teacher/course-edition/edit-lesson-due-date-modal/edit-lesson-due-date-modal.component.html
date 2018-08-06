@@ -1,9 +1,9 @@
 <ng-template #content let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title">Edit lesson title</h4>
+    <h4 class="modal-title">{{lesson.title}} - edit due date</h4>
   </div>
   <div class="modal-body">
-    <form [formGroup]="formGroup" (ngSubmit)="save(formGroup.value)">
+    <form [formGroup]="formGroup" (ngSubmit)="saveLesson(formGroup.value)">
       <div class="form-group">
         <label for="lesson-start-date">Start date</label>
         <div class="input-group">

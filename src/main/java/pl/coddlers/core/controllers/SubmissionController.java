@@ -13,7 +13,7 @@ import pl.coddlers.core.services.SubmissionService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("api/submissions")
+@RequestMapping("/api/submissions")
 public class SubmissionController {
 
     private final SubmissionService submissionService;
@@ -26,6 +26,7 @@ public class SubmissionController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     @GetMapping(params = {"taskId"})
     public ResponseEntity<Collection<SubmissionDto>> getSubmissions(@RequestParam(value = "taskId") Long taskId) {
-        return ResponseEntity.ok(submissionService.getAllTasksSubmissions(taskId));
+        System.out.println("CONTROLLER: taskId = " + taskId);
+        return ResponseEntity.ok(submissionService.getAllTaskSubmissions(taskId));
     }
 }
