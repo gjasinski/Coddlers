@@ -3,10 +3,6 @@ import {TeacherCoursesComponent} from "./components/teacher/course/courses/teach
 import {TeacherCoursePageComponent} from "./components/teacher/course/course-page/teacher-course-page.component";
 import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {AddCoursePageComponent} from "./components/teacher/course/add-course-page/add-course-page.component";
-import {TeacherTaskPageComponent as TeacherTaskPageComponent} from "./components/teacher/task/task-page/teacher-task-page.component";
-import {StudentTaskPageComponent as StudentTaskPageComponent} from "./components/student/task-page/student-task-page.component";
-import {AddTaskPageComponent} from "./components/teacher/task/add-task-page/add-task-page.component";
-import {EditTaskPageComponent} from "./components/teacher/task/edit-task-page/edit-task-page.component";
 import {AddLessonPageComponent} from "./components/teacher/lesson/add-lesson-page/add-lesson-page.component";
 import {TeacherLessonPageComponent} from "./components/teacher/lesson/lesson-page/teacher-lesson-page.component";
 import {EditLessonPageComponent} from "./components/teacher/lesson/edit-lesson-page/edit-lesson-page.component";
@@ -93,7 +89,6 @@ export const ROUTES: Routes = [
         component: TeacherLessonPageComponent,
         children: [
           { path: 'edit-lesson', component: EditLessonPageComponent },
-          { path: 'add-task', component: AddTaskPageComponent }
         ]
       },
       { path: 'editions/:editionId',
@@ -106,8 +101,5 @@ export const ROUTES: Routes = [
       { path: 'student/lessons/:lessonId', component: StudentLessonPageComponent }
     ]
   },
-  { path: 'teacher/task/:taskId', component: TeacherTaskPageComponent },
-  { path: 'student/task/:taskId', component: StudentTaskPageComponent },
-  { path: 'edit-task/:taskId', component: EditTaskPageComponent },
   { path: '**', component: PageNotFoundComponent }
 ];

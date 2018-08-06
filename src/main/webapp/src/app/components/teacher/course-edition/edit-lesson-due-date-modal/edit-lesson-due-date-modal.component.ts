@@ -3,6 +3,7 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {EventService} from "../../../../services/event.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {Event} from "../../../../models/event";
 
 @Component({
   selector: 'cod-edit-lesson-due-date-modal',
@@ -30,8 +31,8 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
       'lessonLength': ''
     });
 
-    this.eventSubscription = this.eventService.events.subscribe((str: string) => {
-      if (str === 'open-edit-lesson-due-date-modal') {
+    this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
+      if (event.eventType === 'open-edit-lesson-due-date-modal') {
         this.open();
       }
     });

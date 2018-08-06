@@ -1,0 +1,37 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Edit task</h4>
+  </div>
+
+
+  <div class="modal-body">
+    <form [formGroup]="formGroup" (ngSubmit)="updateTask(formGroup.value)">
+      <div class="form-group">
+        <label for="task-title">Task title</label>
+        <input formControlName="title" type="text" class="form-control" id="task-title" placeholder="Enter title">
+      </div>
+
+      <div class="form-group">
+        <label for="task-description">Description</label>
+        <textarea formControlName="description" type="text" class="form-control" id="task-description"
+                  placeholder="Enter description"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="task-maxPoints">Max points for task</label>
+        <div class="input-group">
+          <input formControlName="maxPoints" class="form-control" type="number" id="task-maxPoints"
+                 placeholder="Enter max points for task" min="0">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="task-isCodeTask">Is code task?</label>
+        <input formControlName="isCodeTask" class="checkmark" type="checkbox" id="task-isCodeTask">
+      </div>
+
+      <button class="btn btn-secondary back-btn" (click)="c('closed'); $event.preventDefault();">Cancel</button>
+      <input type="submit" class="btn btn-primary" value="Save" [disabled]="!formGroup.valid">
+    </form>
+  </div>
+</ng-template>

@@ -2,6 +2,7 @@ package pl.coddlers.core.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.git.services.GitTaskService;
@@ -27,6 +28,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDto taskDto) {
         Task task = taskService.createTask(taskDto);
@@ -41,16 +43,20 @@ public class TaskController {
         return ResponseEntity.created(location).build();
     }
 
+    // TODO check if user is assigned to lesson
     @GetMapping(params = {"lessonId"})
     public ResponseEntity<Collection<TaskDto>> getTasks(@RequestParam(value = "lessonId") Long lessonId) {
         return ResponseEntity.ok(taskService.getAllLessonsTasks(lessonId));
     }
 
+    // TODO check if user is assigned to lesson connected to this task
     @GetMapping(value = "/{id}")
     public ResponseEntity<TaskDto> getTask(@PathVariable Long id) {
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
 
+    // TODO check if user is assigned to lesson connected to this task
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> updateTask(@PathVariable Long id, @Valid @RequestBody TaskDto taskDto) {
         taskService.updateTask(id, taskDto);

@@ -7,6 +7,7 @@ import {AccountService} from "../../../services/account.service";
 import {PasswordValidation} from "../../../validators/password-validation";
 import {User} from "../../../models/user";
 import {AccountTypesConstants} from "../../../constants/account-types.constants";
+import {Event} from "../../../models/event";
 
 @Component({
   selector: 'cod-register-modal',
@@ -43,8 +44,8 @@ export class RegisterModalComponent implements OnInit, OnDestroy {
       validator: PasswordValidation.MatchPassword
     });
 
-    this.eventSubscription = this.eventService.events.subscribe((str: string) => {
-      if (str === 'open-register-modal') {
+    this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
+      if (event.eventType === 'open-register-modal') {
         this.open();
       }
     });
