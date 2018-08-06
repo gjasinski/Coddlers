@@ -28,6 +28,10 @@ public class User {
     private String password;
 
     @JsonIgnore
+    @Column(nullable = false)
+    private Long gitUserId;
+
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_account_type",
