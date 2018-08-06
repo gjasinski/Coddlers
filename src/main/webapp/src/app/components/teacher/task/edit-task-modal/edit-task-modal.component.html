@@ -5,7 +5,7 @@
 
 
   <div class="modal-body">
-    <form [formGroup]="formGroup" (ngSubmit)="addTask(formGroup.value)">
+    <form [formGroup]="formGroup" (ngSubmit)="updateTask(formGroup.value)">
       <div class="form-group">
         <label for="task-title">Task title</label>
         <input formControlName="title" type="text" class="form-control" id="task-title" placeholder="Enter title">

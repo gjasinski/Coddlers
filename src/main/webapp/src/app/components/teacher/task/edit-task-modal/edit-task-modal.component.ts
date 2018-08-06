@@ -44,12 +44,15 @@ export class EditTaskModalComponent implements OnInit, OnDestroy {
       switchMap((event: Event) =>
         this.taskService.getTask(event.eventData)
       ),
-      tap((task: Task) => this.formGroup.setValue({
-          'title': task.title,
-          'description': task.description,
-          'maxPoints': task.maxPoints,
-          'isCodeTask': task.isCodeTask
-        })
+      tap((task: Task) => {
+          this.task = task;
+          return this.formGroup.setValue({
+            'title': task.title,
+            'description': task.description,
+            'maxPoints': task.maxPoints,
+            'isCodeTask': task.isCodeTask
+          })
+        }
       )
     ).subscribe(() => this.open());
   }
@@ -62,7 +65,7 @@ export class EditTaskModalComponent implements OnInit, OnDestroy {
     this.modalRefNgb = this.modalService.open(this.modalRef);
   }
 
-  addTask(task) {
+  updateTask(task) {
     this.taskService.updateTask(new Task(this.task.id,
       this.task.lessonId,
       task.title,

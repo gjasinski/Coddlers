@@ -16,11 +16,11 @@ export class NavbarComponent {
   }
 
   openLoginModal(): void {
-    this.eventService.emit(new Event('open-login-modal', null));
+    this.eventService.emit(new Event('open-login-modal'));
   }
 
   openRegisterModal(): void {
-    this.eventService.emit(new Event('open-register-modal', null));
+    this.eventService.emit(new Event('open-register-modal'));
   }
 
   logout(): void {

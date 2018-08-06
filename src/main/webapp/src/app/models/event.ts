@@ -1,8 +1,8 @@
 export class Event {
   private _eventType: string;
-  private _eventData: number;
+  private _eventData: any;
 
-  constructor(eventType: string, eventData: number) {
+  constructor(eventType: string, eventData?: number) {
     this._eventType = eventType;
     this._eventData = eventData;
   }
@@ -11,7 +11,7 @@ export class Event {
     return this._eventType;
   }
 
-  get eventData(): number {
+  get eventData(): any {
     return this._eventData;
   }
 }
