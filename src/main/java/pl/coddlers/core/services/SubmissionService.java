@@ -21,7 +21,7 @@ public class SubmissionService {
 		this.submissionConverter = submissionConverter;
 	}
 
-	public Collection<SubmissionDto> getAllTasksSubmissions(long taskId) {
+	public Collection<SubmissionDto> getAllTaskSubmissions(long taskId) {
 		return submissionConverter.convertFromEntities(submissionRepository.findByTaskId(taskId));
 	}
 }

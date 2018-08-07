@@ -1,14 +1,13 @@
 <div class="col-md-12">
-  <h1 routerLink="/courses/{{course?.id}}">{{course?.title}}</h1>
+  <h1 (click)="navigateToCourse()">{{course?.title}}</h1>
 </div>
 <div *ngIf="route.children.length === 0" class="content-container">
   <div class="row">
     <div class="col-md-10">
       <div class="row">
         <div class="col-12">
-          <h2>CourseEdition - {{edition?.title}}</h2>
-          <h6>{{edition?.id}}/v{{edition?.courseVersion.versionNumber}}/{{edition?.startDate | date: 'dd MMMM yyyy'}} -
-            {{edition?.course.endDate | date: 'dd MMMM yyyy'}}</h6>
+          <h2>CourseEdition - {{courseEdition?.title}}</h2>
+          <h6>{{courseEdition?.id}}/v{{courseEdition?.courseVersion.versionNumber}}/{{courseEdition?.startDate | date: 'dd MMMM yyyy'}} - TBD</h6>
 
           <div class="line"></div>
           <br>

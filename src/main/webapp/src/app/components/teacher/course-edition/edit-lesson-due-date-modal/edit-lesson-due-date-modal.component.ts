@@ -4,6 +4,9 @@ import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {EventService} from "../../../../services/event.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Event} from "../../../../models/event";
+import {Lesson} from "../../../../models/lesson";
+import {LessonService} from "../../../../services/lesson.service";
+import {filter, switchMap, tap} from "rxjs/operators";
 
 @Component({
   selector: 'cod-edit-lesson-due-date-modal',
@@ -13,6 +16,7 @@ import {Event} from "../../../../models/event";
 export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
   private formGroup: FormGroup;
   private eventSubscription: Subscription;
+  private lesson: Lesson;
 
   @ViewChild('content')
   private modalRef: TemplateRef<any>;
@@ -21,7 +25,8 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
 
   constructor(private modalService: NgbModal,
               private formBuilder: FormBuilder,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private lessonService: LessonService) {
   }
 
   ngOnInit() {
@@ -31,11 +36,18 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
       'lessonLength': ''
     });
 
-    this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
-      if (event.eventType === 'open-edit-lesson-due-date-modal') {
-        this.open();
-      }
-    });
+    this.eventSubscription = this.eventService.events.pipe(
+      filter((event: Event) => event.eventType === 'open-edit-lesson-due-date-modal'),
+      switchMap((event: Event) => this.lessonService.getLesson(event.eventData)),
+      tap((lesson: Lesson) => {
+        this.lesson = lesson;
+        return this.formGroup = this.formBuilder.group({
+          'startDate': '',
+          'endDate': '',
+          'lessonLength': lesson.timeInDays
+        });
+      })
+    ).subscribe(() => this.open());
   }
 
   ngOnDestroy() {
@@ -49,5 +61,18 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
     }, (reason) => {
       console.log(`dismissed ${reason}`);
     });
+  }
+
+  saveLesson(lesson) {
+    this.lessonService.updateLesson(this.lesson.id,
+      new Lesson(
+        this.lesson.id,
+        this.lesson.title,
+        this.lesson.description,
+        this.lesson.weight,
+        lesson.lessonLength,
+        this.lesson.courseId,
+        this.lesson.courseVersionNumber
+      )).subscribe(() => this.modalRefNgb.close('updated'));
   }
 }

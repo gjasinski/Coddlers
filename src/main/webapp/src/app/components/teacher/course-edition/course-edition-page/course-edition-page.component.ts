@@ -21,7 +21,7 @@ import {EventService} from "../../../../services/event.service";
 })
 export class CourseEditionPageComponent implements OnInit {
   private course: Course;
-  private edition: CourseEdition;
+  private courseEdition: CourseEdition;
   private showLesson: boolean[];
   private courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
   private submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
@@ -61,7 +61,7 @@ export class CourseEditionPageComponent implements OnInit {
             this.showLesson = new Array(this.courseMap.size).fill(false);
             tasks.forEach(task => {
               this.showSubmissionsMap.set(task, false);
-              this.submissionService.getSubmissions((task.id)).subscribe((submissions: Submission[]) => {
+              this.submissionService.getSubmissions(task.id).subscribe((submissions: Submission[]) => {
                 this.submissionsMap.set(task, submissions);
               })
             })
@@ -74,7 +74,7 @@ export class CourseEditionPageComponent implements OnInit {
   getEditionInfo() {
     this.route.params.pipe(
       switchMap(params => this.editionService.getCourseEdition(params.editionId)),
-      tap((edition: CourseEdition) => this.edition = edition)
+      tap((edition: CourseEdition) => this.courseEdition = edition)
     ).subscribe();
   }
 
@@ -98,8 +98,12 @@ export class CourseEditionPageComponent implements OnInit {
     return this.showSubmissionsMap.get(task)
   }
 
+  navigateToCourse() {
+    this.router.navigate(["teacher", "courses", this.course.id]);
+  }
+
   navigateToLesson(lesson: Lesson) {
-    this.router.navigate(["courses", this.course.id, "lessons", lesson.id]);
+    this.router.navigate(["teacher", "courses", this.course.id, "lessons", lesson.id]);
   }
 
   openEditLessonDueDateModal(lesson: Lesson) {

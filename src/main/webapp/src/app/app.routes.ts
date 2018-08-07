@@ -31,7 +31,7 @@ export const ROUTES: Routes = [
     },
     canActivate: [UserRouteAccessService],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
       {
         path: 'dashboard',
         component: StudentDashboardComponent
@@ -45,7 +45,7 @@ export const ROUTES: Routes = [
     },
     canActivate: [UserRouteAccessService],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
       {
         path: 'dashboard',
         component: TeacherDashboardComponent
@@ -58,14 +58,15 @@ export const ROUTES: Routes = [
             path: ':courseId',
             component: TeacherCoursePageComponent,
             children: [
-              { path: 'add-lesson', component: AddLessonPageComponent },
+              {path: 'add-lesson', component: AddLessonPageComponent},
               {
                 path: 'lessons/:lessonId',
                 component: TeacherLessonPageComponent,
                 children: [
                   {path: 'edit-lesson', component: EditLessonPageComponent}
                 ]
-              }
+              },
+              {path: 'editions/:editionId', component: CourseEditionPageComponent}
             ]
           }
         ]
@@ -81,25 +82,20 @@ export const ROUTES: Routes = [
     ]
   },
   // TODO refactor routes below
-  { path: 'courses/:courseId',
+  {
+    path: 'courses/:courseId',
     component: TeacherCoursePageComponent,
     children: [
-      { path: 'add-lesson', component: AddLessonPageComponent },
-      { path: 'lessons/:lessonId',
+      {path: 'add-lesson', component: AddLessonPageComponent},
+      {
+        path: 'lessons/:lessonId',
         component: TeacherLessonPageComponent,
         children: [
-          { path: 'edit-lesson', component: EditLessonPageComponent },
+          {path: 'edit-lesson', component: EditLessonPageComponent},
         ]
       },
-      { path: 'editions/:editionId',
-        component: CourseEditionPageComponent,
-        data: {
-          authorities: [AccountTypesConstants.ROLE_TEACHER],
-        },
-        canActivate: [UserRouteAccessService]
-      },
-      { path: 'student/lessons/:lessonId', component: StudentLessonPageComponent }
+      {path: 'student/lessons/:lessonId', component: StudentLessonPageComponent}
     ]
   },
-  { path: '**', component: PageNotFoundComponent }
+  {path: '**', component: PageNotFoundComponent}
 ];
