@@ -82,20 +82,12 @@ export class CourseEditionPageComponent implements OnInit {
     this.showLesson[index] = !this.showLesson[index]
   }
 
-  shouldShowLesson(index: number): boolean {
-    return this.showLesson[index]
-  }
-
   getKeys(map) {
     return Array.from(map.keys());
   }
 
   changeVisibilityForSubmissions(task: Task) {
     this.showSubmissionsMap.set(task, !this.showSubmissionsMap.get(task));
-  }
-
-  shouldShowSubmissions(task: Task) {
-    return this.showSubmissionsMap.get(task)
   }
 
   navigateToCourse() {

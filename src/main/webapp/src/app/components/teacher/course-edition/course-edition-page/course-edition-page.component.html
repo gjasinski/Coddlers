@@ -21,7 +21,7 @@
                 {{lesson.dueDate | date: 'dd MMMM yyyy'}}</p>
             </button>
 
-            <div *ngIf="shouldShowLesson(i)">
+            <div *ngIf="showLesson[i]">
               <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
               <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due date</button>
 
@@ -29,7 +29,7 @@
                 <br>
                 <h5 (click)="changeVisibilityForSubmissions(task)">{{task.title}}</h5>
 
-                <table *ngIf="shouldShowSubmissions(task)" class="table tasks-table">
+                <table *ngIf="showSubmissionsMap.get(task)" class="table tasks-table">
                   <thead>
                   <tr>
                     <th scope="col">No</th>

@@ -61,8 +61,6 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
       task.description,
       task.maxPoints,
       task.isCodeTask)
-    ).subscribe(() => {
-      this.modalRefNgb.close('created');
-    });
+    ).subscribe(() => this.modalRefNgb.close('created'));
   }
 }
