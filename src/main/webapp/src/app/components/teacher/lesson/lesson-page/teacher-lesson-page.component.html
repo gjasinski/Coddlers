@@ -7,7 +7,7 @@
     <div class="col-md-10">
       <div class="row">
         <div class="col-12">
-          <h2>Lesson - {{lesson?.title}}
+          <h2>Lesson: {{lesson?.title}}
             <button routerLink="edit-lesson" class="btn btn-secondary float-right" role="button">Edit lesson</button>
           </h2>
 
@@ -26,15 +26,21 @@
           </h3>
 
           <div *ngFor="let task of tasks;let i = index">
-            <button class="btn task-button text-left" (click)="changeVisibilityForSubmissions(i)">
-              Task: {{task.title}}
+            <button class="btn task-button" (click)="changeVisibilityForSubmissions(i)">
+              <div class="float-left">Task {{i+1}}: {{task.title}}</div>
+              <div *ngIf="tasksVisibility[i]">
+                <img src='assets/img/downArrow.png' style="height: 35px;width: 35px;float: right;"/>
+              </div>
+              <div *ngIf="!tasksVisibility[i]">
+                <img src='assets/img/downArrow.png' style="height: 35px;width: 35px;float: right; transform: rotate(180deg)"/>
+              </div>
             </button>
             <div *ngIf="tasksVisibility[i]">
               <div class="row">
                 <div class="col-10">
-                  <p>Description</p>
+                  <h5>Description</h5>
                   <p>{{task.description}}</p>
-                  <p>Max points for task: {{task.maxPoints}}</p>
+                  <h5>Max points for task: {{task.maxPoints}}</h5>
                 </div>
 
                 <div class="col-2">
@@ -51,15 +57,9 @@
 
     <div class="col-md-2">
       <h4 style="margin-top: 60px;">Notes</h4>
-    </div>
-  </div>
 
-
-  <div class="row">
-    <div class="col-12">
-      <button class="btn btn-secondary" routerLink="/courses/{{course?.id}}/student/lessons/{{lesson?.id}}">Switch to
-        student
-      </button>
+      <img src='assets/img/addNote.png'/>
+      <p>Add new note</p>
     </div>
   </div>
 
