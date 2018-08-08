@@ -30,10 +30,10 @@
             <button class="btn task-button" (click)="changeVisibilityForSubmissions(i)">
               <div class="float-left">Task {{i+1}}: {{task.title}}</div>
               <div *ngIf="tasksVisibility[i]">
-                <img src='assets/img/downArrow.png' style="height: 35px;width: 35px;float: right;"/>
+                <img src='assets/img/downArrow.png' class="arrow-image"/>
               </div>
               <div *ngIf="!tasksVisibility[i]">
-                <img src='assets/img/downArrow.png' style="height: 35px;width: 35px;float: right; transform: rotate(180deg)"/>
+                <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
               </div>
             </button>
             <div *ngIf="tasksVisibility[i]">
@@ -57,9 +57,10 @@
     </div>
 
     <div class="col-md-2">
-      <h4 style="margin-top: 60px;">Notes</h4>
-
-      <img src='assets/img/addNote.png'/>
+      <br>
+      <br>
+      <h4>Notes</h4>
+      <img src='assets/img/addNote.png' class="note-image"/>
       <p>Add new note</p>
     </div>
   </div>

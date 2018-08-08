@@ -25,7 +25,7 @@ export class CourseEditionPageComponent implements OnInit {
   private showLesson: boolean[];
   private courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
   private submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
-  private showSubmissionsMap: Map<Task, boolean> = new Map<Task, boolean>();
+  private showTask: boolean[] = [];
 
   constructor(private courseService: CourseService,
               private editionService: CourseEditionService,
@@ -47,7 +47,7 @@ export class CourseEditionPageComponent implements OnInit {
       switchMap(params => {
         this.submissionsMap.clear();
         this.courseMap.clear();
-        this.showSubmissionsMap.clear();
+        this.showTask = [];
         return this.courseService.getCourse(params.courseId);
       }),
       switchMap((course: Course) => {
@@ -60,7 +60,7 @@ export class CourseEditionPageComponent implements OnInit {
             this.courseMap.set(lesson, tasks);
             this.showLesson = new Array(this.courseMap.size).fill(false);
             tasks.forEach(task => {
-              this.showSubmissionsMap.set(task, false);
+              this.showTask.push(false);
               this.submissionService.getSubmissions(task.id).subscribe((submissions: Submission[]) => {
                 this.submissionsMap.set(task, submissions);
               })
@@ -86,8 +86,8 @@ export class CourseEditionPageComponent implements OnInit {
     return Array.from(map.keys());
   }
 
-  changeVisibilityForSubmissions(task: Task) {
-    this.showSubmissionsMap.set(task, !this.showSubmissionsMap.get(task));
+  changeVisibilityForSubmissions(index: number) {
+    this.showTask[index] = !this.showTask[index];
   }
 
   navigateToCourse() {

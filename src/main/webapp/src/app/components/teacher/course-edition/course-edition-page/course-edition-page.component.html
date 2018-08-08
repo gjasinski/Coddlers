@@ -7,29 +7,34 @@
       <div class="row">
         <div class="col-12">
           <h2>CourseEdition - {{courseEdition?.title}}</h2>
-          <h6>{{courseEdition?.id}}/v{{courseEdition?.courseVersion.versionNumber}}/{{courseEdition?.startDate | date: 'dd MMMM yyyy'}} - TBD</h6>
+          <h6>{{courseEdition?.id}}/v{{courseEdition?.courseVersion.versionNumber}}/{{courseEdition?.startDate | date:
+            'dd MMMM yyyy'}} - TBD</h6>
 
           <div class="line"></div>
           <br>
 
           <h4>Submissions</h4>
 
-          <div *ngFor="let lesson of getKeys(courseMap); let i = index" [attr.data-index]="i">
-            <button class="btn lesson-button" (click)="swapShowLesson(i)">
-              <p class="float-left">{{lesson.title}}</p>
-              <p class="float-right">{{lesson.startDate | date: 'dd MMMM'}} -
-                {{lesson.dueDate | date: 'dd MMMM yyyy'}}</p>
+          <div *ngFor="let lesson of getKeys(courseMap); let lessonIndex = index" [attr.data-index]="lessonIndex">
+            <button class="btn lesson-button" (click)="swapShowLesson(lessonIndex)">
+              <div class="float-left">{{lesson.title}}</div>
+              <div *ngIf="showLesson[lessonIndex]">
+                <img src='assets/img/downArrow.png' class="arrow-image"/>
+              </div>
+              <div *ngIf="!showLesson[lessonIndex]">
+                <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+              </div>
             </button>
 
-            <div *ngIf="showLesson[i]">
+            <div *ngIf="showLesson[lessonIndex]">
               <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
               <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due date</button>
 
-              <div *ngFor="let task of courseMap.get(lesson)">
+              <div *ngFor="let task of courseMap.get(lesson); let taskIndex = index">
                 <br>
-                <h5 (click)="changeVisibilityForSubmissions(task)">{{task.title}}</h5>
+                <h5 (click)="changeVisibilityForSubmissions(taskIndex)">{{task.title}}</h5>
 
-                <table *ngIf="showSubmissionsMap.get(task)" class="table tasks-table">
+                <table *ngIf="showTask[taskIndex]" class="table tasks-table">
                   <thead>
                   <tr>
                     <th scope="col">No</th>
@@ -42,13 +47,14 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let submission of submissionsMap.get(task); let j = index" [attr.data-index]="j">
-                    <td>{{j+1}}</td>
+                  <tr *ngFor="let submission of submissionsMap.get(task); let submissionIndex = index"
+                      [attr.data-index]="submissionIndex">
+                    <td>{{submissionIndex+1}}</td>
                     <td>{{submission.user.firstname}} {{submission.user.lastname}}</td>
                     <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
                     <td>{{submission.submissionStatusType.name}}</td>
                     <td>
-                      <img src='assets/img/{{submission.submissionStatusType.name}}.png'/>
+                      <img src='assets/img/{{submission.submissionStatusType.name}}.png' class="submission-status-img"/>
                     </td>
                     <td>{{submission.points}}</td>
                     <td>

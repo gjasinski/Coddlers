@@ -13,6 +13,16 @@ h1 {
   margin: 4px;
 }
 
-img {
+.note-image {
   width: 80%;
+}
+
+.arrow-image {
+  height: 35px;
+  width: 35px;
+  float: right;
+}
+
+.rotate {
+  transform: rotate(180deg);
 }
