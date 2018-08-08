@@ -21,7 +21,6 @@ export class TeacherLessonPageComponent implements OnInit {
   private lesson: Lesson;
   private course: Course;
   private tasks: Task[] = [];
-  private pointsForLesson: number = 0;
   private tasksVisibility: boolean[];
 
   constructor(private courseService: CourseService,
@@ -88,8 +87,10 @@ export class TeacherLessonPageComponent implements OnInit {
     this.tasksVisibility[index] = !this.tasksVisibility[index];
   }
 
-  countPointsForLesson() {
-    this.tasks.forEach(task => this.pointsForLesson += task.maxPoints);
+  countPointsForLesson(): number {
+    let sum = 0;
+    this.tasks.forEach(task => sum += task.maxPoints);
+    return sum;
   }
 
   addTask() {

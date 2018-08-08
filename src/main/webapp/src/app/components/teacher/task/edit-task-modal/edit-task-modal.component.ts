@@ -6,7 +6,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Task} from "../../../../models/task";
 import {Event} from "../../../../models/event";
 import {TaskService} from "../../../../services/task.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {filter, switchMap, tap} from "rxjs/operators";
 
 @Component({
@@ -27,7 +27,8 @@ export class EditTaskModalComponent implements OnInit, OnDestroy {
               private taskService: TaskService,
               private modalService: NgbModal,
               private route: ActivatedRoute,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -55,6 +56,8 @@ export class EditTaskModalComponent implements OnInit, OnDestroy {
         }
       )
     ).subscribe(() => this.open());
+
+    this.router.onSameUrlNavigation = 'reload';
   }
 
   ngOnDestroy() {
@@ -72,6 +75,10 @@ export class EditTaskModalComponent implements OnInit, OnDestroy {
       task.description,
       task.maxPoints,
       task.isCodeTask)
-    ).subscribe(() => this.modalRefNgb.close('updated'));
+    ).subscribe(() => {
+        this.modalRefNgb.close('updated');
+        this.router.navigate([this.router.url]);
+      }
+    );
   }
 }
