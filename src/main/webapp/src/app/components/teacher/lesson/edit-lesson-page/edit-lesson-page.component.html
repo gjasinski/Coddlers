@@ -12,6 +12,14 @@
     </div>
 
     <div class="form-group">
+      <label for="lesson-time-days">Time in days*</label>
+      <div class="input-group">
+        <input formControlName="timeDays" class="form-control" type="number" id="lesson-time-days"
+               placeholder="Enter time in days" min="0">
+      </div>
+    </div>
+
+    <div class="form-group">
       <label for="lesson-description">Description</label>
       <textarea formControlName="description" type="text" class="form-control"
                 id="lesson-description" placeholder="Enter description"></textarea>
@@ -25,16 +33,8 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="lesson-time-days">Time in days</label>
-      <div class="input-group">
-        <input formControlName="timeDays" class="form-control" type="number" id="lesson-time-days"
-               placeholder="Enter time in days" min="0">
-      </div>
-    </div>
-
     <input type="submit" class="btn btn-primary" value="Save" [disabled]="!formGroup.valid">
-    <button class="btn btn-secondary back-btn" (click)="back($event)">Back</button>
+    <button class="btn btn-secondary back-btn" (click)="back($event)">Cancel</button>
   </form>
 
 </div>

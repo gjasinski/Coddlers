@@ -93,7 +93,7 @@ export class TeacherLessonPageComponent implements OnInit {
   }
 
   addTask() {
-    this.eventService.emit(new Event('open-add-task-modal'));
+    this.eventService.emit(new Event('open-add-task-modal', this.lesson.id));
   }
 
   navigateToCourse() {
