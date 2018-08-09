@@ -21,7 +21,17 @@ h5 {
   cursor: pointer;
 }
 
-img {
+.submission-status-img {
   width: 1.2rem;
   height: 1rem;
+}
+
+.arrow-image {
+  height: 35px;
+  width: 35px;
+  float: right;
+}
+
+.rotate {
+  transform: rotate(180deg);
 }

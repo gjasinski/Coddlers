@@ -5,7 +5,7 @@ import {EventService} from "../../../../services/event.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Task} from "../../../../models/task";
 import {TaskService} from "../../../../services/task.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Event} from "../../../../models/event";
 
 @Component({
@@ -26,7 +26,8 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
               private taskService: TaskService,
               private modalService: NgbModal,
               private route: ActivatedRoute,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -44,6 +45,8 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
         this.lessonId = event.eventData;
       }
     });
+
+    this.router.onSameUrlNavigation = 'reload';
   }
 
   ngOnDestroy() {
@@ -63,6 +66,7 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
       task.isCodeTask)
     ).subscribe(() => {
       this.modalRefNgb.close('created');
+      this.router.navigate([this.router.url]);
     });
   }
 }

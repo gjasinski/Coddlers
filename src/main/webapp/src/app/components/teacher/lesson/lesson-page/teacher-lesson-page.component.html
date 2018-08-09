@@ -1,59 +1,67 @@
+<div class="col-md-12">
+  <h1 (click)="navigateToCourse()">{{course?.title}}</h1>
+</div>
+
 <div *ngIf="route.children.length === 0" class="content-container">
   <div class="row">
     <div class="col-md-10">
       <div class="row">
         <div class="col-12">
-          <h2>Lesson - {{lesson?.title}}</h2>
-          <h4>{{course?.title}}</h4>
+          <h2>Lesson: {{lesson?.title}}
+            <button routerLink="edit-lesson" class="btn btn-secondary float-right" role="button">Edit lesson</button>
+          </h2>
 
           <div class="line"></div>
           <br>
 
-          <p>Due date: {{lesson?.dueDate | date: 'dd-MM-yyyy'}} </p>
-
           <h4>Description</h4>
           <p>{{lesson?.description}}</p>
+          <h4>Time in days: {{lesson?.timeInDays}}</h4>
+          <h4>Weight: {{lesson?.weight}}</h4>
+          <h4>Max points: {{countPointsForLesson()}}</h4>
         </div>
 
         <div class="col-12">
-          <h4>Tasks</h4>
+          <h3>Tasks
+            <button class="btn btn-primary float-right" (click)="addTask()">Add task</button>
+          </h3>
 
-          <table class="table tasks-table">
-            <thead>
-              <tr>
-                <th scope="col">No</th>
-                <th scope="col">Task name</th>
-                <th scope="col">Max points</th>
-                <th scope="col">Submissions</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let task of tasks; let i = index" [attr.data-index]="i">
-                <td>{{i+1}}</td>
-                <td>{{task.title}}</td>
-                <td>{{task.maxPoints}}</td>
-                <td>-</td>
-                <td>
-                  <button class="btn btn-secondary float-right" [routerLink]="['/teacher', 'task', task.id]">Show task</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div *ngFor="let task of tasks;let i = index">
+            <button class="btn task-button" (click)="changeVisibilityForSubmissions(i)">
+              <div class="float-left">Task {{i+1}}: {{task.title}}</div>
+              <div *ngIf="tasksVisibility[i]">
+                <img src='assets/img/downArrow.png' class="arrow-image"/>
+              </div>
+              <div *ngIf="!tasksVisibility[i]">
+                <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+              </div>
+            </button>
+            <div *ngIf="tasksVisibility[i]">
+              <div class="row">
+                <div class="col-10">
+                  <h5>Description</h5>
+                  <p>{{task.description}}</p>
+                  <h5>Max points for task: {{task.maxPoints}}</h5>
+                </div>
 
-          <button class="btn btn-primary float-right" routerLink="add-task">Add task</button>
+                <div class="col-2">
+                  <button class="btn" (click)="editTask(task)">Edit task</button>
+                  <button class="btn">Notes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
-    <div class="col-md-2">
-      <button routerLink="edit-lesson" class="btn btn-secondary float-md-right" role="button">Edit lesson</button>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-12">
-      <button class="btn btn-secondary" routerLink="/courses/{{course?.id}}/student/lessons/{{lesson?.id}}">Switch to student</button>
-      <button class="btn btn-secondary back-btn float-right" (click)="back($event)">Back</button>
+    <div class="col-md-2">
+      <br>
+      <br>
+      <h4>Notes</h4>
+      <img src='assets/img/addNote.png' class="note-image"/>
+      <p>Add new note</p>
     </div>
   </div>
 
@@ -61,3 +69,5 @@
 
 
 <router-outlet></router-outlet>
+<cod-add-task-modal></cod-add-task-modal>
+<cod-edit-task-modal></cod-edit-task-modal>

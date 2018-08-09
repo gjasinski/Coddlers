@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LessonService} from "../../../../services/lesson.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {Lesson} from "../../../../models/lesson";
 import {Course} from "../../../../models/course";
 import {CourseService} from "../../../../services/course.service";
-import {filter, flatMap, map, mergeMap, subscribeOn, switchMap, tap} from "rxjs/operators";
+import {filter, map, switchMap, tap} from "rxjs/operators";
 import {Observable} from "rxjs/internal/Observable";
 import {Location} from "@angular/common";
 import {Task} from "../../../../models/task";
 import {TaskService} from "../../../../services/task.service";
+import {Event} from "../../../../models/event";
+import {EventService} from "../../../../services/event.service";
 
 @Component({
-  selector: 'cod-lessons-page',
+  selector: 'cod-teacher-lesson-page',
   templateUrl: './teacher-lesson-page.component.html',
   styleUrls: ['./teacher-lesson-page.component.scss']
 })
@@ -19,13 +21,16 @@ export class TeacherLessonPageComponent implements OnInit {
   private lesson: Lesson;
   private course: Course;
   private tasks: Task[] = [];
+  private tasksVisibility: boolean[];
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
               private route: ActivatedRoute,
               private router: Router,
               private _location: Location,
-              private taskService: TaskService) { }
+              private taskService: TaskService,
+              private eventService: EventService) {
+  }
 
   ngOnInit() {
     this.router.events.pipe(
@@ -35,7 +40,10 @@ export class TeacherLessonPageComponent implements OnInit {
       }),
     ).subscribe();
 
-    this.getLessonsAndTasks().subscribe();
+    this.getLessonsAndTasks().subscribe(() => {
+      this.tasksVisibility = new Array(this.tasks.length);
+      this.countPointsForLesson();
+    });
 
     this.route.parent.params.subscribe(params => {
       this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
@@ -75,9 +83,25 @@ export class TeacherLessonPageComponent implements OnInit {
     );
   }
 
-  back(e) {
-    e.preventDefault();
-    this.router.navigate(['../../'], {relativeTo: this.route});
+  changeVisibilityForSubmissions(index: number) {
+    this.tasksVisibility[index] = !this.tasksVisibility[index];
   }
 
+  countPointsForLesson(): number {
+    let sum = 0;
+    this.tasks.forEach(task => sum += task.maxPoints);
+    return sum;
+  }
+
+  addTask() {
+    this.eventService.emit(new Event('open-add-task-modal', this.lesson.id));
+  }
+
+  navigateToCourse() {
+    this.router.navigate(["teacher", "courses", this.course.id]);
+  }
+
+  editTask(task: Task) {
+    this.eventService.emit(new Event('open-edit-task-modal', task.id));
+  }
 }

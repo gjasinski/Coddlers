@@ -35,12 +35,12 @@ export class LessonService {
     return this.subject.asObservable();
   }
 
-  public createLesson(assigment: Lesson): Observable<any> {
-    return this.http.post('api/lessons', assigment.toJSON(), this.httpOptions);
+  public createLesson(assignment: Lesson): Observable<any> {
+    return this.http.post('api/lessons', assignment.toJSON(), this.httpOptions);
   }
 
-  public updateLesson(id: number, assigment: Lesson): Observable<any> {
-    return this.http.put(`api/lessons/${id}`, assigment.toJSON(), this.httpOptions)
+  public updateLesson(id: number, assignment: Lesson): Observable<any> {
+    return this.http.put(`api/lessons/${id}`, assignment.toJSON(), this.httpOptions)
       .pipe(
         map((obj: any) => {
           return Lesson.fromJSON(obj);
