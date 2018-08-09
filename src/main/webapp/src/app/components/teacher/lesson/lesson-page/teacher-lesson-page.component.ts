@@ -13,7 +13,7 @@ import {Event} from "../../../../models/event";
 import {EventService} from "../../../../services/event.service";
 
 @Component({
-  selector: 'cod-lessons-page',
+  selector: 'cod-teacher-lesson-page',
   templateUrl: './teacher-lesson-page.component.html',
   styleUrls: ['./teacher-lesson-page.component.scss']
 })
