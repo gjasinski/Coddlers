@@ -35,38 +35,28 @@ export class TeacherLessonPageComponent implements OnInit {
   ngOnInit() {
     this.router.events.pipe(
       filter(e => (e instanceof NavigationEnd && e.url.split('/').length === 6)),
-      switchMap(() => {
-        return this.getLessonsAndTasks();
-      }),
+      switchMap(() => this.getLessonsAndTasks())
     ).subscribe();
 
-    this.getLessonsAndTasks().subscribe(() => {
-      this.tasksVisibility = new Array(this.tasks.length);
-      this.countPointsForLesson();
-    });
+    this.getLessonsAndTasks().subscribe(() => this.tasksVisibility = new Array(this.tasks.length));
 
-    this.route.parent.params.subscribe(params => {
-      this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
-        this.course = course;
-      })
-    });
+    this.route.parent.params.subscribe(params =>
+      this.courseService.getCourse(params.courseId).subscribe(
+        (course: Course) => this.course = course)
+    );
   }
 
   private getLessonsAndTasks(): Observable<any> {
     return this.getLesson()
       .pipe(
-        switchMap((lesson: Lesson) => {
-          return this.getTasks(lesson.id);
-        })
+        switchMap((lesson: Lesson) => this.getTasks(lesson.id))
       );
   }
 
   private getLesson(): Observable<Lesson> {
     return this.route.paramMap
       .pipe(
-        switchMap((params) => {
-          return this.lessonService.getLesson(+params.get('lessonId'));
-        }),
+        switchMap((params) => this.lessonService.getLesson(+params.get('lessonId'))),
         map((lesson: Lesson) => {
           this.lesson = lesson;
 
