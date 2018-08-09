@@ -79,6 +79,7 @@ export class TeacherLessonPageComponent implements OnInit {
     return this.taskService.getTasks(lessonId).pipe(
       tap((tasks: Task[]) => {
         this.tasks = tasks;
+        this.tasks.sort((a, b) => a.id - b.id);
       })
     );
   }

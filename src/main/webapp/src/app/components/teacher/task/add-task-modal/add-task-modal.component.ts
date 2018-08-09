@@ -66,6 +66,7 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
       task.isCodeTask)
     ).subscribe(() => {
       this.modalRefNgb.close('created');
+      this.formGroup.reset();
       this.router.navigate([this.router.url]);
     });
   }
