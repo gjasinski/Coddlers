@@ -33,8 +33,8 @@ public class TaskController {
     public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDto taskDto) {
         Task task = taskService.createTask(taskDto);
         // TODO only for prototype purposes
-        long gitStudentProjectId = task.getLesson().getGitStudentProjectId();
-        gitTaskService.createTask(gitStudentProjectId, task.getTitle().replaceAll("\\s+","-"));
+//        long gitStudentProjectId = task.getLesson().getGitStudentProjectId();
+//        gitTaskService.createTask(gitStudentProjectId, task.getTitle().replaceAll("\\s+","-"));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
