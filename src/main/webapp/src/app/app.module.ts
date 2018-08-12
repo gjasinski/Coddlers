@@ -38,6 +38,7 @@ import {SubmissionService} from "./services/submission.service";
 import {EditLessonDueDateModalComponent} from "./components/teacher/course-edition/edit-lesson-due-date-modal/edit-lesson-due-date-modal.component";
 import {AddTaskModalComponent} from "./components/teacher/task/add-task-modal/add-task-modal.component";
 import {EditTaskModalComponent} from "./components/teacher/task/edit-task-modal/edit-task-modal.component";
+import { StudentMyCoursesComponent } from './components/student/student-my-courses/student-my-courses.component';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import {EditTaskModalComponent} from "./components/teacher/task/edit-task-modal/
     RegisterModalComponent,
     EditLessonDueDateModalComponent,
     StudentDashboardComponent,
-    TeacherDashboardComponent
+    TeacherDashboardComponent,
+    StudentMyCoursesComponent
   ],
   imports: [
     BrowserModule,

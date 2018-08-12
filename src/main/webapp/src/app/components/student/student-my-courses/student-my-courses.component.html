@@ -1,0 +1,26 @@
+<div *ngIf="route.children.length === 0" class="content-container course-container">
+  <h2>My Courses</h2>
+
+  <div class="line"></div>
+  <br>
+
+  <div class="row">
+    <div class="col-12">
+      Filter by title:
+      <input [(ngModel)]="searchText" class="search-input" type="text">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <ul class="course-list">
+        <li class="course-item card" *ngFor="let course of courses | courseFilter : searchText">
+          <a class="card-body" [routerLink]="['/teacher', 'courses', course.id]">
+            <h3>{{ course.title }}</h3>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
