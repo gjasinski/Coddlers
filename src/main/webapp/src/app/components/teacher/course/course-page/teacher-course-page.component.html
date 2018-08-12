@@ -5,54 +5,67 @@
       <div class="line"></div>
       <br>
     </div>
-
-    <div class="col-md-2">
-      <div class="row">
-        <div class="col">
-          <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Toggle dropdown</button>
-            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-              <button class="dropdown-item">Action - 1</button>
-              <button class="dropdown-item">Another Action</button>
-              <button class="dropdown-item">Something else is here</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
-  <div class="col-md-10">
+  <div class="col-md-12">
     <ngb-tabset>
       <ngb-tab title="Course">
         <ng-template ngbTabContent>
           <br/>
           <div class="row">
             <div class="col-md-10">
-              <h3>Description</h3>
-              <p>{{course?.description}}</p>
-            </div>
-            <div class="col-md-2">
-              <button class="btn btn-secondary float-right" (click)="routeToEdit()">Edit course</button>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <div class="lesson-container card">
-                <div class="lesson-header card-header">
-                    <h3>Lessons</h3>
-                    <button (click)="addLesson()" class="btn btn-primary float-md-right" role="button">Add new lesson
-                    </button>
+              <div class="row">
+                <div class="col-md-10">
+                  <h3>Description</h3>
+                  <p>{{course?.description}}</p>
                 </div>
-                <div class="lessons-body">
-                  <ul class="lesson-list">
-                    <li class="lesson-item card" *ngFor="let lesson of lessons; let i = index">
-                      <a [routerLink]="['lessons/', lesson.id]" class="card-body">
-                        <h4>Lesson {{i+1}}: {{lesson.title}}</h4>
-                      </a>
-                    </li>
-                  </ul>
+                <div class="col-md-2">
+                  <button class="btn btn-primary float-right" (click)="routeToEdit()">Edit course</button>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="lesson-container card">
+                    <div class="lesson-header card-header">
+                      <h3>Lessons</h3>
+                      <button (click)="addLesson()" class="btn btn-primary float-md-right" role="button">Add new lesson
+                      </button>
+                    </div>
+                    <div class="lessons-body">
+                      <ul class="lesson-list">
+                        <li class="lesson-item card" *ngFor="let lesson of lessons; let i = index">
+                          <a [routerLink]="['lessons/', lesson.id]" class="card-body">
+                            <h4>Lesson {{i+1}}: {{lesson.title}}</h4>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="row">
+                <h3>Version</h3>
+                <div ngbDropdown class="d-inline-block">
+                  <button class="btn btn-outline-primary versions-dropdown" id="versions" ngbDropdownToggle>1</button>
+                  <button class="btn btn-outline-primary">+</button>
+                  <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                    <button class="dropdown-item">Action - 1</button>
+                  </div>
+                </div>
+              </div>
+              <br/>
+              <div class="row">
+                <h3>People</h3>
+              </div>
+              <div class="row">
+                <button class="btn btn-secondary people-button">Teachers</button>
+              </div>
+              <br/>
+              <div class="row">
+                <h3>Notes</h3>
+              </div>
+              Tutaj powinny sie wyswietlic notatki
             </div>
           </div>
         </ng-template>
@@ -75,11 +88,6 @@
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <button class="btn btn-secondary back-btn float-right" (click)="back($event)">Back</button>
-    </div>
   </div>
 
 </div>
