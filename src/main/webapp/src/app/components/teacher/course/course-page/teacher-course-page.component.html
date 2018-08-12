@@ -2,39 +2,80 @@
   <div class="row">
     <div class="col-md-10">
       <h2>Course - {{course?.title}}</h2>
-
       <div class="line"></div>
       <br>
-
-      <h3>Description</h3>
-      <p>{{course?.description}}</p>
     </div>
 
     <div class="col-md-2">
-      <button class="btn btn-secondary float-right" (click)="routeToEdit()">Edit course</button>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-10">
-      <div class="lesson-container">
-        <div class="lesson-header">
-          <h3>Lessons</h3>
-          <button (click)="addLesson()" class="btn btn-primary float-md-right" role="button">Add new lesson</button>
-        </div>
-        <div class="lessons-body">
-          <ul class="lesson-list">
-            <li class="lesson-item card" *ngFor="let lesson of lessons; let i = index">
-              <a [routerLink]="['lessons/', lesson.id]" class="card-body">
-                <h4>Lesson {{i+1}}: {{lesson.title}}</h4>
-              </a>
-            </li>
-          </ul>
+      <div class="row">
+        <div class="col">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Toggle dropdown</button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+              <button class="dropdown-item">Action - 1</button>
+              <button class="dropdown-item">Another Action</button>
+              <button class="dropdown-item">Something else is here</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
+  <div class="col-md-10">
+    <ngb-tabset>
+      <ngb-tab title="Course">
+        <ng-template ngbTabContent>
+          <br/>
+          <div class="row">
+            <div class="col-md-10">
+              <h3>Description</h3>
+              <p>{{course?.description}}</p>
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-secondary float-right" (click)="routeToEdit()">Edit course</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="lesson-container card">
+                <div class="lesson-header card-header">
+                    <h3>Lessons</h3>
+                    <button (click)="addLesson()" class="btn btn-primary float-md-right" role="button">Add new lesson
+                    </button>
+                </div>
+                <div class="lessons-body">
+                  <ul class="lesson-list">
+                    <li class="lesson-item card" *ngFor="let lesson of lessons; let i = index">
+                      <a [routerLink]="['lessons/', lesson.id]" class="card-body">
+                        <h4>Lesson {{i+1}}: {{lesson.title}}</h4>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>Editions</ng-template>
+        <ng-template ngbTabContent>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee
+          squid.
+          <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko
+            farm-to-table
+            craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco
+            ad vinyl
+            cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS
+            salvia
+            yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit,
+            sustainable jean
+            shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr
+            butcher vero
+            sint qui sapiente accusamus tattooed echo park.</p>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
   <div class="row">
     <div class="col-12">
       <button class="btn btn-secondary back-btn float-right" (click)="back($event)">Back</button>
