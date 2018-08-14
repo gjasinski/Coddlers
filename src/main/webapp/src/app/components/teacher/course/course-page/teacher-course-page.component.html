@@ -1,21 +1,19 @@
-<div *ngIf="route.children.length === 0" class="content-container">
-  <div class="row">
-    <div class="col-md-10">
-      <h2>Course - {{course?.title}}</h2>
-      <div class="line"></div>
-      <br>
-    </div>
-  </div>
+<div *ngIf="route.children.length === 0">
   <div class="col-md-12">
-    <ngb-tabset>
-      <ngb-tab title="Course">
-        <ng-template ngbTabContent>
+    <h1>{{course?.title}}</h1>
+  </div>
+
+  <ngb-tabset>
+    <ngb-tab>
+      <ng-template ngbTabTitle><span class="tab-title">Course</span></ng-template>
+      <ng-template ngbTabContent>
+        <div class="content-container course-container">
           <br/>
           <div class="row">
             <div class="col-md-10">
               <div class="row">
                 <div class="col-md-10">
-                  <h3>Description</h3>
+                  <h5>Description</h5>
                   <p>{{course?.description}}</p>
                 </div>
                 <div class="col-md-2">
@@ -47,9 +45,13 @@
               <div class="row">
                 <h3>Version</h3>
                 <div ngbDropdown class="d-inline-block">
-                  <button class="btn btn-outline-secondary versions-dropdown" id="versions-dropdown" ngbDropdownToggle>{{currentCourseVersionNumber}}</button>
+                  <button class="btn btn-outline-secondary versions-dropdown" id="versions-dropdown" ngbDropdownToggle>
+                    {{currentCourseVersionNumber}}
+                  </button>
                   <div ngbDropdownMenu aria-labelledby="dropdownBasic1" id="version-dropdown-menu">
-                    <button class="dropdown-item" *ngFor="let version of courseVersions" (click)="this.changeVersion(version)">{{version.versionNumber}}</button>
+                    <button class="dropdown-item" *ngFor="let version of courseVersions"
+                            (click)="this.changeVersion(version)">{{version.versionNumber}}
+                    </button>
                   </div>
                 </div>
                 <button class="btn btn-outline-secondary">+</button>
@@ -71,11 +73,14 @@
               </div>
             </div>
           </div>
-        </ng-template>
-      </ngb-tab>
-      <ngb-tab>
-        <ng-template ngbTabTitle>Editions</ng-template>
-        <ng-template ngbTabContent>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab>
+      <ng-template ngbTabTitle><span class="tab-title">Editions</span></ng-template>
+      <ng-template ngbTabContent>
+        <div class="content-container course-container">
+          Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee
           squid.
           <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko
             farm-to-table
@@ -88,11 +93,11 @@
             shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr
             butcher vero
             sint qui sapiente accusamus tattooed echo park.</p>
-        </ng-template>
-      </ngb-tab>
-    </ngb-tabset>
-  </div>
-
+        </div>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
 </div>
+
 
 <router-outlet></router-outlet>
