@@ -1,7 +1,17 @@
 h1 {
   color: white;
+  margin-bottom: 8px;
 }
 .tab-title{
+  color: black;
+}
+:host ::ng-deep .tabset-course a.nav-link {
+  background-color: gray;
+  color: black;
+}
+
+:host ::ng-deep .tabset-course a.nav-link.active {
+  background-color: white;
   color: black;
 }
 .versions-dropdown{

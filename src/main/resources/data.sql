@@ -1,4 +1,4 @@
-INSERT INTO account_type (name) VALUES
+/*INSERT INTO account_type (name) VALUES
   ('ROLE_STUDENT'),
   ('ROLE_TEACHER'),
   ('ROLE_ADMIN');
@@ -18,3 +18,4 @@ INSERT INTO submission_status_type (name) VALUES
   ('WAITING_FOR_REVIEW'),
   ('GRADED'),
   ('CHANGES_REQUESTED');
+*/
