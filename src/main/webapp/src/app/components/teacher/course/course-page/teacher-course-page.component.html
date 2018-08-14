@@ -47,12 +47,12 @@
               <div class="row">
                 <h3>Version</h3>
                 <div ngbDropdown class="d-inline-block">
-                  <button class="btn btn-outline-primary versions-dropdown" id="versions-dropdown" ngbDropdownToggle>{{currentCourseVersionNumber}}</button>
+                  <button class="btn btn-outline-secondary versions-dropdown" id="versions-dropdown" ngbDropdownToggle>{{currentCourseVersionNumber}}</button>
                   <div ngbDropdownMenu aria-labelledby="dropdownBasic1" id="version-dropdown-menu">
                     <button class="dropdown-item" *ngFor="let version of courseVersions" (click)="this.changeVersion(version)">{{version.versionNumber}}</button>
                   </div>
                 </div>
-                <button class="btn btn-outline-primary">+</button>
+                <button class="btn btn-outline-secondary">+</button>
               </div>
               <br/>
               <div class="row">
