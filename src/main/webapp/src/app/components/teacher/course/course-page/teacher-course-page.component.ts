@@ -10,6 +10,8 @@ import {CourseVersionService} from "../../../../services/course-version.service"
 import {switchMap, tap} from "rxjs/operators";
 import {CourseVersion} from "../../../../models/courseVersion";
 import {throwError} from "rxjs/internal/observable/throwError";
+import {CourseEdition} from "../../../../models/courseEdition";
+import {CourseEditionService} from "../../../../services/course-edition.service";
 
 
 @Component({
@@ -21,6 +23,7 @@ export class TeacherCoursePageComponent implements OnInit {
   private course: Course;
   private lessons: Lesson[] = [];
   private courseVersions: CourseVersion[] = [];
+  private courseEditions: CourseEdition[] = [];
   private currentCourseVersion: CourseVersion;
   private currentCourseVersionNumber: number = 0;
 
@@ -29,7 +32,9 @@ export class TeacherCoursePageComponent implements OnInit {
               private _location: Location,
               private lessonService: LessonService,
               private router: Router,
-              private courseVersionService: CourseVersionService) {}
+              private courseVersionService: CourseVersionService,
+              private courseEditionService: CourseEditionService) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(
@@ -41,7 +46,6 @@ export class TeacherCoursePageComponent implements OnInit {
 
         this.courseVersionService.getCourseVersions(courseId).pipe(
           switchMap((courseVersions: CourseVersion[]) => {
-            console.error(courseVersions);
             this.courseVersions = courseVersions;
             if (courseVersions.length > 0) {
               this.currentCourseVersion = courseVersions[0];
@@ -54,7 +58,14 @@ export class TeacherCoursePageComponent implements OnInit {
           tap((lessons: Lesson[]) => {
             this.lessons = lessons;
           })
-        ).subscribe();
+        ).subscribe(() => {
+
+          this.courseEditionService.getEditionsByCourseVersion(this.currentCourseVersion.id).subscribe(
+            courseEditions => {
+              this.courseEditions = courseEditions;
+            }
+          );
+        });
       }
     );
   }
@@ -72,7 +83,7 @@ export class TeacherCoursePageComponent implements OnInit {
     this.router.navigate(['/teacher', 'edit-course', this.course.id]);
   }
 
-  changeVersion(version: CourseVersion){
+  changeVersion(version: CourseVersion) {
     this.currentCourseVersion = version;
     this.currentCourseVersionNumber = version.versionNumber;
     this.lessonService.getLessonsByCourseVersion(this.course.id, this.currentCourseVersion.versionNumber);

@@ -8,6 +8,9 @@ import pl.coddlers.core.models.dto.CourseEditionDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.repositories.CourseEditionRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CourseEditionService {
 
@@ -28,5 +31,11 @@ public class CourseEditionService {
 
     private CourseEdition validateCourseEdition(Long id) throws CourseEditionNotFoundException {
         return courseEditionRepository.findById(id).orElseThrow(() -> new CourseEditionNotFoundException(id));
+    }
+
+    public List<CourseEditionDto> getCourseEditionsByCourseVersionId(Long courseVersionId){
+        return courseEditionRepository.findAllByCourseVersionId(courseVersionId).stream()
+                .map(courseEditionConverter::convertFromEntity)
+                .collect(Collectors.toList());
     }
 }
