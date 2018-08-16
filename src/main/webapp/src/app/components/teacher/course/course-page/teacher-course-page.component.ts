@@ -22,6 +22,7 @@ export class TeacherCoursePageComponent implements OnInit {
   private lessons: Lesson[] = [];
   private courseVersions: CourseVersion[] = [];
   private currentCourseVersion: CourseVersion;
+  private currentCourseVersionNumber: number = 0;
 
   constructor(private courseService: CourseService,
               private route: ActivatedRoute,
@@ -40,9 +41,11 @@ export class TeacherCoursePageComponent implements OnInit {
 
         this.courseVersionService.getCourseVersions(courseId).pipe(
           switchMap((courseVersions: CourseVersion[]) => {
+            console.error(courseVersions);
             this.courseVersions = courseVersions;
             if (courseVersions.length > 0) {
               this.currentCourseVersion = courseVersions[0];
+              this.currentCourseVersionNumber = this.currentCourseVersion.versionNumber;
               return this.lessonService.getLessonsByCourseVersion(courseId, this.currentCourseVersion.versionNumber);
             } else {
               return throwError(`Cannot find any version of course with id ${courseId}`);
@@ -67,6 +70,12 @@ export class TeacherCoursePageComponent implements OnInit {
 
   routeToEdit() {
     this.router.navigate(['/teacher', 'edit-course', this.course.id]);
+  }
+
+  changeVersion(version: CourseVersion){
+    this.currentCourseVersion = version;
+    this.currentCourseVersionNumber = version.versionNumber;
+    this.lessonService.getLessonsByCourseVersion(this.course.id, this.currentCourseVersion.versionNumber);
   }
 
   back(e) {
