@@ -38,7 +38,7 @@ import {SubmissionService} from "./services/submission.service";
 import {EditLessonDueDateModalComponent} from "./components/teacher/course-edition/edit-lesson-due-date-modal/edit-lesson-due-date-modal.component";
 import {AddTaskModalComponent} from "./components/teacher/task/add-task-modal/add-task-modal.component";
 import {EditTaskModalComponent} from "./components/teacher/task/edit-task-modal/edit-task-modal.component";
-import { AddEditionModalComponent } from './components/teacher/edition/add-edition-modal/add-edition-modal.component';
+import { AddEditionModalComponent } from './components/teacher/course-edition/add-edition-modal/add-edition-modal.component';
 
 
 @NgModule({
