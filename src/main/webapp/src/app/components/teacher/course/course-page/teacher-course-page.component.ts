@@ -12,6 +12,9 @@ import {CourseVersion} from "../../../../models/courseVersion";
 import {throwError} from "rxjs/internal/observable/throwError";
 import {CourseEdition} from "../../../../models/courseEdition";
 import {CourseEditionService} from "../../../../services/course-edition.service";
+import {Event} from "../../../../models/event";
+import {EventService} from "../../../../services/event.service";
+import {Subscription} from "rxjs/internal/Subscription";
 
 
 @Component({
@@ -26,6 +29,7 @@ export class TeacherCoursePageComponent implements OnInit {
   private courseEditions: CourseEdition[] = [];
   private currentCourseVersion: CourseVersion;
   private currentCourseVersionNumber: number = 0;
+  private eventSubscription: Subscription;
 
   constructor(private courseService: CourseService,
               private route: ActivatedRoute,
@@ -33,7 +37,8 @@ export class TeacherCoursePageComponent implements OnInit {
               private lessonService: LessonService,
               private router: Router,
               private courseVersionService: CourseVersionService,
-              private courseEditionService: CourseEditionService) {
+              private courseEditionService: CourseEditionService,
+              private eventService: EventService) {
   }
 
   ngOnInit(): void {
@@ -59,13 +64,22 @@ export class TeacherCoursePageComponent implements OnInit {
             this.lessons = lessons;
           })
         ).subscribe(() => {
-
-          this.courseEditionService.getEditionsByCourseVersion(this.currentCourseVersion.id).subscribe(
-            courseEditions => {
-              this.courseEditions = courseEditions;
-            }
-          );
+          this.getCourseEditions();
         });
+      }
+    );
+    this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
+      console.error(event.eventType);
+      if (event.eventType === 'close-add-edition-modal') {
+        this.getCourseEditions();
+      }
+    });
+  }
+
+  private getCourseEditions() {
+    this.courseEditionService.getEditionsByCourseVersion(this.currentCourseVersion.id).subscribe(
+      courseEditions => {
+        this.courseEditions = courseEditions;
       }
     );
   }
@@ -93,4 +107,9 @@ export class TeacherCoursePageComponent implements OnInit {
     e.preventDefault();
     this.router.navigate(['../'], {relativeTo: this.route});
   }
+
+  addNewEdition() {
+    this.eventService.emit(new Event('open-add-edition-modal', this.currentCourseVersion.id));
+  }
+
 }

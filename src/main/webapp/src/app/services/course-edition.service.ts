@@ -10,13 +10,14 @@ import {Subject} from "rxjs/internal/Subject";
 export class CourseEditionService {
   httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type':  'application/json'
+      'Content-Type': 'application/json'
     })
   };
 
   private subject: Subject<CourseEdition[]> = new Subject();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getCourseEdition(editionId: number): Observable<CourseEdition> {
     return this.http.get<CourseEdition>(`api/editions/${editionId}`)
@@ -26,8 +27,6 @@ export class CourseEditionService {
   }
 
   public getEditionsByCourseVersion(courseVersion: number): Observable<CourseEdition[]> {
-    let courseVersionStr = (courseVersion === 0 || courseVersion === undefined || courseVersion === null) ? '' : `=${courseVersion}`;
-
     this.http.get<Lesson[]>(`api/course-versions/${courseVersion}/editions`)
       .pipe(
         map((objArray: any[]) => objArray.map(obj => CourseEdition.fromJSON(obj))),
@@ -37,5 +36,9 @@ export class CourseEditionService {
       ).subscribe();
 
     return this.subject.asObservable();
+  }
+
+  public createCourseEdition(courseEdition: CourseEdition): Observable<any> {
+    return this.http.post('api/editions', courseEdition.toJSON(), this.httpOptions);
   }
 }

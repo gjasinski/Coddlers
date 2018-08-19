@@ -38,4 +38,9 @@ public class CourseEditionService {
                 .map(courseEditionConverter::convertFromEntity)
                 .collect(Collectors.toList());
     }
+
+    public CourseEdition createCourseEdition(CourseEditionDto courseEditionDto){
+        return courseEditionRepository.save(courseEditionConverter.convertFromDto(courseEditionDto));
+
+    }
 }

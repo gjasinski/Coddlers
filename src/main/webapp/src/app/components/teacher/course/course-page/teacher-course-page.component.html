@@ -99,8 +99,7 @@
                   <input [(ngModel)]="searchText" class="search-input" type="text">
                 </div>
                 <div class="col-md-6">
-                  <button class="btn btn-primary float-right" (click)="routeToAddNewEdition()">Add new edition
-                  </button>
+                  <button class="btn btn-primary float-right" (click)="addNewEdition()">Add new edition</button>
                 </div>
               </div>
               <br/>
@@ -108,7 +107,8 @@
                 <div class="col-md-12">
                   <div class="lessons-body">
                     <ul class="lesson-list">
-                      <li class="lesson-item card" *ngFor="let edition of courseEditions | courseFilter : searchText">
+                      <li class="edition-item card"
+                          *ngFor="let edition of courseEditions | courseFilter : searchText && edition.courseVersion.id == currentCourseVersionNumber; let i = index">
                         <a class="card-body row">
                           <div class="col-md-8">
                             <h5>{{edition.title}}</h5>
@@ -117,7 +117,7 @@
                             <h6>Start date: <b>{{edition.startDate.toLocaleDateString()}}</b></h6>
                           </div>
                           <div class="col-md-8">
-                            <h5>?//{{edition.courseVersion.versionNumber}}</h5>
+                            <h5>{{i+1}} // {{edition.courseVersion.versionNumber}}</h5>
                           </div>
                         </a>
                       </li>
@@ -151,3 +151,4 @@
 
 
 <router-outlet></router-outlet>
+<cod-add-edition-modal [courseVersions]="courseVersions" [currentCourseVersion]="currentCourseVersion"></cod-add-edition-modal>

@@ -1,10 +1,13 @@
 package pl.coddlers.core.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javafx.util.converter.TimeStringConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,16 +31,10 @@ public class CourseEdition {
     @JoinColumn(name = "course_version_id")
     private CourseVersion courseVersion;
 
-    // TODO it shouldn't be here
-    @ManyToOne(targetEntity = Course.class)
-    @JoinColumn(name = "course_id")
-    private Course course;
-
-    public CourseEdition(String title, CourseVersion courseVersion, Timestamp startDate, Course course) {
+    public CourseEdition(String title, CourseVersion courseVersion, Timestamp startDate) {
         this.title = title;
         this.courseVersion = courseVersion;
         this.startDate = startDate;
-        this.course = course;
     }
 
     @JsonIgnore
