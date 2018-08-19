@@ -40,7 +40,6 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
       'date': ['', Validators.compose([Validators.required])]
     });
     this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
-      console.error(event.eventType);
       if (event.eventType === 'open-add-edition-modal') {
         this.open();
       }
@@ -67,7 +66,6 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
       courseEdition.title,
       this.currentCourseVersion,
       courseEdition.date);
-    console.error(c.toJSON());
     this.courseEditionService.createCourseEdition(c)
       .subscribe(() => {
         this.modalRefNgb.close('created');

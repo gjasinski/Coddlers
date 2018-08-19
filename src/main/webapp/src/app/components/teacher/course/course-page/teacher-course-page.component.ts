@@ -69,7 +69,6 @@ export class TeacherCoursePageComponent implements OnInit {
       }
     );
     this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
-      console.error(event.eventType);
       if (event.eventType === 'close-add-edition-modal') {
         this.getCourseEditions();
       }
