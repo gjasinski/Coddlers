@@ -55,4 +55,8 @@ For details how to make documentation in swagger please visit [https://github.co
     
 * I have a problem with node-sass package
 
-    Try ```sudo npm rebuild node-sass```  
+    Try ```sudo npm rebuild node-sass```. You have to be sure that you are using node with version >=v10.0.0 and npm >=v5.6.0.
+    
+* I cannot use ng cli inside Intellij
+
+    You have to update your angular cli to v6 or greater.
