@@ -2,6 +2,23 @@
 
 ## Development
 
+### Environment setup
+* Install Java 8
+* Install Node.js
+
+Using Ubuntu based OS:
+```
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+Or see [https://nodejs.org/en/download/](https://nodejs.org/en/download/)
+
+* Install Angular CLI
+```
+npm install -g @angular/cli
+```
+* Install docker 
+
 ### Backend
 ```$ gradle build```
 
