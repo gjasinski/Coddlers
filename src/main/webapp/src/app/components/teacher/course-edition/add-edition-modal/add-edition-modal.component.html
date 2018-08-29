@@ -1,0 +1,47 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Add new edition</h4>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="formGroup" (ngSubmit)="addEdition(formGroup.value)">
+      <div class="form-group">
+        <label for="task-title">Name</label>
+        <input formControlName="title" type="text" class="form-control" id="task-title" placeholder="Name of edition">
+      </div>
+
+      <div class="form-group">
+        <label>Start date</label>
+        <div class="input-group">
+          <input class="form-control" formControlName="date" placeholder="yyyy-mm-dd"
+                 name="dp" ngbDatepicker #d="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+              <img src="assets/img/calendar.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Course version</label>
+        <br/>
+        <div ngbDropdown class="d-inline-block">
+          <label class="btn btn-outline-secondary versions-dropdown" ngbDropdownToggle>
+            {{currentCourseVersion.versionNumber}}
+          </label>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <label class="dropdown-item versions-dropdown" *ngFor="let version of courseVersions"
+                   (click)="this.changeVersion(version)">{{version.versionNumber}}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="float-right form-group">
+        <input type="submit" class="btn btn-primary" value="Create" [disabled]="!formGroup.valid">
+        <button class="btn btn-secondary back-btn" (click)="c('closed'); $event.preventDefault();">Cancel</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

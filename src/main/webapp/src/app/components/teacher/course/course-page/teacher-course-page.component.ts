@@ -10,6 +10,11 @@ import {CourseVersionService} from "../../../../services/course-version.service"
 import {switchMap, tap} from "rxjs/operators";
 import {CourseVersion} from "../../../../models/courseVersion";
 import {throwError} from "rxjs/internal/observable/throwError";
+import {CourseEdition} from "../../../../models/courseEdition";
+import {CourseEditionService} from "../../../../services/course-edition.service";
+import {Event} from "../../../../models/event";
+import {EventService} from "../../../../services/event.service";
+import {Subscription} from "rxjs/internal/Subscription";
 
 
 @Component({
@@ -21,15 +26,20 @@ export class TeacherCoursePageComponent implements OnInit {
   private course: Course;
   private lessons: Lesson[] = [];
   private courseVersions: CourseVersion[] = [];
+  private courseEditions: CourseEdition[] = [];
   private currentCourseVersion: CourseVersion;
   private currentCourseVersionNumber: number = 0;
+  private eventSubscription: Subscription;
 
   constructor(private courseService: CourseService,
               private route: ActivatedRoute,
               private _location: Location,
               private lessonService: LessonService,
               private router: Router,
-              private courseVersionService: CourseVersionService) {}
+              private courseVersionService: CourseVersionService,
+              private courseEditionService: CourseEditionService,
+              private eventService: EventService) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(
@@ -41,7 +51,6 @@ export class TeacherCoursePageComponent implements OnInit {
 
         this.courseVersionService.getCourseVersions(courseId).pipe(
           switchMap((courseVersions: CourseVersion[]) => {
-            console.error(courseVersions);
             this.courseVersions = courseVersions;
             if (courseVersions.length > 0) {
               this.currentCourseVersion = courseVersions[0];
@@ -54,7 +63,22 @@ export class TeacherCoursePageComponent implements OnInit {
           tap((lessons: Lesson[]) => {
             this.lessons = lessons;
           })
-        ).subscribe();
+        ).subscribe(() => {
+          this.getCourseEditions();
+        });
+      }
+    );
+    this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
+      if (event.eventType === 'close-add-edition-modal') {
+        this.getCourseEditions();
+      }
+    });
+  }
+
+  private getCourseEditions() {
+    this.courseEditionService.getEditionsByCourseVersion(this.currentCourseVersion.id).subscribe(
+      courseEditions => {
+        this.courseEditions = courseEditions;
       }
     );
   }
@@ -72,7 +96,7 @@ export class TeacherCoursePageComponent implements OnInit {
     this.router.navigate(['/teacher', 'edit-course', this.course.id]);
   }
 
-  changeVersion(version: CourseVersion){
+  changeVersion(version: CourseVersion) {
     this.currentCourseVersion = version;
     this.currentCourseVersionNumber = version.versionNumber;
     this.lessonService.getLessonsByCourseVersion(this.course.id, this.currentCourseVersion.versionNumber);
@@ -82,4 +106,9 @@ export class TeacherCoursePageComponent implements OnInit {
     e.preventDefault();
     this.router.navigate(['../'], {relativeTo: this.route});
   }
+
+  addNewEdition() {
+    this.eventService.emit(new Event('open-add-edition-modal', this.currentCourseVersion.id));
+  }
+
 }

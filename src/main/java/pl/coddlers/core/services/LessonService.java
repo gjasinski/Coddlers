@@ -48,7 +48,7 @@ public class LessonService {
 	}
 
 	public Collection<LessonDto> getAllCourseVersionLessons(long courseVersionId) {
-		return lessonConverter.convertFromEntities(lessonRepository.findByCourseVersion_Id(courseVersionId));
+		return lessonConverter.convertFromEntities(lessonRepository.findByCourseVersionId(courseVersionId));
 	}
 
 	public Long createLesson(LessonDto lessonDto) {

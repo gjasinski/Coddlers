@@ -57,3 +57,26 @@ h1 {
     margin-bottom: 0;
   }
 }
+.edition-item {
+  background-color: #f8f8f8;
+  margin-bottom: 15px;
+
+  &:hover {
+    background-color: #fff;
+  }
+
+  a {
+    color: #303030;
+    &:hover {
+      text-decoration: none;
+      color: #000;
+    }
+  }
+
+  h5 {
+    margin-bottom: 0;
+  }
+  h6 {
+    margin-bottom: 0;
+  }
+}
