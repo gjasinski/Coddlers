@@ -1,13 +1,11 @@
 package pl.coddlers.core.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javafx.util.converter.TimeStringConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +22,7 @@ public class CourseEdition {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Timestamp startDate;
 
     @ManyToOne(targetEntity = CourseVersion.class)
