@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {LessonService} from "../../../../services/lesson.service";
 import {Lesson} from "../../../../models/lesson";
+import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 
 @Component({
   selector: 'cod-edit-lesson-page',
   templateUrl: './edit-lesson-page.component.html',
   styleUrls: ['./edit-lesson-page.component.scss']
 })
-export class EditLessonPageComponent implements OnInit {
+export class EditLessonPageComponent implements OnInit, OnDestroy {
   private formGroup: FormGroup;
   private lesson: Lesson;
+  private subscriptionManager: SubscriptionManager = new SubscriptionManager();
 
   constructor(private formBuilder: FormBuilder,
               private lessonService: LessonService,
@@ -29,13 +31,14 @@ export class EditLessonPageComponent implements OnInit {
       'timeDays': [1, Validators.required]
     });
 
-    this.route.parent.params.subscribe(params => {
+    let routeParamsSub = this.route.parent.params.subscribe(params => {
       this.lessonService.getLesson(params.lessonId)
         .subscribe((lesson: Lesson) => {
           this.lesson = lesson;
           this.setForm(lesson);
         })
     });
+    this.subscriptionManager.add(routeParamsSub);
   }
 
   saveLesson(lesson): void {
@@ -65,5 +68,9 @@ export class EditLessonPageComponent implements OnInit {
   back(e): void {
     e.preventDefault();
     this._location.back();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionManager.unsubscribeAll();
   }
 }
