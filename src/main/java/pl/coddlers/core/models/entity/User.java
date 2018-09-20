@@ -28,7 +28,6 @@ public class User {
     private String password;
 
     @JsonIgnore
-    @Column(nullable = false)
     private Long gitUserId;
 
     @JsonIgnore
