@@ -22,7 +22,7 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
   private lesson: Lesson;
   private course: Course;
   private tasks: Task[] = [];
-  private tasksVisibility: boolean[];
+  private tasksVisibility: boolean[] = new Array(this.tasks.length);
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
 
   constructor(private courseService: CourseService,
@@ -41,9 +41,7 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
     ).subscribe();
     this.subscriptionManager.add(routerEventSub);
 
-    let getLessonsSub = this.getLessonsAndTasks().subscribe(() => {
-      this.tasksVisibility = new Array(this.tasks.length);
-    });
+    let getLessonsSub = this.getLessonsAndTasks().subscribe();
     this.subscriptionManager.add(getLessonsSub);
 
     let routeParamsSub = this.route.parent.params.subscribe(params =>

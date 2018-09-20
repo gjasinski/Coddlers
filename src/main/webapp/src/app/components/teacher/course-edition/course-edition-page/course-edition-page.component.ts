@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Course} from "../../../../models/course";
 import {Lesson} from "../../../../models/lesson";
 import {CourseEdition} from "../../../../models/courseEdition";
@@ -13,19 +13,21 @@ import {Submission} from "../../../../models/submission";
 import {SubmissionService} from "../../../../services/submission.service";
 import {switchMap, tap} from "rxjs/operators";
 import {EventService} from "../../../../services/event.service";
+import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 
 @Component({
   selector: 'app-edition-page',
   templateUrl: './course-edition-page.component.html',
   styleUrls: ['./course-edition-page.component.scss']
 })
-export class CourseEditionPageComponent implements OnInit {
+export class CourseEditionPageComponent implements OnInit, OnDestroy {
   private course: Course;
   private courseEdition: CourseEdition;
   private showLesson: boolean[];
   private courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
   private submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
   private showTask: boolean[] = [];
+  private subscriptionManager: SubscriptionManager = new SubscriptionManager();
 
   constructor(private courseService: CourseService,
               private editionService: CourseEditionService,
@@ -43,7 +45,7 @@ export class CourseEditionPageComponent implements OnInit {
   }
 
   getCourseInfo() {
-    this.route.parent.params.pipe(
+    let routeParamsSub = this.route.parent.params.pipe(
       switchMap(params => {
         this.submissionsMap.clear();
         this.courseMap.clear();
@@ -56,26 +58,37 @@ export class CourseEditionPageComponent implements OnInit {
       }),
       tap((lessons: Lesson[]) => {
         lessons.forEach(lesson => {
-          this.taskService.getTasks(lesson.id).subscribe((tasks: Task[]) => {
-            this.courseMap.set(lesson, tasks);
-            this.showLesson = new Array(this.courseMap.size).fill(false);
-            tasks.forEach(task => {
-              this.showTask.push(false);
-              this.submissionService.getSubmissions(task.id).subscribe((submissions: Submission[]) => {
-                this.submissionsMap.set(task, submissions);
-              })
-            })
-          })
-        })
+          let getTaskSub = this.taskService.getTasks(lesson.id)
+            .subscribe((tasks: Task[]) => {
+              this.courseMap.set(lesson, tasks);
+              this.showLesson = new Array(this.courseMap.size).fill(false);
+
+              this.getSubmissions(tasks);
+          });
+          this.subscriptionManager.add(getTaskSub);
+        });
       })
     ).subscribe();
+    this.subscriptionManager.add(routeParamsSub);
+  }
+
+  getSubmissions(tasks: Task[]): void {
+    tasks.forEach(task => {
+      this.showTask.push(false);
+      let submissionSub = this.submissionService.getSubmissions(task.id)
+        .subscribe((submissions: Submission[]) => {
+          this.submissionsMap.set(task, submissions);
+        });
+      this.subscriptionManager.add(submissionSub);
+    });
   }
 
   getEditionInfo() {
-    this.route.params.pipe(
+    let routeParamsSub = this.route.params.pipe(
       switchMap(params => this.editionService.getCourseEdition(params.editionId)),
       tap((edition: CourseEdition) => this.courseEdition = edition)
     ).subscribe();
+    this.subscriptionManager.add(routeParamsSub);
   }
 
   swapShowLesson(index: number) {
@@ -100,5 +113,9 @@ export class CourseEditionPageComponent implements OnInit {
 
   openEditLessonDueDateModal(lesson: Lesson) {
     this.eventService.emit(new Event('open-edit-lesson-due-date-modal', lesson.id));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionManager.unsubscribeAll();
   }
 }

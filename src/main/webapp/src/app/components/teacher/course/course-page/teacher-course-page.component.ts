@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {CourseService} from "../../../../services/course.service";
 import {Course} from "../../../../models/course";
@@ -15,6 +15,8 @@ import {CourseEditionService} from "../../../../services/course-edition.service"
 import {Event} from "../../../../models/event";
 import {EventService} from "../../../../services/event.service";
 import {Subscription} from "rxjs/internal/Subscription";
+import {Observable} from "rxjs";
+import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 
 
 @Component({
@@ -22,14 +24,15 @@ import {Subscription} from "rxjs/internal/Subscription";
   templateUrl: './teacher-course-page.component.html',
   styleUrls: ['./teacher-course-page.component.scss']
 })
-export class TeacherCoursePageComponent implements OnInit {
+export class TeacherCoursePageComponent implements OnInit, OnDestroy {
   private course: Course;
   private lessons: Lesson[] = [];
   private courseVersions: CourseVersion[] = [];
   private courseEditions: CourseEdition[] = [];
   private currentCourseVersion: CourseVersion;
   private currentCourseVersionNumber: number = 0;
-  private eventSubscription: Subscription;
+  private subscriptionManager: SubscriptionManager = new SubscriptionManager();
+  private courseEditionsSub: Subscription;
 
   constructor(private courseService: CourseService,
               private route: ActivatedRoute,
@@ -42,14 +45,14 @@ export class TeacherCoursePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(
-      params => {
+    let paramsSub = this.route.paramMap.subscribe(params => {
         let courseId: number = +params.get('courseId');
-        this.courseService.getCourse(courseId).subscribe((course: Course) => {
+        let courseSub = this.courseService.getCourse(courseId).subscribe((course: Course) => {
           this.course = course;
         });
+        this.subscriptionManager.add(courseSub);
 
-        this.courseVersionService.getCourseVersions(courseId).pipe(
+        let courseVerSub = this.courseVersionService.getCourseVersions(courseId).pipe(
           switchMap((courseVersions: CourseVersion[]) => {
             this.courseVersions = courseVersions;
             if (courseVersions.length > 0) {
@@ -63,24 +66,30 @@ export class TeacherCoursePageComponent implements OnInit {
           tap((lessons: Lesson[]) => {
             this.lessons = lessons;
           })
-        ).subscribe(() => {
-          this.getCourseEditions();
+        ).subscribe(() =>  {
+          this.courseEditionsSub = this.getCourseEditions().subscribe();
         });
-      }
-    );
-    this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
+        this.subscriptionManager.add(courseVerSub);
+    });
+    this.subscriptionManager.add(paramsSub);
+
+    let eventSubscription = this.eventService.events.subscribe((event: Event) => {
       if (event.eventType === 'close-add-edition-modal') {
-        this.getCourseEditions();
+        this.courseEditionsSub.unsubscribe();
+        this.courseEditionsSub = this.getCourseEditions().subscribe();
       }
     });
+    this.subscriptionManager.add(eventSubscription);
   }
 
-  private getCourseEditions() {
-    this.courseEditionService.getEditionsByCourseVersion(this.currentCourseVersion.id).subscribe(
-      courseEditions => {
-        this.courseEditions = courseEditions;
-      }
-    );
+  private getCourseEditions(): Observable<any> {
+    return this.courseEditionService.getEditionsByCourseVersion(this.currentCourseVersion.id)
+      .pipe(
+        tap(
+        courseEditions => {
+          this.courseEditions = courseEditions;
+        })
+      );
   }
 
   addLesson() {
@@ -111,4 +120,8 @@ export class TeacherCoursePageComponent implements OnInit {
     this.eventService.emit(new Event('open-add-edition-modal', this.currentCourseVersion.id));
   }
 
+  ngOnDestroy(): void {
+    this.subscriptionManager.unsubscribeAll();
+    this.courseEditionsSub.unsubscribe();
+  }
 }
