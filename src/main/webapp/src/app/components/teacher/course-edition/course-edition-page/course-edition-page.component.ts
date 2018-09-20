@@ -63,20 +63,24 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
               this.courseMap.set(lesson, tasks);
               this.showLesson = new Array(this.courseMap.size).fill(false);
 
-              tasks.forEach(task => {
-                this.showTask.push(false);
-                let submissionSub = this.submissionService.getSubmissions(task.id)
-                  .subscribe((submissions: Submission[]) => {
-                    this.submissionsMap.set(task, submissions);
-                  });
-                this.subscriptionManager.add(submissionSub);
-              });
+              this.getSubmissions(tasks);
           });
           this.subscriptionManager.add(getTaskSub);
         });
       })
     ).subscribe();
     this.subscriptionManager.add(routeParamsSub);
+  }
+
+  getSubmissions(tasks: Task[]): void {
+    tasks.forEach(task => {
+      this.showTask.push(false);
+      let submissionSub = this.submissionService.getSubmissions(task.id)
+        .subscribe((submissions: Submission[]) => {
+          this.submissionsMap.set(task, submissions);
+        });
+      this.subscriptionManager.add(submissionSub);
+    });
   }
 
   getEditionInfo() {
