@@ -48,7 +48,7 @@ dependencies {
     compile('javax.mail:javax.mail-api:1.6.1')
     compile('com.sun.mail:javax.mail:1.6.1')
     compile('javax.activation:activation:1.1.1')
-    compile('org.liquibase:liquibase-core:3.6.2')
+    compile('org.liquibase:liquibase-core:3.5.3')
     compile('com.mattbertolini:liquibase-slf4j:2.0.0')
     liquibaseRuntime('org.liquibase:liquibase-core')
     liquibaseRuntime('org.liquibase.ext:liquibase-hibernate5:3.6')
@@ -122,18 +122,18 @@ liquibase {
     runList = project.ext.runList
 }
 
-task liquibaseDiffChangelog(type: JavaExec) {
+task liquibaseDiffChangelog(dependsOn: compileJava, type: JavaExec) {
     group = "liquibase"
 
     classpath sourceSets.main.runtimeClasspath
     main = "liquibase.integration.commandline.Main"
 
-    args "--driver=" + liquibase.activities.diffLog.driver
-    args "--url=" + liquibase.activities.diffLog.url
-    args "--username=" + liquibase.activities.diffLog.username
-    args "--password=" + liquibase.activities.diffLog.password
-    args "--changeLogFile=" + liquibase.activities.diffLog.changeLogFile
-    args "--referenceUrl=" + liquibase.activities.diffLog.referenceUrl
-    args "--logLevel=" + liquibase.activities.diffLog.logLevel
+    args "--driver=" + 'org.postgresql.Driver'
+    args "--url=" +'jdbc:postgresql://localhost:5432/coddlers'
+    args "--username=" + 'postgres'
+    args "--password=" + '6lettersAGHUST'
+    args "--changeLogFile=" + project.ext.diffChangelogFile
+    args "--referenceUrl=" + 'hibernate:spring:com.example?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+    args "--logLevel=" + 'debug'
     args "diffChangeLog"
 }
