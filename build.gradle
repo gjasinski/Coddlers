@@ -14,6 +14,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.liquibase.gradle' version '2.0.1'
+}
+
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
@@ -44,6 +48,11 @@ dependencies {
     compile('javax.mail:javax.mail-api:1.6.1')
     compile('com.sun.mail:javax.mail:1.6.1')
     compile('javax.activation:activation:1.1.1')
+    compile('org.liquibase:liquibase-core:3.6.2')
+    compile('com.mattbertolini:liquibase-slf4j:2.0.0')
+    liquibaseRuntime('org.liquibase:liquibase-core')
+    liquibaseRuntime('org.liquibase.ext:liquibase-hibernate5:3.6')
+    liquibaseRuntime(sourceSets.main.compileClasspath)
     runtime('com.h2database:h2')
     compileOnly('org.projectlombok:lombok')
     testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -77,4 +86,54 @@ buildAngular.dependsOn(npm_install)
 
 processResources {
     dependsOn "buildAngular"
+}
+
+if (!project.hasProperty('runList')) {
+    project.ext.runList = 'main'
+}
+
+project.ext.diffChangelogFile = 'src/main/resources/db/liquibase/changelog/' + new Date().format('yyyyMMddHHmmss') + '_changelog.xml'
+
+liquibase {
+    activities {
+        main {
+            driver 'org.postgresql.Driver'
+            url 'jdbc:postgresql://localhost:5432/coddlers'
+            username 'postgres'
+            password '6lettersAGHUST'
+            changeLogFile 'src/main/resources/db/liquibase/master.xml'
+            defaultSchemaName ''
+            logLevel 'debug'
+            classpath 'src/main/resources/'
+        }
+        diffLog {
+            driver 'org.postgresql.Driver'
+            url 'jdbc:postgresql://localhost:5432/coddlers'
+            username 'postgres'
+            password '6lettersAGHUST'
+            changeLogFile project.ext.diffChangelogFile
+            referenceUrl 'hibernate:spring:com.mycompany.myapp.domain?dialect=org.hibernate.dialect.H2Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+            defaultSchemaName ''
+            logLevel 'debug'
+            classpath 'src/main/resources/'
+        }
+    }
+
+    runList = project.ext.runList
+}
+
+task liquibaseDiffChangelog(type: JavaExec) {
+    group = "liquibase"
+
+    classpath sourceSets.main.runtimeClasspath
+    main = "liquibase.integration.commandline.Main"
+
+    args "--driver=" + liquibase.activities.diffLog.driver
+    args "--url=" + liquibase.activities.diffLog.url
+    args "--username=" + liquibase.activities.diffLog.username
+    args "--password=" + liquibase.activities.diffLog.password
+    args "--changeLogFile=" + liquibase.activities.diffLog.changeLogFile
+    args "--referenceUrl=" + liquibase.activities.diffLog.referenceUrl
+    args "--logLevel=" + liquibase.activities.diffLog.logLevel
+    args "diffChangeLog"
 }
