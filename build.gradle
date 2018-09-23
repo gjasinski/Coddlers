@@ -11,6 +11,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("com.moowork.gradle:gradle-node-plugin:1.2.0")
+        classpath("org.liquibase.ext:liquibase-hibernate5:3.6")
     }
 }
 
@@ -53,6 +54,7 @@ dependencies {
     liquibaseRuntime('org.liquibase:liquibase-core')
     liquibaseRuntime('org.liquibase.ext:liquibase-hibernate5:3.6')
     liquibaseRuntime(sourceSets.main.compileClasspath)
+    liquibaseRuntime('org.postgresql:postgresql:9.4-1206-jdbc42')
     runtime('com.h2database:h2')
     compileOnly('org.projectlombok:lombok')
     testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -106,17 +108,17 @@ liquibase {
             logLevel 'debug'
             classpath 'src/main/resources/'
         }
-        diffLog {
-            driver 'org.postgresql.Driver'
-            url 'jdbc:postgresql://localhost:5432/coddlers'
-            username 'postgres'
-            password '6lettersAGHUST'
-            changeLogFile project.ext.diffChangelogFile
-            referenceUrl 'hibernate:spring:com.mycompany.myapp.domain?dialect=org.hibernate.dialect.H2Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
-            defaultSchemaName ''
-            logLevel 'debug'
-            classpath 'src/main/resources/'
-        }
+//        diffLog {
+//            driver 'org.postgresql.Driver'
+//            url 'jdbc:postgresql://localhost:5432/coddlers'
+//            username 'postgres'
+//            password '6lettersAGHUST'
+//            changeLogFile project.ext.diffChangelogFile
+//            referenceUrl 'hibernate:spring:com.mycompany.myapp.domain?dialect=org.hibernate.dialect.H2Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+//            defaultSchemaName ''
+//            logLevel 'debug'
+//            classpath 'src/main/resources/'
+//        }
     }
 
     runList = project.ext.runList
@@ -128,12 +130,13 @@ task liquibaseDiffChangelog(dependsOn: compileJava, type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "liquibase.integration.commandline.Main"
 
-    args "--driver=" + 'org.postgresql.Driver'
-    args "--url=" +'jdbc:postgresql://localhost:5432/coddlers'
-    args "--username=" + 'postgres'
-    args "--password=" + '6lettersAGHUST'
-    args "--changeLogFile=" + project.ext.diffChangelogFile
-    args "--referenceUrl=" + 'hibernate:spring:com.example?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
-    args "--logLevel=" + 'debug'
-    args "diffChangeLog"
+    args '--changeLogFile=' + project.ext.diffChangelogFile
+    args '--referenceUrl=hibernate:spring:pl.coddlers.core.models?dialect=org.hibernate.dialect.PostgreSQL82Dialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+    args '--referenceDriver=org.liquibase.ext.hibernate.database.connection.HibernateDriver'
+    args '--username=postgres'
+    args '--password=6lettersAGHUST'
+    args '--logLevel=debug'
+    args '--url=jdbc:postgresql://localhost:5432/coddlers'
+    args '--driver=org.postgresql.Driver'
+    args 'diffChangeLog'
 }
