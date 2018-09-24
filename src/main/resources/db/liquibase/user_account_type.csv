@@ -1,0 +1,4 @@
+user_id;account_type_name
+1;ROLE_ADMIN
+2;ROLE_STUDENT
+3;ROLE_TEACHER

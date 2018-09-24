@@ -18,7 +18,6 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("com.moowork.gradle:gradle-node-plugin:1.2.0")
-        classpath("org.liquibase.ext:liquibase-hibernate5:3.6")
     }
 }
 
@@ -128,7 +127,10 @@ liquibase {
             username 'postgres'
             password '6lettersAGHUST'
             changeLogFile project.ext.diffChangelogFile
-            referenceUrl 'hibernate:spring:pl.coddlers.core.models?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+            referenceUrl 'hibernate:spring:pl.coddlers.core.models?' +
+                    'dialect=org.hibernate.dialect.PostgreSQLDialect&' +
+                    'hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&' +
+                    'hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
             defaultSchemaName ''
             logLevel 'debug'
             classpath 'src/main/resources/'
@@ -138,13 +140,14 @@ liquibase {
     runList = project.ext.runList
 }
 
-task preDiffChaneLog() {
-    liquibase.runList = project.ext.runList = 'diffLog'
+diffChangeLog.doFirst {
+    liquibase.runList = 'diffLog'
+    skipBuildAngular = true
 }
-diffChangeLog.dependsOn(preDiffChaneLog)
+diffChangeLog.dependsOn(compileJava)
 diffChangeLog.doLast {
-    addChangeLogToMaster(project.ext.diffChangelogFileName)
-    println "Append ${project.ext.diffChangelogFile} to master.xml"
+    if (addChangeLogToMaster(project.ext.diffChangelogFileName))
+        println "Append ${project.ext.diffChangelogFile} to master.xml"
 }
 
 def writeXml(String xml, File file) {
@@ -162,29 +165,23 @@ def writeXml(String xml, File file) {
 }
 
 def addChangeLogToMaster(def changelog) {
+    def diffChangelogFile = new File("src/main/resources/db/liquibase/changelog/${changelog}")
+    def diffRoot = new XmlSlurper(false, false).parse(diffChangelogFile)
+
+    if (diffRoot.children().size() == 0) {
+        println "Nothing to add. There are no differences between database and hibernate classes."
+        diffChangelogFile.delete()
+        return false
+    }
+
     def masterChangelogFile = new File("src/main/resources/db/liquibase/master.xml")
     def root = new XmlSlurper(false, false).parse(masterChangelogFile)
+
     root.appendNode {
         include(file: "db/liquibase/changelog/${changelog}")
     }
 
     String xml = (new StreamingMarkupBuilder()).bind { mkp.yield root }
     writeXml(xml, masterChangelogFile)
-}
-
-task liquibaseDiffChangelog(dependsOn: compileJava, type: JavaExec) {
-    skipBuildAngular = true
-    group = "liquibase"
-
-    classpath sourceSets.main.runtimeClasspath
-    main = "liquibase.integration.commandline.Main"
-
-    args '--changeLogFile=' + project.ext.diffChangelogFile
-    args '--referenceUrl=hibernate:spring:pl.coddlers.core.models?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
-    args '--username=postgres'
-    args '--password=6lettersAGHUST'
-    args '--logLevel=debug'
-    args '--url=jdbc:postgresql://localhost:5432/coddlers'
-    args '--driver=org.postgresql.Driver'
-    args 'diffChangeLog'
+    return true
 }
