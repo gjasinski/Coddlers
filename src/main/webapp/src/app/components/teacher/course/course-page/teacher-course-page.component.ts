@@ -124,4 +124,10 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
     this.subscriptionManager.unsubscribeAll();
     this.courseEditionsSub.unsubscribe();
   }
+
+  addVersion() {
+    this.courseVersionService.createCourseVersion(this.course).subscribe((courseVersion: CourseVersion) => {
+      this.courseVersions.push(courseVersion)
+    });
+  }
 }
