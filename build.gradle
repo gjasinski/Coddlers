@@ -107,7 +107,7 @@ if (!project.hasProperty('runList')) {
 }
 
 project.ext.diffChangelogFileName = new Date().format('yyyyMMddHHmmss') + '_changelog.xml'
-project.ext.diffChangelogFile = 'src/main/resources/db/liquibase/changelog/' + project.ext.diffChangelogFileName
+project.ext.diffChangelogFile = "src/main/resources/db/liquibase/changelog/${project.ext.diffChangelogFileName}"
 
 liquibase {
     activities {
