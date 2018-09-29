@@ -32,7 +32,9 @@
                placeholder="Enter time in days" min="0">
       </div>
     </div>
-
+    <div class="alert alert-danger" role="alert" *ngIf="lessonCreateError">
+      Lesson title duplicate in this course version
+    </div>
     <input type="submit" class="btn btn-primary" value="Create" [disabled]="!formGroup.valid">
     <button class="btn btn-secondary back-btn" (click)="back($event)">Back</button>
   </form>
