@@ -25,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Service
 public class LessonService {
+    private static final String DATE_FORMAT = "ddMMyyyyhhmmss";
     private final UserDetailsServiceImpl userDetailsService;
     private final LessonRepository lessonRepository;
     private final LessonConverter lessonConverter;
@@ -81,7 +82,7 @@ public class LessonService {
     }
 
     private String createRepositoryName(Lesson lesson){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         String date = dateFormat.format(new Date());
         return lesson.getCourseVersion().getCourse().getId() + "_" + lesson.getCourseVersion().getId() + "_" + lesson.getId() + "_" + date;
     }
