@@ -16,7 +16,9 @@ import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.services.GitLessonService;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -78,7 +80,9 @@ public class LessonService {
     }
 
     private String createRepositoryName(Lesson lesson){
-        return lesson.getCourseVersion().getCourse().getTitle() + "_" + lesson.getCourseVersion().getVersionNumber() + "_" + lesson.getTitle();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
+        String date = dateFormat.format(new Date());
+        return lesson.getCourseVersion().getCourse().getId() + "_" + lesson.getCourseVersion().getId() + "_" + date;
     }
 
 	public LessonDto getLessonById(Long id) {
