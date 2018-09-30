@@ -66,6 +66,7 @@ public class LessonService {
     public Long createLesson(LessonDto lessonDto) {
         try {
             Lesson lesson = lessonConverter.convertFromDto(lessonDto);
+            lessonRepository.save(lesson);
             User currentUser = userDetailsService.getCurrentUserEntity();
             CompletableFuture<ProjectDto> gitLessonIdFuture = gitProjectService.createLesson(currentUser.getGitUserId(), createRepositoryName(lesson));
             ProjectDto projectDto = gitLessonIdFuture.get();
@@ -82,7 +83,7 @@ public class LessonService {
     private String createRepositoryName(Lesson lesson){
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
         String date = dateFormat.format(new Date());
-        return lesson.getCourseVersion().getCourse().getId() + "_" + lesson.getCourseVersion().getId() + "_" + date;
+        return lesson.getCourseVersion().getCourse().getId() + "_" + lesson.getCourseVersion().getId() + "_" + lesson.getId() + "_" + date;
     }
 
 	public LessonDto getLessonById(Long id) {
