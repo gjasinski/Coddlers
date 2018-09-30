@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="grzegorz (generated)" id="1538321351652-1">
+        <addColumn tableName="lesson">
+            <column name="git_project_id" type="int8"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="grzegorz (generated)" id="1538321351652-2">
+        <addColumn tableName="lesson">
+            <column name="repository_url" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="grzegorz (generated)" id="1538321351652-3">
+        <dropForeignKeyConstraint baseTableName="course_version_lesson_repository" constraintName="FK930gq32ys4wqogqv3vt37qtoa"/>
+    </changeSet>
+    <changeSet author="grzegorz (generated)" id="1538321351652-4">
+        <dropForeignKeyConstraint baseTableName="course_version_lesson_repository" constraintName="FKeq8f2virjj069xbqfot9rjs1g"/>
+    </changeSet>
+    <changeSet author="grzegorz (generated)" id="1538321351652-5">
+        <dropTable tableName="course_version_lesson_repository"/>
+    </changeSet>
+    <changeSet author="grzegorz (generated)" id="1538321351652-6">
+        <dropColumn columnName="git_student_project_id" tableName="lesson"/>
+    </changeSet>
+</databaseChangeLog>

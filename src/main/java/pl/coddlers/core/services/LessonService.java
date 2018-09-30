@@ -1,33 +1,45 @@
 package pl.coddlers.core.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CourseVersionNotFound;
+import pl.coddlers.core.exceptions.LessonAlreadyExists;
 import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.converters.LessonConverter;
 import pl.coddlers.core.models.dto.LessonDto;
 import pl.coddlers.core.models.entity.CourseVersion;
 import pl.coddlers.core.models.entity.Lesson;
+import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseVersionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
+import pl.coddlers.git.models.event.ProjectDto;
+import pl.coddlers.git.services.GitLessonService;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @Service
 public class LessonService {
+    private final UserDetailsServiceImpl userDetailsService;
+    private final LessonRepository lessonRepository;
+    private final LessonConverter lessonConverter;
+    private final CourseVersionRepository courseVersionRepository;
+    private final GitLessonService gitProjectService;
 
-	private final LessonRepository lessonRepository;
-	private final LessonConverter lessonConverter;
-	private final CourseVersionRepository courseVersionRepository;
-
-	@Autowired
-	public LessonService(LessonRepository lessonRepository, LessonConverter lessonConverter,
-						 CourseVersionRepository courseVersionRepository) {
-		this.lessonRepository = lessonRepository;
-		this.lessonConverter = lessonConverter;
-		this.courseVersionRepository = courseVersionRepository;
-	}
+    @Autowired
+    public LessonService(UserDetailsServiceImpl userDetailsService, LessonRepository lessonRepository, LessonConverter lessonConverter,
+                         CourseVersionRepository courseVersionRepository, GitLessonService gitProjectService) {
+        this.userDetailsService = userDetailsService;
+        this.lessonRepository = lessonRepository;
+        this.lessonConverter = lessonConverter;
+        this.courseVersionRepository = courseVersionRepository;
+        this.gitProjectService = gitProjectService;
+    }
 
 	public Collection<LessonDto> getAllCourseVersionLessons(Long courseId, Integer courseVersionNumber) {
 		CourseVersion courseVersion;
@@ -44,18 +56,35 @@ public class LessonService {
 					.orElseThrow(() -> new CourseVersionNotFound(courseId, courseVersionNumber));
 		}
 
-		return getAllCourseVersionLessons(courseVersion.getId());
-	}
+        return getAllCourseVersionLessons(courseVersion.getId());
+    }
 
-	public Collection<LessonDto> getAllCourseVersionLessons(long courseVersionId) {
+	private Collection<LessonDto> getAllCourseVersionLessons(long courseVersionId) {
 		return lessonConverter.convertFromEntities(lessonRepository.findByCourseVersionId(courseVersionId));
 	}
 
-	public Long createLesson(LessonDto lessonDto) {
-		Lesson lesson = lessonConverter.convertFromDto(lessonDto);
-		lessonRepository.save(lesson);
-		return lesson.getId();
-	}
+    public Long createLesson(LessonDto lessonDto) {
+        try {
+            Lesson lesson = lessonConverter.convertFromDto(lessonDto);
+            lessonRepository.save(lesson);
+            User currentUser = userDetailsService.getCurrentUserEntity();
+            CompletableFuture<ProjectDto> gitLessonIdFuture = gitProjectService.createLesson(currentUser.getGitUserId(), createRepositoryName(lesson));
+            ProjectDto projectDto = gitLessonIdFuture.get();
+            lesson.setGitProjectId(projectDto.getId());
+            lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
+            lessonRepository.save(lesson);
+            return lesson.getId();
+        } catch (Exception ex) {
+            log.error("Exception while creating lesson for: " + lessonDto.toString(), ex);
+            throw new LessonAlreadyExists(ex.getMessage());
+        }
+    }
+
+    private String createRepositoryName(Lesson lesson){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
+        String date = dateFormat.format(new Date());
+        return lesson.getCourseVersion().getCourse().getId() + "_" + lesson.getCourseVersion().getId() + "_" + lesson.getId() + "_" + date;
+    }
 
 	public LessonDto getLessonById(Long id) {
 		Lesson lesson = validateLesson(id);

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-class ProjectDto {
+public class ProjectDto {
     private Long id;
     private String name;
     private String description;
@@ -20,7 +20,6 @@ class ProjectDto {
 
     @JsonProperty("git_http_url")
     private String gitHttpUrl;
-    private String namespace;
 
     @JsonProperty("visibility_level")
     private Integer visibilityLevel;

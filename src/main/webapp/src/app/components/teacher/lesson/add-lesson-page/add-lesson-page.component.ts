@@ -13,6 +13,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class AddLessonPageComponent implements OnInit {
   private formGroup: FormGroup;
   private courseVersionNumber: number;
+  private lessonCreateError = false;
 
   constructor(private formBuilder: FormBuilder,
               private lessonService: LessonService,
@@ -44,9 +45,12 @@ export class AddLessonPageComponent implements OnInit {
         params.courseId,
         this.courseVersionNumber
       )).subscribe(obj => {
-        this.lessonService.getLessonsByCourseVersion(params.courseId, this.courseVersionNumber);
-        this.router.navigate(['/teacher', 'courses', params.courseId]);
-      });
+          this.lessonService.getLessonsByCourseVersion(params.courseId, this.courseVersionNumber);
+          this.router.navigate(['/teacher', 'courses', params.courseId]);
+        },
+        () => {
+          this.lessonCreateError = true;
+        });
 
     });
   }
