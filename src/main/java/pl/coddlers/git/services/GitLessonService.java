@@ -85,11 +85,11 @@ public class GitLessonService {
         };
     }
 
-    public CompletableFuture<Long> forkLesson(Long lessonId, Long userId) {
+    public CompletableFuture<ProjectDto> forkLesson(Long lessonId, Long userId) {
         return CompletableFuture.supplyAsync(forkLessonSupplier(lessonId, userId), executor);
     }
 
-    private Supplier<Long> forkLessonSupplier(Long lessonId, Long userId) {
+    private Supplier<ProjectDto> forkLessonSupplier(Long lessonId, Long userId) {
         return () -> {
             String resourceUrl = gitlabApiProjects + lessonId + FORK;
             HttpHeaders headers = getHttpHeaders();
@@ -99,14 +99,15 @@ public class GitLessonService {
 
             HttpEntity<?> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<ResponseForProject> exchange = restTemplate.exchange(
+            ResponseEntity<ProjectDto> exchange = restTemplate.exchange(
                     builder.build().toUriString(),
                     HttpMethod.POST,
                     entity,
-                    ResponseForProject.class);
-            Long studentCourseId = exchange.getBody().getId();
-            registerHooks(lessonId, studentCourseId);
-            return studentCourseId;
+		            ProjectDto.class);
+	        ProjectDto projectDto = exchange.getBody();
+	        Long studentCourseId = exchange.getBody().getId();
+            registerHooks(lessonId, studentCourseId);//todo do we need it?
+            return projectDto;
         };
     }
 
