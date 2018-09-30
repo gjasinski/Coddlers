@@ -72,16 +72,23 @@ public class CourseEditionService {
     }
 
     public CompletableFuture<List<StudentLessonRepository>> cloneModelRepositoriesForStudent(CourseEdition courseEdition, User user) {
-        List<CompletableFuture<StudentLessonRepository>> collect = courseEdition.getCourseVersion()
+        List<CompletableFuture<StudentLessonRepository>> listOfFutureRepositories = cloneModelRepositories(courseEdition, user);
+        return mapListOfFuturesToFutureOfList(listOfFutureRepositories);
+    }
+
+    private List<CompletableFuture<StudentLessonRepository>> cloneModelRepositories(CourseEdition courseEdition, User user) {
+        return courseEdition.getCourseVersion()
                 .getLessons()
                 .stream()
                 .map(lesson -> gitLessonService.forkLesson(lesson.getGitProjectId(), user.getGitUserId(), courseEdition.getId())
                         .thenApply(projectDto -> createStudentLessonRepository(courseEdition, user, lesson, projectDto)))
                 .collect(Collectors.toList());
+    }
 
-        return CompletableFuture.allOf(collect.toArray(new CompletableFuture[collect.size()]))
+    private CompletableFuture<List<StudentLessonRepository>> mapListOfFuturesToFutureOfList(List<CompletableFuture<StudentLessonRepository>> listOfFutureRepositories) {
+        return CompletableFuture.allOf(listOfFutureRepositories.toArray(new CompletableFuture[listOfFutureRepositories.size()]))
                 .thenApply(v ->
-                        collect.stream()
+                        listOfFutureRepositories.stream()
                                 .map(CompletableFuture::join)
                                 .collect(Collectors.toList())
                 );
