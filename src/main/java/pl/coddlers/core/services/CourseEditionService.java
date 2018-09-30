@@ -75,7 +75,7 @@ public class CourseEditionService {
         List<CompletableFuture<StudentLessonRepository>> collect = courseEdition.getCourseVersion()
                 .getLessons()
                 .stream()
-                .map(lesson -> gitLessonService.forkLesson(lesson.getGitProjectId(), user.getGitUserId())
+                .map(lesson -> gitLessonService.forkLesson(lesson.getGitProjectId(), user.getGitUserId(), courseEdition.getId())
                         .thenApply(projectDto -> createStudentLessonRepository(courseEdition, user, lesson, projectDto)))
                 .collect(Collectors.toList());
 
