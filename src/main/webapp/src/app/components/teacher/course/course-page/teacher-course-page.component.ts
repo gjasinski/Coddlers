@@ -1,3 +1,4 @@
+///<reference path="../../../../services/course-version.service.ts"/>
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {CourseService} from "../../../../services/course.service";
@@ -33,6 +34,7 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
   private currentCourseVersionNumber: number = 0;
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
   private courseEditionsSub: Subscription;
+  private addVersionSubscribtion: Subscription;
 
   constructor(private courseService: CourseService,
               private route: ActivatedRoute,
@@ -126,9 +128,11 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
   }
 
   addVersion() {
-    this.courseVersionService.createCourseVersion(this.course).subscribe((courseVersion: CourseVersion) => {
+    this.addVersionSubscribtion = this.courseVersionService.createCourseVersion(this.course).subscribe((courseVersion: CourseVersion) => {
       this.courseVersions.push(courseVersion);
       this.courseVersions.sort((a, b) => a.versionNumber - b.versionNumber);
-    });
+    },
+      () =>{},
+      () => this.addVersionSubscribtion.unsubscribe());
   }
 }
