@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.coddlers.git.Exceptions.GitErrorHandler;
+import pl.coddlers.git.exceptions.GitErrorHandler;
 import pl.coddlers.git.models.ResponseWithIdDto;
 
 import java.util.concurrent.CompletableFuture;

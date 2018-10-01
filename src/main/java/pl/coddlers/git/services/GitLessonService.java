@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.coddlers.git.Exceptions.GitErrorHandler;
+import pl.coddlers.git.exceptions.GitErrorHandler;
 import pl.coddlers.git.models.Hook;
 import pl.coddlers.git.models.ResponseWithIdDto;
 import pl.coddlers.git.reposiories.HookRepository;

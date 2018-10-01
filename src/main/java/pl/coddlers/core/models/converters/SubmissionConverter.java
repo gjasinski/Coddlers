@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.coddlers.core.models.dto.SubmissionDto;
 import pl.coddlers.core.models.entity.Submission;
+import pl.coddlers.core.models.entity.SubmissionStatusType;
+import pl.coddlers.core.models.entity.SubmissionStatusTypeEnum;
 import pl.coddlers.core.repositories.SubmissionRepository;
 
 @Component
@@ -25,7 +27,10 @@ public class SubmissionConverter implements BaseConverter<Submission, Submission
 		submissionDto.setUser(entity.getUser());
 		submissionDto.setSubmissionTime(entity.getSubmissionTime());
 		submissionDto.setPoints(entity.getPoints());
-		submissionDto.setSubmissionStatusType(entity.getSubmissionStatusType());
+		submissionDto.setSubmissionStatusTypeEnum(
+				SubmissionStatusTypeEnum.getEnumByStatusName(
+						entity.getSubmissionStatusType().getName()
+				));
 
 		return submissionDto;
 	}
@@ -42,7 +47,9 @@ public class SubmissionConverter implements BaseConverter<Submission, Submission
 		submission.setSubmissionTime(dto.getSubmissionTime());
 		submission.setPoints(dto.getPoints());
 		submission.setTask(dto.getTask());
-		submission.setSubmissionStatusType(dto.getSubmissionStatusType());
+		SubmissionStatusType submissionStatusType = new SubmissionStatusType();
+		submissionStatusType.setName(dto.getSubmissionStatusTypeEnum().getStatus());
+		submission.setSubmissionStatusType(submissionStatusType);
 
 		return submission;
 	}

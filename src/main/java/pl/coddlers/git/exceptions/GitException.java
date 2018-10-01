@@ -1,4 +1,4 @@
-package pl.coddlers.git.Exceptions;
+package pl.coddlers.git.exceptions;
 
 import java.io.IOException;
 
