@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.coddlers.core.models.entity.CourseEdition;
+import pl.coddlers.core.models.entity.Lesson;
+import pl.coddlers.core.models.entity.StudentLessonRepository;
+import pl.coddlers.core.models.entity.User;
 import pl.coddlers.git.Exceptions.GitErrorHandler;
 import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.reposiories.HookRepository;
@@ -36,6 +40,7 @@ public class GitLessonService {
 	private static final String USER = "user/";
 	private static final String ID = "id";
 	private static final String DATE_FORMAT = "ddMMyyyyhhmmss";
+	public static final String PATH = "path";
 
 	@Value("${pl.coddlers.git.host}:${pl.coddlers.git.port}${pl.coddlers.git.event.url}")
 	private String gitEventEndpoint;
@@ -46,17 +51,14 @@ public class GitLessonService {
 	@Value("${gitlab.api.apiuser.private_token}")
 	private String privateToken;
 
-	private final HookRepository hookRepository;
-
     private RestTemplate restTemplate;
 
     private ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
 
     @Autowired
-    public GitLessonService(HookRepository hookRepository) {
+    public GitLessonService() {
         this.restTemplate = new RestTemplate();
         this.restTemplate.setErrorHandler(new GitErrorHandler());
-        this.hookRepository = hookRepository;
     }
 
     public CompletableFuture<ProjectDto> createLesson(long tutorGitId, String lessonName) {
@@ -82,9 +84,14 @@ public class GitLessonService {
         };
     }
 
-	public CompletableFuture<ProjectDto> forkLesson(Long lessonId, Long userId, Long courseEditionId) {
-        return CompletableFuture.supplyAsync(forkLessonSupplier(lessonId, userId), executor)
-		        .thenApply(projectDto -> renameForkedRepository(courseEditionId, projectDto));
+	public CompletableFuture<StudentLessonRepository> forkLesson(Lesson lesson, User user, CourseEdition courseEdition) {
+        return CompletableFuture.supplyAsync(forkLessonSupplier(lesson.getGitProjectId(), user.getGitUserId()), executor)
+		        .thenApply(projectDto -> {
+		        	removeForkRelationship(projectDto);
+		        	return projectDto;
+		        })
+		        .thenApply(projectDto -> renameForkedRepository(courseEdition.getId(), projectDto))
+		        .thenApply(projectDto -> createStudentLessonRepository(courseEdition, user, lesson, projectDto));
     }
 
     private Supplier<ProjectDto> forkLessonSupplier(Long lessonId, Long userId) {
@@ -103,11 +110,25 @@ public class GitLessonService {
         };
     }
 
+    private void removeForkRelationship(ProjectDto projectDto){
+	    String resourceUrl = gitlabApiProjects + projectDto.getId() + "/fork";
+	    UriComponentsBuilder builder = createComponentBuilder(resourceUrl);
+	    HttpEntity<?> entity = getHttpEntity();
+
+	    ResponseEntity<Object> exchange = restTemplate.exchange(
+			    builder.build().toUriString(),
+			    HttpMethod.DELETE,
+			    entity,
+			    Object.class);
+    }
+
 	private ProjectDto renameForkedRepository(Long courseEditionId, ProjectDto projectDto) {
+		String s = buildForkedRepositoryName(courseEditionId, projectDto);
 		String resourceUrl = gitlabApiProjects + projectDto.getId();
 		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
 				.queryParam(ID, projectDto.getId())
-				.queryParam(NAME, buildForkedRepositoryName(courseEditionId, projectDto));
+				.queryParam(NAME, s)
+				.queryParam(PATH, s);
 		HttpEntity<?> entity = getHttpEntity();
 
 		ResponseEntity<ProjectDto> exchange = restTemplate.exchange(
@@ -116,6 +137,16 @@ public class GitLessonService {
 				entity,
 				ProjectDto.class);
 		return exchange.getBody();
+	}
+
+	private StudentLessonRepository createStudentLessonRepository(CourseEdition courseEdition, User user, Lesson lesson, ProjectDto projectDto) {
+		StudentLessonRepository studentLessonRepository = new StudentLessonRepository();
+		studentLessonRepository.setCourseEdition(courseEdition);
+		studentLessonRepository.setLesson(lesson);
+		studentLessonRepository.setUser(user);
+		studentLessonRepository.setGitRepositoryId(projectDto.getId());
+		studentLessonRepository.setRepositoryUrl(projectDto.getPathWithNamespace());
+		return studentLessonRepository;
 	}
 
 	private String buildForkedRepositoryName(Long courseEditionId, ProjectDto projectDto) {

@@ -7,14 +7,13 @@ import pl.coddlers.core.models.converters.CourseEditionConverter;
 import pl.coddlers.core.models.dto.CourseEditionDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseEditionLesson;
-import pl.coddlers.core.models.entity.CourseVersion;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.StudentLessonRepository;
 import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseEditionLessonRepository;
 import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
-import pl.coddlers.git.models.event.ProjectDto;
+import pl.coddlers.core.repositories.StudentLessonRepositoryRepository;
 import pl.coddlers.git.services.GitLessonService;
 
 import java.sql.Timestamp;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class CourseEditionService {
-
+    private final StudentLessonRepositoryRepository studentLessonRepositoryRepository;
     private final CourseEditionRepository courseEditionRepository;
     private final CourseEditionConverter courseEditionConverter;
     private final LessonRepository lessonRepository;
@@ -33,7 +32,8 @@ public class CourseEditionService {
     private final GitLessonService gitLessonService;
 
     @Autowired
-    public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository, GitLessonService gitLessonService) {
+    public CourseEditionService(StudentLessonRepositoryRepository studentLessonRepositoryRepository, CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository, GitLessonService gitLessonService) {
+        this.studentLessonRepositoryRepository = studentLessonRepositoryRepository;
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
@@ -71,17 +71,17 @@ public class CourseEditionService {
                 .collect(Collectors.toList());
     }
 
-    public CompletableFuture<List<StudentLessonRepository>> cloneModelRepositoriesForStudent(CourseEdition courseEdition, User user) {
+    public CompletableFuture<List<StudentLessonRepository>> forkModelRepositoriesForStudent(CourseEdition courseEdition, User user) {
+        // TODO: 30.09.18 error handling
         List<CompletableFuture<StudentLessonRepository>> listOfFutureRepositories = cloneModelRepositories(courseEdition, user);
-        return mapListOfFuturesToFutureOfList(listOfFutureRepositories);
+        return mapListOfFuturesToFutureOfList(listOfFutureRepositories).thenApply(studentLessonRepositoryRepository::saveAll);
     }
 
     private List<CompletableFuture<StudentLessonRepository>> cloneModelRepositories(CourseEdition courseEdition, User user) {
         return courseEdition.getCourseVersion()
                 .getLessons()
                 .stream()
-                .map(lesson -> gitLessonService.forkLesson(lesson.getGitProjectId(), user.getGitUserId(), courseEdition.getId())
-                        .thenApply(projectDto -> createStudentLessonRepository(courseEdition, user, lesson, projectDto)))
+                .map(lesson -> gitLessonService.forkLesson(lesson, user, courseEdition))
                 .collect(Collectors.toList());
     }
 
@@ -92,16 +92,6 @@ public class CourseEditionService {
                                 .map(CompletableFuture::join)
                                 .collect(Collectors.toList())
                 );
-    }
-
-    private StudentLessonRepository createStudentLessonRepository(CourseEdition courseEdition, User user, Lesson lesson, ProjectDto projectDto) {
-        StudentLessonRepository studentLessonRepository = new StudentLessonRepository();
-        studentLessonRepository.setCourseEdition(courseEdition);
-        studentLessonRepository.setLesson(lesson);
-        studentLessonRepository.setUser(user);
-        studentLessonRepository.setGitRepositoryId(projectDto.getId());
-        studentLessonRepository.setRepositoryUrl(projectDto.getPathWithNamespace());
-        return studentLessonRepository;
     }
 
     private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson) {
