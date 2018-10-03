@@ -8,4 +8,8 @@ public class SubmissionNotFoundException extends RuntimeException {
     public SubmissionNotFoundException(String branchName, String repoName) {
         super(String.format("Not found submission with branch name %s and repo name %s", branchName, repoName));
     }
+
+    public SubmissionNotFoundException(Long id) {
+        super(String.format("Not found submission with %d", id));
+    }
 }

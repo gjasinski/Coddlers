@@ -14,12 +14,14 @@ public class SubmissionDto {
     private Long id;
 
     @NotNull
-    private Task task;
+    private Long taskId;
 
     @NotNull
-    private User user;
+    private Long userId;
 
     @NotNull
+    private Long courseEditionId;
+
     private Timestamp submissionTime;
 
     @NotNull

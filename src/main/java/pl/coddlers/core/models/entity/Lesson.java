@@ -27,10 +27,6 @@ public class Lesson {
     @Column(nullable=false)
     private Integer timeInDays;
 
-    // TODO only for prototype purposes
-    @JsonIgnore
-    private Long gitStudentProjectId;
-
     @OneToMany(mappedBy = "lesson", targetEntity = Task.class)
     private List<Task> tasks = new ArrayList<>();
 

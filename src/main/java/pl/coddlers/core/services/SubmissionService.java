@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.SubmissionNotFoundException;
 import pl.coddlers.core.models.converters.SubmissionConverter;
 import pl.coddlers.core.models.dto.SubmissionDto;
+import pl.coddlers.core.models.entity.Submission;
 import pl.coddlers.core.repositories.SubmissionRepository;
 
 import java.util.Collection;
@@ -33,6 +34,13 @@ public class SubmissionService {
 	}
 
 	public void updateSubmission(SubmissionDto submissionDto) {
+		if (submissionDto.getId() == null || !submissionRepository.existsById(submissionDto.getId())) {
+			throw new SubmissionNotFoundException(submissionDto.getId());
+		}
 		submissionRepository.save(submissionConverter.convertFromDto(submissionDto));
+	}
+
+	public Submission createSubmission(SubmissionDto submissionDto) {
+		return submissionRepository.save(submissionConverter.convertFromDto(submissionDto));
 	}
 }
