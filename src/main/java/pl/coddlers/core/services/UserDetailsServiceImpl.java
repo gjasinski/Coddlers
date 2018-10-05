@@ -16,10 +16,12 @@ import pl.coddlers.core.models.converters.UserConverter;
 import pl.coddlers.core.models.dto.UserDto;
 import pl.coddlers.core.models.entity.AccountType;
 import pl.coddlers.core.repositories.UserDataRepository;
+import pl.coddlers.git.services.GitUserService;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,10 +32,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserConverter userConverter;
 
+    private GitUserService gitUserService;
+
     @Autowired
-    public UserDetailsServiceImpl(UserDataRepository userDataRepository, UserConverter userConverter) {
+    public UserDetailsServiceImpl(UserDataRepository userDataRepository, UserConverter userConverter, GitUserService gitUserService) {
         this.userDataRepository = userDataRepository;
         this.userConverter = userConverter;
+        this.gitUserService = gitUserService;
     }
 
     @Override
@@ -73,9 +78,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public pl.coddlers.core.models.entity.User registerUser(UserDto userDto) {
         pl.coddlers.core.models.entity.User userEntity = userConverter.convertFromDto(userDto);
 
+        Long gitUserId = 0l;
+        try {
+            gitUserId = gitUserService.createUser(userEntity.getUserMail(), userEntity.getFullName(), makeUserName(userEntity),
+                    userDto.getPassword()).get();
+            log.info("Created gitlab account with id "+gitUserId.toString());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException("Couldn't register a user. Please contact with administrator.");
+        }
+        userEntity.setGitUserId(gitUserId);
         userDataRepository.save(userEntity);
         log.debug("Created Information for User: {}", userEntity);
 
         return userEntity;
+    }
+
+    private String makeUserName(pl.coddlers.core.models.entity.User userEntity) {
+        return userEntity.getFirstname().substring(0, 1) + userEntity.getLastname();
     }
 }

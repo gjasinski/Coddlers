@@ -14,6 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.coddlers.git.models.Hook;
 import pl.coddlers.git.reposiories.HookRepository;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -62,16 +64,18 @@ public class GitTaskService {
 
     private Supplier<Boolean> createTaskSupplier(long repositoryId, String taskName) {
         return () -> {
-            Future<Boolean> develop = createBranch(repositoryId, taskName + DEVELOP_POSTFIX);
-            Future<Boolean> master = createBranch(repositoryId, taskName + MASTER_POSTFIX);
+            String timestamp = getCurrentTimestamp();
+            String developName = String.format("%s_%s%s", taskName, timestamp, DEVELOP_POSTFIX);
+            String masterName = String.format("%s_%s%s", taskName, timestamp, MASTER_POSTFIX);
+            Future<Boolean> develop = createBranch(repositoryId, developName);
+            Future<Boolean> master = createBranch(repositoryId, masterName);
             try {
                 Boolean createdDevelop = develop.get(timeout, TimeUnit.MILLISECONDS);
                 Boolean createdMaster = master.get(timeout, TimeUnit.MILLISECONDS);
                 if (createdDevelop && createdMaster) {
-                    registerHook(repositoryId, taskName);
                     return true;
                 } else {
-                    log.debug("Cannot register hook - branch was not created");
+                    log.debug("Branches were not created");
                     return false;
                 }
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -79,6 +83,12 @@ public class GitTaskService {
                 return false;
             }
         };
+    }
+
+    private String getCurrentTimestamp() {
+        Date date= new Date();
+        long time = date.getTime();
+        return Long.toString(time);
     }
 
     private Future<Boolean> createBranch(long repositoryId, String branchName) {
@@ -111,10 +121,6 @@ public class GitTaskService {
         };
     }
 
-    private void registerHook(long repositoryId, String taskName) {
-        hookRepository.save(createHook(repositoryId, taskName + MASTER_POSTFIX));
-    }
-
     private HttpHeaders createHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -123,13 +129,6 @@ public class GitTaskService {
 
     private String createApiUrl(long repositoryId) {
         return gitlabApi + PROJECTS + repositoryId + REPOSITORY_BRANCHES;
-    }
-
-    private Hook createHook(Long projectId, String branchName) {
-        Hook hook = new Hook();
-        hook.setProjectId(projectId);
-        hook.setBranch(branchName);
-        return hook;
     }
 
     private UriComponentsBuilder createComponentBuilder(String resourceUrl) {

@@ -64,4 +64,8 @@ public class User {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = CourseGrade.class)
     private Set<CourseGrade> courseGrades = new HashSet<>();
+
+    public String getFullName() {
+        return firstname + " " + lastname;
+    }
 }

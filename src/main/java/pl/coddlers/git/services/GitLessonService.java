@@ -12,7 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.coddlers.git.exceptions.GitErrorHandler;
 import pl.coddlers.git.models.Hook;
-import pl.coddlers.git.models.ResponseWithIdDto;
+import pl.coddlers.git.models.ResponseForProject;
+import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.reposiories.HookRepository;
 
 import java.util.List;
@@ -57,11 +58,11 @@ public class GitLessonService {
         this.hookRepository = hookRepository;
     }
 
-    public CompletableFuture<Long> createLesson(long tutorGitId, String lessonName) {
+    public CompletableFuture<ProjectDto> createLesson(long tutorGitId, String lessonName) {
         return CompletableFuture.supplyAsync(createLessonSupplier(tutorGitId, lessonName), executor);
     }
 
-    private Supplier<Long> createLessonSupplier(long tutorGitId, String lessonName) {
+    private Supplier<ProjectDto> createLessonSupplier(long tutorGitId, String lessonName) {
         return () -> {
             String resourceUrl = gitlabApiProjects + USER + tutorGitId;
 
@@ -73,15 +74,14 @@ public class GitLessonService {
 
             HttpEntity<?> entity = new HttpEntity<>(headers);
 
-            Long projectId = restTemplate.exchange(
-                    builder.build().toUriString(),
-                    HttpMethod.POST,
-                    entity,
-                    ResponseWithIdDto.class)
-                    .getBody()
-                    .getId();
-            createGitHook(projectId);
-            return projectId;
+	        ProjectDto body = restTemplate.exchange(
+			        builder.build().toUriString(),
+			        HttpMethod.POST,
+			        entity,
+			        ProjectDto.class)
+			        .getBody();
+	        createGitHook(body.getId());
+            return body;
         };
     }
 
@@ -99,11 +99,11 @@ public class GitLessonService {
 
             HttpEntity<?> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<ResponseWithIdDto> exchange = restTemplate.exchange(
+            ResponseEntity<ResponseForProject> exchange = restTemplate.exchange(
                     builder.build().toUriString(),
                     HttpMethod.POST,
                     entity,
-                    ResponseWithIdDto.class);
+                    ResponseForProject.class);
             Long studentCourseId = exchange.getBody().getId();
             registerHooks(lessonId, studentCourseId);
             return studentCourseId;

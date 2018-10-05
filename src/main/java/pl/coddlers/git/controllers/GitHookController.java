@@ -49,7 +49,8 @@ public class GitHookController {
 
 	private String extractBranchName(EventDto eventDto) {
 		String[] tokens = eventDto.getRef().split("/");
-		return tokens[tokens.length-1];
+		String branchName = tokens[tokens.length-1];
+		return branchName.replace("-master", "");
 
 	}
 
