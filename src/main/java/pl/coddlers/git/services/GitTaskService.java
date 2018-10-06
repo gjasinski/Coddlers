@@ -64,14 +64,11 @@ public class GitTaskService {
 
     private Supplier<Boolean> createTaskSupplier(long repositoryId, String taskName) {
         return () -> {
-            String timestamp = getCurrentTimestamp();
-            String developName = String.format("%s_%s%s", taskName, timestamp, DEVELOP_POSTFIX);
-            String masterName = String.format("%s_%s%s", taskName, timestamp, MASTER_POSTFIX);
-            Future<Boolean> develop = createBranch(repositoryId, developName);
-            Future<Boolean> master = createBranch(repositoryId, masterName);
+            String masterName = String.format("%s%s", taskName, MASTER_POSTFIX);
+            String developName = String.format("%s%s", taskName, DEVELOP_POSTFIX);
             try {
-                Boolean createdDevelop = develop.get(timeout, TimeUnit.MILLISECONDS);
-                Boolean createdMaster = master.get(timeout, TimeUnit.MILLISECONDS);
+                Boolean createdMaster = createBranch(repositoryId, masterName).get(timeout, TimeUnit.MILLISECONDS);
+                Boolean createdDevelop = createBranch(repositoryId, developName).get(timeout, TimeUnit.MILLISECONDS);
                 if (createdDevelop && createdMaster) {
                     return true;
                 } else {
@@ -79,19 +76,13 @@ public class GitTaskService {
                     return false;
                 }
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                log.error(e.toString());
+                log.error(e.toString(), e.getCause());
                 return false;
             }
         };
     }
 
-    private String getCurrentTimestamp() {
-        Date date= new Date();
-        long time = date.getTime();
-        return Long.toString(time);
-    }
-
-    private Future<Boolean> createBranch(long repositoryId, String branchName) {
+    private CompletableFuture<Boolean> createBranch(long repositoryId, String branchName) {
         return CompletableFuture.supplyAsync(createBranchSupplier(repositoryId, branchName), executor);
     }
 

@@ -1,6 +1,8 @@
 package pl.coddlers.core.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import pl.coddlers.core.models.entity.Lesson;
 
 import java.util.List;
@@ -10,4 +12,9 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     Optional<Lesson> findById(Long id);
 
     List<Lesson> findByCourseVersionId(Long courseVersionId);
+
+    @Query("select l from Lesson l " +
+            "join l.tasks t " +
+            "where t.id = :taskId")
+    Optional<Lesson> findByTaskId(@Param("taskId") Long taskId);
 }
