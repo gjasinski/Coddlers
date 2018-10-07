@@ -19,9 +19,8 @@ import pl.coddlers.core.repositories.UserDataRepository;
 import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.services.GitLessonService;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -30,7 +29,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class LessonService {
-    private static final String DATE_FORMAT = "ddMMyyyyhhmmss";
     private final UserDetailsServiceImpl userDetailsService;
     private final LessonRepository lessonRepository;
     private final LessonConverter lessonConverter;
@@ -123,9 +121,8 @@ public class LessonService {
     }
 
     private String createRepositoryName(Lesson lesson) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        String date = dateFormat.format(new Date());
-        return lesson.getCourseVersion().getCourse().getId() + "_" + lesson.getCourseVersion().getId() + "_" + lesson.getId() + "_" + date;
+        String timestamp = Long.toString(Instant.now().getEpochSecond());
+        return lesson.getCourseVersion().getCourse().getId() + "_" + lesson.getCourseVersion().getId() + "_" + timestamp;
     }
 
     public LessonDto getLessonById(Long id) {
