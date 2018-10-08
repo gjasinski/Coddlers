@@ -14,7 +14,7 @@ import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.StudentLessonRepository;
 import pl.coddlers.core.models.entity.User;
-import pl.coddlers.git.Exceptions.GitErrorHandler;
+import pl.coddlers.git.exceptions.GitErrorHandler;
 import pl.coddlers.git.models.event.ProjectDto;
 
 import java.time.Instant;

@@ -32,7 +32,7 @@ public enum SubmissionStatusTypeEnum {
     }
 
     @JsonCreator
-    public SubmissionStatusTypeEnum getEnumByStatusName(String statusName) {
+    public static SubmissionStatusTypeEnum getEnumByStatusName(String statusName) {
         return valuesMap.get(statusName);
     }
 }

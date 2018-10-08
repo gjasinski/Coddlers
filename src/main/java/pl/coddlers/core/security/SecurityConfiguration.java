@@ -51,6 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/index.html", "/", "/api/auth/**").permitAll()
                     .antMatchers("/api/account/**").permitAll()
+                    .antMatchers("/api/git/hooks/**").access("hasIpAddress('172.17.0.0/16')")
                     .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
                     .anyRequest().authenticated()
                 .and()

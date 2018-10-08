@@ -3,13 +3,14 @@ package pl.coddlers.core.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.core.models.dto.SubmissionDto;
+import pl.coddlers.core.models.entity.Submission;
 import pl.coddlers.core.services.SubmissionService;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.Collection;
 
 @RestController
@@ -27,5 +28,18 @@ public class SubmissionController {
     @GetMapping(params = {"taskId"})
     public ResponseEntity<Collection<SubmissionDto>> getSubmissions(@RequestParam(value = "taskId") Long taskId) {
         return ResponseEntity.ok(submissionService.getAllTaskSubmissions(taskId));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping
+    public ResponseEntity<Void> createSubmission(@Valid @RequestBody SubmissionDto submissionDto) {
+        Submission submission = submissionService.createSubmission(submissionDto);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(submission.getId()).toUri();
+
+
+        return ResponseEntity.created(location).build();
     }
 }
