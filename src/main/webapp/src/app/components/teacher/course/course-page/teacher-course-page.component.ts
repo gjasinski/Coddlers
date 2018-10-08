@@ -26,12 +26,12 @@ import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
   styleUrls: ['./teacher-course-page.component.scss']
 })
 export class TeacherCoursePageComponent implements OnInit, OnDestroy {
-  private course: Course;
-  private lessons: Lesson[] = [];
-  private courseVersions: CourseVersion[] = [];
-  private courseEditions: CourseEdition[] = [];
+  course: Course;
+  lessons: Lesson[] = [];
+  courseVersions: CourseVersion[] = [];
+  courseEditions: CourseEdition[] = [];
   private currentCourseVersion: CourseVersion;
-  private currentCourseVersionNumber: number = 0;
+  currentCourseVersionNumber: number = 0;
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
   private courseEditionsSub: Subscription;
   private addVersionSubscribtion: Subscription;

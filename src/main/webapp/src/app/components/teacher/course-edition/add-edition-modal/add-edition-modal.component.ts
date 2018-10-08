@@ -23,7 +23,7 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
   currentCourseVersion: CourseVersion;
   private eventSubscription: Subscription;
   private modalRefNgb: NgbModalRef;
-  private formGroup: FormGroup;
+  formGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
               private modalService: NgbModal,
@@ -37,7 +37,7 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
     this.formGroup = this.formBuilder.group({
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(255)])],
-      'date': ['', Validators.compose([Validators.required])]
+      'date': [this.getTodaysDate(), Validators.compose([Validators.required])]
     });
     this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
       if (event.eventType === 'open-add-edition-modal') {
@@ -54,7 +54,20 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
 
   open() {
     this.modalRefNgb = this.modalService.open(this.modalRef);
-    this.formGroup.reset();
+    this.formGroup.reset({
+      title: '',
+      date: this.getTodaysDate()
+    });
+  }
+
+  private getTodaysDate(): any {
+    let date = new Date;
+
+    return {
+      day: date.getUTCDate(),
+      month: date.getUTCMonth() + 1,
+      year: date.getUTCFullYear()
+    };
   }
 
   changeVersion(version: CourseVersion) {
@@ -62,10 +75,12 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
   }
 
   addEdition(courseEdition) {
+    console.log(courseEdition.date);
+    let { day, month, year } = courseEdition.date;
     let c = new CourseEdition(null,
       courseEdition.title,
       this.currentCourseVersion,
-      courseEdition.date);
+      new Date(`${year}-${month}-${day}`));
     this.courseEditionService.createCourseEdition(c)
       .subscribe(() => {
         this.modalRefNgb.close('created');

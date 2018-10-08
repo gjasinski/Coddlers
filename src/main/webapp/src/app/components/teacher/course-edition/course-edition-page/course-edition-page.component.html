@@ -15,7 +15,7 @@
 
           <h4>Submissions</h4>
 
-          <div *ngFor="let lesson of getKeys(courseMap); let lessonIndex = index" [attr.data-index]="lessonIndex">
+          <div *ngFor="let lesson of lessons; let lessonIndex = index" [attr.data-index]="lessonIndex">
             <button class="btn lesson-button" (click)="swapShowLesson(lessonIndex)">
               <div class="float-left">{{lesson.title}}</div>
               <div *ngIf="showLesson[lessonIndex]">

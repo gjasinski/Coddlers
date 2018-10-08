@@ -36,9 +36,9 @@ export class RegisterModalComponent implements OnInit, OnDestroy {
       'lastname': ['', Validators.compose([Validators.required, Validators.minLength(1)])],
       'email': ['', Validators.compose([Validators.required, Validators.email, Validators.minLength(4),
         Validators.maxLength(50)])],
-      'password': ['', Validators.compose([Validators.required, Validators.minLength(4),
+      'password': ['', Validators.compose([Validators.required, Validators.minLength(8),
         Validators.maxLength(50)])],
-      'passwordRepeat': ['', Validators.compose([Validators.required, Validators.minLength(4),
+      'passwordRepeat': ['', Validators.compose([Validators.required, Validators.minLength(8),
         Validators.maxLength(50)])],
     }, {
       validator: PasswordValidation.MatchPassword

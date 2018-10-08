@@ -109,7 +109,7 @@
                     <ul class="lesson-list">
                       <li class="edition-item card"
                           *ngFor="let edition of courseEditions | courseFilter : searchText && edition.courseVersion.id == currentCourseVersionNumber; let i = index">
-                        <a class="card-body row" [routerLink]="['editions/', edition.id]">
+                        <a class="card-body row" [routerLink]="['editions/', edition.id]" [queryParams]="{ courseVersion: currentCourseVersionNumber }">
                           <div class="col-md-8">
                             <h5>{{edition.title}}</h5>
                           </div>

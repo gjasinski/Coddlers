@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
 import pl.coddlers.core.models.converters.CourseEditionConverter;
+import pl.coddlers.core.models.converters.CourseEditionLessonConverter;
 import pl.coddlers.core.models.dto.CourseEditionDto;
+import pl.coddlers.core.models.dto.CourseEditionLessonDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseEditionLesson;
 import pl.coddlers.core.models.entity.Lesson;
@@ -13,7 +15,8 @@ import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,13 +26,18 @@ public class CourseEditionService {
     private final CourseEditionConverter courseEditionConverter;
     private final LessonRepository lessonRepository;
     private final CourseEditionLessonRepository courseEditionLessonRepository;
+    private final CourseEditionLessonConverter courseEditionLessonConverter;
 
     @Autowired
-    public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository) {
+    public CourseEditionService(CourseEditionRepository courseEditionRepository,
+                                CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository,
+                                CourseEditionLessonRepository courseEditionLessonRepository,
+                                CourseEditionLessonConverter courseEditionLessonConverter) {
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
         this.courseEditionLessonRepository = courseEditionLessonRepository;
+        this.courseEditionLessonConverter = courseEditionLessonConverter;
     }
 
     public CourseEditionDto getCourseEditionById(Long id) {
@@ -54,26 +62,34 @@ public class CourseEditionService {
 
     public List<CourseEditionLesson> createCourseEditionLessons(CourseEdition courseEdition) {
         List<Lesson> lessons = lessonRepository.findByCourseVersionId(courseEdition.getCourseVersion().getId());
-        return lessons.stream()
-                .map(lesson -> {
-                    CourseEditionLesson courseEditionLesson = createCourseEditionLesson(courseEdition, lesson);
-                    return courseEditionLessonRepository.save(courseEditionLesson);
-                })
-                .collect(Collectors.toList());
+        List<CourseEditionLesson> courseEditionLessons = new ArrayList<>();
+        Timestamp startDate = courseEdition.getStartDate();
+
+        for (Lesson lesson : lessons) {
+            CourseEditionLesson courseEditionLesson = createCourseEditionLesson(courseEdition, lesson, startDate);
+            startDate = addDaysToDate(courseEditionLesson.getEndDate(), 1);
+            courseEditionLessons.add(courseEditionLessonRepository.save(courseEditionLesson));
+        }
+        return courseEditionLessons;
     }
 
-    private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson) {
+    public Collection<CourseEditionLessonDto> getCourseEditionLessonList(Long editionId) {
+        return courseEditionLessonConverter.convertFromEntities(
+                courseEditionLessonRepository.findByCourseEdition_Id(editionId)
+        );
+    }
+
+    private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson, Timestamp startDate) {
         CourseEditionLesson courseEditionLesson = new CourseEditionLesson();
         courseEditionLesson.setCourseEdition(courseEdition);
         courseEditionLesson.setLesson(lesson);
-        courseEditionLesson.setStartDate(courseEdition.getStartDate());
-        courseEditionLesson.setEndDate(getEndDate(courseEdition, lesson));
+        Timestamp endDate = addDaysToDate(startDate, lesson.getTimeInDays());
+        courseEditionLesson.setStartDate(startDate);
+        courseEditionLesson.setEndDate(endDate);
         return courseEditionLesson;
     }
 
-    private Timestamp getEndDate(CourseEdition courseEdition, Lesson lesson) {
-        LocalDateTime startDate = courseEdition.getStartDate().toLocalDateTime();
-        LocalDateTime endTime = startDate.plusDays(lesson.getTimeInDays());
-        return Timestamp.valueOf(endTime);
+    private Timestamp addDaysToDate(Timestamp date, int days) {
+        return Timestamp.valueOf(date.toLocalDateTime().plusDays(days));
     }
 }

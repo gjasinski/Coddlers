@@ -14,6 +14,7 @@ import {SubmissionService} from "../../../../services/submission.service";
 import {switchMap, tap} from "rxjs/operators";
 import {EventService} from "../../../../services/event.service";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
+import {forkJoin, Observable} from "rxjs";
 
 @Component({
   selector: 'app-edition-page',
@@ -21,12 +22,14 @@ import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
   styleUrls: ['./course-edition-page.component.scss']
 })
 export class CourseEditionPageComponent implements OnInit, OnDestroy {
-  private course: Course;
-  private courseEdition: CourseEdition;
-  private showLesson: boolean[];
-  private courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
-  private submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
-  private showTask: boolean[] = [];
+  course: Course;
+  courseEdition: CourseEdition;
+  showLesson: boolean[];
+  courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
+  submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
+  showTask: boolean[] = [];
+  lessons = [];
+
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
 
   constructor(private courseService: CourseService,
@@ -54,19 +57,36 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
       }),
       switchMap((course: Course) => {
         this.course = course;
-        return this.lessonService.getLessons(course.id);
+        return this.route
+          .queryParams.pipe(
+            switchMap((params) => {
+              let courseVersion = +params['courseVersion'];
+              return courseVersion ?
+                this.lessonService.getLessonsByCourseVersion(course.id, courseVersion) :
+                this.lessonService.getLessons(course.id);
+            })
+        );
       }),
-      tap((lessons: Lesson[]) => {
-        lessons.forEach(lesson => {
-          let getTaskSub = this.taskService.getTasks(lesson.id)
-            .subscribe((tasks: Task[]) => {
-              this.courseMap.set(lesson, tasks);
-              this.showLesson = new Array(this.courseMap.size).fill(false);
+      switchMap((lessons: Lesson[]) => {
+        let getTasksObs = [];
 
-              this.getSubmissions(tasks);
-          });
-          this.subscriptionManager.add(getTaskSub);
+        lessons.forEach(lesson => {
+          getTasksObs.push(
+            this.taskService.getTasks(lesson.id)
+              .pipe(
+                tap((tasks: Task[]) => {
+                  this.courseMap.set(lesson, tasks);
+                  this.showLesson = new Array(this.courseMap.size).fill(false);
+
+                  this.getSubmissions(tasks);
+                })
+              )
+          );
         });
+
+        return forkJoin(getTasksObs).pipe(tap(() => {
+          this.lessons = lessons;
+        }))
       })
     ).subscribe();
     this.subscriptionManager.add(routeParamsSub);
