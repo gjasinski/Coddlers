@@ -10,13 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.coddlers.core.models.entity.CourseEdition;
+import pl.coddlers.core.models.entity.Lesson;
+import pl.coddlers.core.models.entity.StudentLessonRepository;
+import pl.coddlers.core.models.entity.User;
 import pl.coddlers.git.Exceptions.GitErrorHandler;
-import pl.coddlers.git.models.Hook;
-import pl.coddlers.git.models.ResponseForProject;
 import pl.coddlers.git.models.event.ProjectDto;
-import pl.coddlers.git.reposiories.HookRepository;
 
-import java.util.List;
+import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,38 +25,38 @@ import java.util.function.Supplier;
 
 @Service
 public class GitLessonService {
-	private static final String PROJECTS = "/projects/";
-	private static final String NAME = "name";
-	private static final String VISIBILITY = "visibility";
-	private static final String PRIVATE = "private";
-	private static final String FORK = "/fork";
-	private static final String HOOKS = "/hooks";
-	private static final String NAMESPACE = "namespace";
-	private static final String URL = "url";
-	private static final String PUSH_EVENTS = "push_events";
-	private static final String PRIVATE_TOKEN = "private_token";
-	private static final String USER = "user/";
+    private static final String PROJECTS = "/projects/";
+    private static final String NAME = "name";
+    private static final String VISIBILITY = "visibility";
+    private static final String PRIVATE = "private";
+    private static final String FORK = "/fork";
+    private static final String HOOKS = "/hooks";
+    private static final String NAMESPACE = "namespace";
+    private static final String URL = "url";
+    private static final String PUSH_EVENTS = "push_events";
+    private static final String PRIVATE_TOKEN = "private_token";
+    private static final String USER = "user/";
+    private static final String ID = "id";
+    private static final String DATE_FORMAT = "ddMMyyyyhhmmss";
+    public static final String PATH = "path";
 
-	@Value("${pl.coddlers.git.host}:${pl.coddlers.git.port}${pl.coddlers.git.event.url}")
-	private String gitEventEndpoint;
+    @Value("${pl.coddlers.git.host}:${pl.coddlers.git.port}${pl.coddlers.git.event.url}")
+    private String gitEventEndpoint;
 
     @Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}" + "/" + PROJECTS + "/")
-	private String gitlabApiProjects;
+    private String gitlabApiProjects;
 
-	@Value("${gitlab.api.apiuser.private_token}")
-	private String privateToken;
-
-	private final HookRepository hookRepository;
+    @Value("${gitlab.api.apiuser.private_token}")
+    private String privateToken;
 
     private RestTemplate restTemplate;
 
     private ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
 
     @Autowired
-    public GitLessonService(HookRepository hookRepository) {
+    public GitLessonService() {
         this.restTemplate = new RestTemplate();
         this.restTemplate.setErrorHandler(new GitErrorHandler());
-        this.hookRepository = hookRepository;
     }
 
     public CompletableFuture<ProjectDto> createLesson(long tutorGitId, String lessonName) {
@@ -65,91 +66,119 @@ public class GitLessonService {
     private Supplier<ProjectDto> createLessonSupplier(long tutorGitId, String lessonName) {
         return () -> {
             String resourceUrl = gitlabApiProjects + USER + tutorGitId;
-
-            HttpHeaders headers = getHttpHeaders();
-
             UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
                     .queryParam(NAME, lessonName)
                     .queryParam(VISIBILITY, PRIVATE);
+            HttpEntity<?> entity = getHttpEntity();
 
-            HttpEntity<?> entity = new HttpEntity<>(headers);
-
-	        ProjectDto body = restTemplate.exchange(
-			        builder.build().toUriString(),
-			        HttpMethod.POST,
-			        entity,
-			        ProjectDto.class)
-			        .getBody();
-	        createGitHook(body.getId());
-            return body;
-        };
-    }
-
-    public CompletableFuture<Long> forkLesson(Long lessonId, Long userId) {
-        return CompletableFuture.supplyAsync(forkLessonSupplier(lessonId, userId), executor);
-    }
-
-    private Supplier<Long> forkLessonSupplier(Long lessonId, Long userId) {
-        return () -> {
-            String resourceUrl = gitlabApiProjects + lessonId + FORK;
-            HttpHeaders headers = getHttpHeaders();
-
-            UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-                    .queryParam(NAMESPACE, userId);
-
-            HttpEntity<?> entity = new HttpEntity<>(headers);
-
-            ResponseEntity<ResponseForProject> exchange = restTemplate.exchange(
+            return restTemplate.exchange(
                     builder.build().toUriString(),
                     HttpMethod.POST,
                     entity,
-                    ResponseForProject.class);
-            Long studentCourseId = exchange.getBody().getId();
-            registerHooks(lessonId, studentCourseId);
-            return studentCourseId;
+                    ProjectDto.class)
+                    .getBody();
         };
     }
 
-	private void createGitHook(Long projectId) {
-		String resourceUrl = gitlabApiProjects + projectId + HOOKS;
-		HttpHeaders headers = getHttpHeaders();
+    public CompletableFuture<StudentLessonRepository> forkLesson(Lesson lesson, User user, CourseEdition courseEdition) {
+        return CompletableFuture.supplyAsync(forkLessonSupplier(lesson.getGitProjectId(), user.getGitUserId()), executor)
+                .thenApply(projectDto -> {
+                    createGitHook(projectDto.getId());
+                    removeForkRelationship(projectDto);
+                    return projectDto;
+                })
+                .thenApply(projectDto -> renameForkedRepository(courseEdition.getId(), lesson.getId(), user.getId(), projectDto))
+                .thenApply(projectDto -> createStudentLessonRepository(courseEdition, user, lesson, projectDto));
+    }
 
-		UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-				.queryParam(URL, gitEventEndpoint)
-				.queryParam(PUSH_EVENTS, Boolean.TRUE);
+    private Supplier<ProjectDto> forkLessonSupplier(Long lessonId, Long userId) {
+        return () -> {
+            String resourceUrl = gitlabApiProjects + lessonId + FORK;
+            UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
+                    .queryParam(NAMESPACE, userId);
+            HttpEntity<?> entity = getHttpEntity();
+
+            ResponseEntity<ProjectDto> exchange = restTemplate.exchange(
+                    builder.build().toUriString(),
+                    HttpMethod.POST,
+                    entity,
+                    ProjectDto.class);
+            return exchange.getBody();
+        };
+    }
+
+    private void removeForkRelationship(ProjectDto projectDto) {
+        String resourceUrl = gitlabApiProjects + projectDto.getId() + "/fork";
+        UriComponentsBuilder builder = createComponentBuilder(resourceUrl);
+        HttpEntity<?> entity = getHttpEntity();
+
+        ResponseEntity<Object> exchange = restTemplate.exchange(
+                builder.build().toUriString(),
+                HttpMethod.DELETE,
+                entity,
+                Object.class);
+    }
+
+    private ProjectDto renameForkedRepository(Long courseEditionId, Long lessonId, Long studentId, ProjectDto projectDto) {
+        String repositoryName = buildForkedRepositoryName(courseEditionId, lessonId, studentId);
+        String resourceUrl = gitlabApiProjects + projectDto.getId();
+        UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
+                .queryParam(ID, projectDto.getId())
+                .queryParam(NAME, repositoryName)
+                .queryParam(PATH, repositoryName);
+        HttpEntity<?> entity = getHttpEntity();
+
+        ResponseEntity<ProjectDto> exchange = restTemplate.exchange(
+                builder.build().toUriString(),
+                HttpMethod.PUT,
+                entity,
+                ProjectDto.class);
+        return exchange.getBody();
+    }
+
+    private StudentLessonRepository createStudentLessonRepository(CourseEdition courseEdition, User user, Lesson lesson, ProjectDto projectDto) {
+        StudentLessonRepository studentLessonRepository = new StudentLessonRepository();
+        studentLessonRepository.setCourseEdition(courseEdition);
+        studentLessonRepository.setLesson(lesson);
+        studentLessonRepository.setUser(user);
+        studentLessonRepository.setGitRepositoryId(projectDto.getId());
+        studentLessonRepository.setRepositoryUrl(projectDto.getPathWithNamespace());
+        return studentLessonRepository;
+    }
+
+    private String buildForkedRepositoryName(Long courseEditionId, Long lessonId, Long studentId) {
+        String timestamp = Long.toString(Instant.now().getEpochSecond());
+        return courseEditionId + "_" + lessonId + "_" + studentId + "_" + timestamp;
+    }
+
+    private void createGitHook(Long projectId) {
+        String resourceUrl = gitlabApiProjects + projectId + HOOKS;
+        UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
+                .queryParam(URL, gitEventEndpoint)
+                .queryParam(PUSH_EVENTS, Boolean.TRUE);
+        HttpEntity<?> entity = getHttpEntity();
 
 
-		HttpEntity<?> entity = new HttpEntity<>(headers);
+        restTemplate.exchange(
+                builder.build().toUriString(),
+                HttpMethod.POST,
+                entity,
+                String.class);
+    }
 
-		restTemplate.exchange(
-				builder.build().toUriString(),
-				HttpMethod.POST,
-				entity,
-				String.class);
-	}
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        return headers;
+    }
 
-	private HttpHeaders getHttpHeaders() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		return headers;
-	}
+    private UriComponentsBuilder createComponentBuilder(String resourceUrl) {
+        return UriComponentsBuilder.fromHttpUrl(resourceUrl)
+                .queryParam(PRIVATE_TOKEN, privateToken);
+    }
 
-	private UriComponentsBuilder createComponentBuilder(String resourceUrl) {
-		return UriComponentsBuilder.fromHttpUrl(resourceUrl)
-				.queryParam(PRIVATE_TOKEN, privateToken);
-	}
-
-	private void registerHooks(Long originProjectGitId, Long createdProjectId) {
-		List<Hook> allByProjectId = hookRepository.getAllByProjectId(originProjectGitId);
-		allByProjectId.stream()
-				.map(hook -> createHook(createdProjectId, hook))
-				.forEach(hookRepository::save);
-	}
-
-	private Hook createHook(Long createdProjectId, Hook hook) {
-		Hook createdHook = new Hook();
-		createdHook.setProjectId(createdProjectId);
-		createdHook.setBranch(hook.getBranch());
-		return createdHook;
-	}
+    private HttpEntity<?> getHttpEntity() {
+        HttpHeaders headers = getHttpHeaders();
+        return new HttpEntity<>(headers);
+    }
 }

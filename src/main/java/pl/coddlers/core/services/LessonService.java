@@ -8,19 +8,23 @@ import pl.coddlers.core.exceptions.LessonAlreadyExists;
 import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.converters.LessonConverter;
 import pl.coddlers.core.models.dto.LessonDto;
+import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseVersion;
 import pl.coddlers.core.models.entity.Lesson;
+import pl.coddlers.core.models.entity.StudentLessonRepository;
 import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseVersionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
+import pl.coddlers.core.repositories.UserDataRepository;
 import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.services.GitLessonService;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,38 +34,41 @@ public class LessonService {
     private final LessonConverter lessonConverter;
     private final CourseVersionRepository courseVersionRepository;
     private final GitLessonService gitProjectService;
+    private final UserDataRepository userDataRepository;
+
 
     @Autowired
     public LessonService(UserDetailsServiceImpl userDetailsService, LessonRepository lessonRepository, LessonConverter lessonConverter,
-                         CourseVersionRepository courseVersionRepository, GitLessonService gitProjectService) {
+                         CourseVersionRepository courseVersionRepository, GitLessonService gitProjectService, UserDataRepository userDataRepository) {
         this.userDetailsService = userDetailsService;
         this.lessonRepository = lessonRepository;
         this.lessonConverter = lessonConverter;
         this.courseVersionRepository = courseVersionRepository;
         this.gitProjectService = gitProjectService;
+        this.userDataRepository = userDataRepository;
     }
 
-	public Collection<LessonDto> getAllCourseVersionLessons(Long courseId, Integer courseVersionNumber) {
-		CourseVersion courseVersion;
+    public Collection<LessonDto> getAllCourseVersionLessons(Long courseId, Integer courseVersionNumber) {
+        CourseVersion courseVersion;
 
-		if (courseVersionNumber == null) {
-			List<CourseVersion> courseVersionList = courseVersionRepository.findByCourse_IdOrderByVersionNumberDesc(courseId);
-			try {
-				courseVersion = courseVersionList.get(0);
-			} catch (IndexOutOfBoundsException e) {
-				throw new CourseVersionNotFound(courseId, 1);
-			}
-		} else {
-			courseVersion = courseVersionRepository.findByCourse_IdAndVersionNumber(courseId, courseVersionNumber)
-					.orElseThrow(() -> new CourseVersionNotFound(courseId, courseVersionNumber));
-		}
+        if (courseVersionNumber == null) {
+            List<CourseVersion> courseVersionList = courseVersionRepository.findByCourse_IdOrderByVersionNumberDesc(courseId);
+            try {
+                courseVersion = courseVersionList.get(0);
+            } catch (IndexOutOfBoundsException e) {
+                throw new CourseVersionNotFound(courseId, 1);
+            }
+        } else {
+            courseVersion = courseVersionRepository.findByCourse_IdAndVersionNumber(courseId, courseVersionNumber)
+                    .orElseThrow(() -> new CourseVersionNotFound(courseId, courseVersionNumber));
+        }
 
         return getAllCourseVersionLessons(courseVersion.getId());
     }
 
-	private Collection<LessonDto> getAllCourseVersionLessons(long courseVersionId) {
-		return lessonConverter.convertFromEntities(lessonRepository.findByCourseVersionId(courseVersionId));
-	}
+    private Collection<LessonDto> getAllCourseVersionLessons(long courseVersionId) {
+        return lessonConverter.convertFromEntities(lessonRepository.findByCourseVersionId(courseVersionId));
+    }
 
     public Long createLesson(LessonDto lessonDto) {
         try {
@@ -80,29 +87,61 @@ public class LessonService {
         }
     }
 
-    private String createRepositoryName(Lesson lesson){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
-        String date = dateFormat.format(new Date());
-        return lesson.getCourseVersion().getCourse().getId() + "_" + lesson.getCourseVersion().getId() + "_" + lesson.getId() + "_" + date;
+    public CompletableFuture<StudentLessonRepository> forkModelLessonForUser(CourseEdition courseEdition, Lesson lesson, User user) {
+        return forkLessonForUser(courseEdition, lesson, user);
     }
 
-	public LessonDto getLessonById(Long id) {
-		Lesson lesson = validateLesson(id);
+    public CompletableFuture<List<StudentLessonRepository>> forkModelLesson(CourseEdition courseEdition, Lesson lesson) {
+        List<CompletableFuture<StudentLessonRepository>> listOfCompletableStudentRepositories = cloneLessonForUsersEnrolledToEdition(courseEdition, lesson);
+        return mapListOfFuturesToFutureOfList(listOfCompletableStudentRepositories);
+    }
 
-		return lessonConverter.convertFromEntity(lesson);
-	}
+    private List<CompletableFuture<StudentLessonRepository>> cloneLessonForUsersEnrolledToEdition(CourseEdition courseEdition, Lesson lesson) {
+        return userDataRepository.getCourseEditionUsers(courseEdition.getId()).stream()
+                .map(user -> forkLessonForUser(courseEdition, lesson, user))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
 
-	public LessonDto updateLesson(Long id, LessonDto lessonDto) {
-		validateLesson(id);
-		lessonDto.setId(id);
-		Lesson lesson = lessonConverter.convertFromDto(lessonDto);
-		lessonRepository.save(lesson);
+    private CompletableFuture<StudentLessonRepository> forkLessonForUser(CourseEdition courseEdition, Lesson lesson, User user) {
+        try {
+            return gitProjectService.forkLesson(lesson, user, courseEdition);
+        } catch (Exception ex) {
+            // TODO: 07.10.18 exception logic
+            return null;
+        }
+    }
 
-		return lessonDto;
-	}
+    private CompletableFuture<List<StudentLessonRepository>> mapListOfFuturesToFutureOfList(List<CompletableFuture<StudentLessonRepository>> listOfFutureRepositories) {
+        return CompletableFuture.allOf(listOfFutureRepositories.toArray(new CompletableFuture[listOfFutureRepositories.size()]))
+                .thenApply(v -> listOfFutureRepositories.stream()
+                        .map(CompletableFuture::join)
+                        .collect(Collectors.toList())
+                );
+    }
 
-	private Lesson validateLesson(Long id) throws LessonNotFoundException {
-		return lessonRepository.findById(id)
-				.orElseThrow(() -> new LessonNotFoundException(id));
-	}
+    private String createRepositoryName(Lesson lesson) {
+        String timestamp = Long.toString(Instant.now().getEpochSecond());
+        return lesson.getCourseVersion().getCourse().getId() + "_" + lesson.getCourseVersion().getId() + "_" + timestamp;
+    }
+
+    public LessonDto getLessonById(Long id) {
+        Lesson lesson = validateLesson(id);
+
+        return lessonConverter.convertFromEntity(lesson);
+    }
+
+    public LessonDto updateLesson(Long id, LessonDto lessonDto) {
+        validateLesson(id);
+        lessonDto.setId(id);
+        Lesson lesson = lessonConverter.convertFromDto(lessonDto);
+        lessonRepository.save(lesson);
+
+        return lessonDto;
+    }
+
+    private Lesson validateLesson(Long id) throws LessonNotFoundException {
+        return lessonRepository.findById(id)
+                .orElseThrow(() -> new LessonNotFoundException(id));
+    }
 }
