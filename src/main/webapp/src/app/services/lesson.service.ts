@@ -24,7 +24,7 @@ export class LessonService {
   public getLessonsByCourseVersion(courseId: number, courseVersion?: number): Observable<Lesson[]> {
     let courseVersionStr = (courseVersion === 0 || courseVersion === undefined || courseVersion === null) ? '' : `=${courseVersion}`;
 
-    this.http.get<Lesson[]>(`api/lessons?courseId=${courseId}&courseVersion${courseVersionStr}`)
+    this.http.get<Lesson[]>(`api/lessons?courseId=${courseId}&courseVersion${courseVersionStr}&courseEditionId`)
       .pipe(
         map((objArray: any[]) => objArray.map(obj => Lesson.fromJSON(obj))),
         tap((lesson: Lesson[]) => {
@@ -33,6 +33,13 @@ export class LessonService {
       ).subscribe();
 
     return this.subject.asObservable();
+  }
+
+  public getLessonsByCourseEditionId(courseEditionId: number): Observable<Lesson[]> {
+    return this.http.get<Lesson[]>(`api/lessons?courseId&courseVersion&courseEditionId=${courseEditionId}`)
+      .pipe(
+        map((objArray: any[]) => objArray.map(obj => Lesson.fromJSON(obj)))
+      );
   }
 
   public createLesson(assignment: Lesson): Observable<any> {

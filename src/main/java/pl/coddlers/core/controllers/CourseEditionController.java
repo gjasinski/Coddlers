@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.core.models.dto.CourseEditionDto;
+import pl.coddlers.core.models.dto.CourseEditionLessonDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.services.CourseEditionService;
 
 import java.net.URI;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("api/editions")
@@ -30,6 +32,11 @@ public class CourseEditionController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<CourseEditionDto> getCourseEdition(@PathVariable Long id) {
         return ResponseEntity.ok(courseEditionService.getCourseEditionById(id));
+    }
+
+    @GetMapping(value = "/{id}/course-edition-lessons")
+    public ResponseEntity<Collection<CourseEditionLessonDto>> getCourseEditionLessonList(@PathVariable Long id) {
+        return ResponseEntity.ok(courseEditionService.getCourseEditionLessonList(id));
     }
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")

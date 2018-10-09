@@ -7,8 +7,8 @@
       <div class="row">
         <div class="col-12">
           <h2>CourseEdition - {{courseEdition?.title}}</h2>
-          <h6>{{courseEdition?.id}}/v{{courseEdition?.courseVersion.versionNumber}}/{{courseEdition?.startDate | date:
-            'dd MMMM yyyy'}} - TBD</h6>
+          <h6>{{courseEdition?.id}}/v{{courseEdition?.courseVersion.versionNumber}}/
+            {{courseEdition?.startDate | date: 'dd MMMM yyyy'}} - {{ editionEndDate | date: 'dd MMMM yyyy' }}</h6>
 
           <div class="line"></div>
           <br>
@@ -18,11 +18,16 @@
           <div *ngFor="let lesson of lessons; let lessonIndex = index" [attr.data-index]="lessonIndex">
             <button class="btn lesson-button" (click)="swapShowLesson(lessonIndex)">
               <div class="float-left">{{lesson.title}}</div>
-              <div *ngIf="showLesson[lessonIndex]">
-                <img src='assets/img/downArrow.png' class="arrow-image"/>
-              </div>
-              <div *ngIf="!showLesson[lessonIndex]">
-                <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+
+              <div class="float-right d-flex">
+                <small class="lesson-date">{{ lessonTimeMap.get(lesson).startDate | date: 'dd MMMM yyyy'}} -
+                  {{ lessonTimeMap.get(lesson).endDate | date: 'dd MMMM yyyy'}}</small>
+                <div *ngIf="showLesson[lessonIndex]">
+                  <img src='assets/img/downArrow.png' class="arrow-image"/>
+                </div>
+                <div *ngIf="!showLesson[lessonIndex]">
+                  <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+                </div>
               </div>
             </button>
 

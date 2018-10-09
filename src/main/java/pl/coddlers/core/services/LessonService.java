@@ -66,6 +66,10 @@ public class LessonService {
         return getAllCourseVersionLessons(courseVersion.getId());
     }
 
+    public Collection<LessonDto> getLessonsByCourseEditionId(Long courseEditionId) {
+        return lessonConverter.convertFromEntities(lessonRepository.getLessonsByCourseEditionId(courseEditionId));
+    }
+
     private Collection<LessonDto> getAllCourseVersionLessons(long courseVersionId) {
         return lessonConverter.convertFromEntities(lessonRepository.findByCourseVersionId(courseVersionId));
     }

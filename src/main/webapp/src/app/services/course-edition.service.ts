@@ -5,6 +5,7 @@ import {map, tap} from "rxjs/operators";
 import {CourseEdition} from "../models/courseEdition";
 import {Lesson} from "../models/lesson";
 import {Subject} from "rxjs/internal/Subject";
+import {CourseEditionLesson} from "../models/courseEditionLesson";
 
 @Injectable()
 export class CourseEditionService {
@@ -24,6 +25,13 @@ export class CourseEditionService {
       .pipe(
         map(obj => CourseEdition.fromJSON(obj))
       )
+  }
+
+  public getCourseEditionLessonList(editionId: number): Observable<CourseEditionLesson[]> {
+    return this.http.get<CourseEditionLesson[]>(`api/editions/${editionId}/course-edition-lessons`)
+      .pipe(
+        map((objArray: any[]) => objArray.map(obj => CourseEditionLesson.fromJSON(obj)))
+      );
   }
 
   public getEditionsByCourseVersion(courseVersion: number): Observable<CourseEdition[]> {
