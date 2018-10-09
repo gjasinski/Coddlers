@@ -2,6 +2,7 @@ package pl.coddlers.core.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -10,7 +11,8 @@ import java.util.Set;
 
 @Entity
 @Data
-@Table(name="users")
+@Table(name = "users")
+@ToString(exclude = {"courseEditions", "teacherInCourse", "userGroups", "studentLessonRepositories", "submissions", "courseGrades"})
 public class User {
 
     @Id
@@ -21,10 +23,10 @@ public class User {
     private String lastname;
     private String profilePictureName;
 
-    @Column(nullable=false, length = 50, unique = true)
+    @Column(nullable = false, length = 50, unique = true)
     private String userMail;
 
-    @Column(nullable=false, length = 100)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @JsonIgnore
