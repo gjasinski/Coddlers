@@ -118,4 +118,8 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptionManager.unsubscribeAll();
   }
+
+  addToCourse() {
+    this.editionService.addToCourse();
+  }
 }
