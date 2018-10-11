@@ -15,6 +15,7 @@ import {LoggedGuardService} from "./auth/logged-guard.service";
 import {UserRouteAccessService} from "./auth/user-route-access.service";
 import {AccountTypesConstants} from "./constants/account-types.constants";
 import {CourseEditionPageComponent} from "./components/teacher/course-edition/course-edition-page/course-edition-page.component";
+import {InvitePageComponent} from "./components/common/invite-page/invite-page.component";
 
 
 export const ROUTES: Routes = [
@@ -80,6 +81,10 @@ export const ROUTES: Routes = [
         component: EditCoursePageComponent,
       }
     ]
+  },
+  {
+    path: 'invite',
+    component: InvitePageComponent
   },
   // TODO refactor routes below
   {

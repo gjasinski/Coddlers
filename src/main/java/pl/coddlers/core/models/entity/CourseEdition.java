@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -38,6 +39,11 @@ public class CourseEdition {
     @JsonIgnore
     @OneToMany(mappedBy = "courseEdition", targetEntity = CourseEditionLesson.class)
     private List<CourseEditionLesson> courseEditionLesson;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, startDate, courseVersion, courseEditionLesson, studentLessonRepositories);
+    }
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

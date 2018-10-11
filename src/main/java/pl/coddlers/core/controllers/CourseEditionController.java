@@ -40,9 +40,14 @@ public class CourseEditionController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/invite", params = "course")
-    public ResponseEntity<Void> addStudentToCourseEdition(@RequestParam(value="course") String course) {
-        courseEditionService.addStudentToCourseEdition(course);
+    @GetMapping(value = "/invite", params = "courseEdition")
+    public ResponseEntity<Void> addStudentToCourseEdition(@RequestParam(value="courseEdition") String courseEdition) {
+        try {
+            courseEditionService.addStudentToCourseEdition(courseEdition);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return ResponseEntity.ok().build();
     }
 }
