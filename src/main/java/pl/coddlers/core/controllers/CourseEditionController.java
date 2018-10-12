@@ -31,7 +31,7 @@ public class CourseEditionController {
     @PostMapping
     public ResponseEntity<Void> createEdition(@RequestBody CourseEditionDto courseEditionDto) {
         CourseEdition courseEdition = courseEditionService.createCourseEdition(courseEditionDto);
-        courseEditionService.cloneLessons(courseEdition);
+        courseEditionService.createCourseEditionLessons(courseEdition);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")

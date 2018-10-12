@@ -29,13 +29,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class CourseEditionService {
-
-
     private static final String key = "Bar12345Bar12345"; // 128 bit key
     private static final String transformation = "AES";
     private static final Key aesKey = new SecretKeySpec(key.getBytes(), transformation);
-
-
     private final CourseEditionRepository courseEditionRepository;
     private final CourseEditionConverter courseEditionConverter;
     private final LessonRepository lessonRepository;
@@ -71,7 +67,7 @@ public class CourseEditionService {
 
     }
 
-    public List<CourseEditionLesson> cloneLessons(CourseEdition courseEdition) {
+    public List<CourseEditionLesson> createCourseEditionLessons(CourseEdition courseEdition) {
         List<Lesson> lessons = lessonRepository.findByCourseVersionId(courseEdition.getCourseVersion().getId());
         return lessons.stream()
                 .map(lesson -> {
