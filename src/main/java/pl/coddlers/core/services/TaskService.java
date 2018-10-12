@@ -44,10 +44,6 @@ public class TaskService {
 
 		try {
 			Boolean isCreated = gitTaskService.createTask(task.getLesson().getGitProjectId(), taskBranchName)
-					.exceptionally(ex -> {
-						log.error(ex.getMessage());
-						return false;
-					})
 					.get();
 			if (!isCreated) {
 				throw new CouldNotCreateGitTaskException(taskBranchName);

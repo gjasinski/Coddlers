@@ -1,28 +1,13 @@
 package pl.coddlers.git.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.coddlers.git.models.Hook;
-import pl.coddlers.git.reposiories.HookRepository;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -38,8 +23,6 @@ public class GitTaskService {
     private static final String PROJECTS = "/projects/";
     private static final String REPOSITORY_BRANCHES = "/repository/branches";
 
-    private final HookRepository hookRepository;
-
     private RestTemplate restTemplate = new RestTemplate();
 
     @Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
@@ -52,11 +35,6 @@ public class GitTaskService {
     private long timeout;
 
     private ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
-
-    @Autowired
-    public GitTaskService(HookRepository hookRepository) {
-        this.hookRepository = hookRepository;
-    }
 
     public CompletableFuture<Boolean> createTask(long repositoryId, String taskName) {
         return CompletableFuture.supplyAsync(createTaskSupplier(repositoryId, taskName), executor);

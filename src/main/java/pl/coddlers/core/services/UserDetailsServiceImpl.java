@@ -78,7 +78,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public pl.coddlers.core.models.entity.User registerUser(UserDto userDto) {
         pl.coddlers.core.models.entity.User userEntity = userConverter.convertFromDto(userDto);
 
-        Long gitUserId = 0l;
+        Long gitUserId;
         try {
             gitUserId = gitUserService.createUser(userEntity.getUserMail(), userEntity.getFullName(), makeUserName(userEntity),
                     userDto.getPassword()).get();
@@ -95,6 +95,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private String makeUserName(pl.coddlers.core.models.entity.User userEntity) {
-        return userEntity.getFirstname().substring(0, 1) + userEntity.getLastname();
+        return userEntity.getUserMail().replace("@", "_at_");
     }
 }
