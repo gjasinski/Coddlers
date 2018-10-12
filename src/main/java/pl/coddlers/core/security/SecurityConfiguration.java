@@ -2,6 +2,7 @@ package pl.coddlers.core.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -36,6 +37,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private TokenUtils tokenUtils;
 
+    @Value("${pl.coddlers.git.hooks.endpoint_access}")
+    private String hooksEndpointAccessQuery;
+
     private static final String[] SWAGGER_AUTH_WHITELIST = {
             "/swagger-resources/**",
             "/swagger-ui.html",
@@ -51,7 +55,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/index.html", "/", "/api/auth/**").permitAll()
                     .antMatchers("/api/account/**").permitAll()
-                    .antMatchers("/api/git/hooks/**").access("hasIpAddress('172.17.0.0/16')")
+                    .antMatchers("/api/git/hooks/**").access(hooksEndpointAccessQuery)
                     .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
                     .anyRequest().authenticated()
                 .and()

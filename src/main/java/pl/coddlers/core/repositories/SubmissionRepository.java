@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
-	Collection<Submission> findByTaskId(Long taskId);
-	Optional<Submission> findByBranchNameAndStudentLessonRepository_RepositoryUrl(String branchName, String repositoryUtl);
+    Collection<Submission> findByTaskId(Long taskId);
+
+    Optional<Submission> findByBranchNameAndStudentLessonRepository_RepositoryUrl(String branchName, String repositoryUtl);
 }
