@@ -7,6 +7,9 @@ import {Event} from "../../../../models/event";
 import {Lesson} from "../../../../models/lesson";
 import {LessonService} from "../../../../services/lesson.service";
 import {filter, switchMap, tap} from "rxjs/operators";
+import {forkJoin} from "rxjs/internal/observable/forkJoin";
+import {CourseEditionService} from "../../../../services/course-edition.service";
+import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
 
 @Component({
   selector: 'cod-edit-lesson-due-date-modal',
@@ -17,6 +20,7 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
   private formGroup: FormGroup;
   private eventSubscription: Subscription;
   private lesson: Lesson;
+  private courseEditionLesson: CourseEditionLesson;
 
   @ViewChild('content')
   private modalRef: TemplateRef<any>;
@@ -26,7 +30,8 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
   constructor(private modalService: NgbModal,
               private formBuilder: FormBuilder,
               private eventService: EventService,
-              private lessonService: LessonService) {
+              private lessonService: LessonService,
+              private courseEditionService: CourseEditionService) {
   }
 
   ngOnInit() {
@@ -38,16 +43,30 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
 
     this.eventSubscription = this.eventService.events.pipe(
       filter((event: Event) => event.eventType === 'open-edit-lesson-due-date-modal'),
-      switchMap((event: Event) => this.lessonService.getLesson(event.eventData)),
-      tap((lesson: Lesson) => {
+      switchMap((event: Event) => forkJoin([
+        this.lessonService.getLesson(event.eventData.lessonId),
+        this.courseEditionService.getCourseEditionLesson(event.eventData.editionId, event.eventData.lessonId)
+        ])
+      ),
+      tap(([lesson, courseEditionLesson]: [Lesson, CourseEditionLesson]) => {
         this.lesson = lesson;
-        return this.formGroup = this.formBuilder.group({
-          'startDate': '',
-          'endDate': '',
-          'lessonLength': lesson.timeInDays
+        this.courseEditionLesson = courseEditionLesson;
+
+        this.formGroup = this.formBuilder.group({
+          'startDate': this.getDateObj(courseEditionLesson.startDate),
+          'endDate': this.getDateObj(courseEditionLesson.endDate),
+          'lessonLength': this.lesson.timeInDays
         });
       })
     ).subscribe(() => this.open());
+  }
+
+  private getDateObj(date: Date): any {
+    return {
+      year: date.getFullYear(),
+      month: date.getUTCMonth() + 1,
+      day: date.getUTCDate()
+    }
   }
 
   ngOnDestroy() {
@@ -64,15 +83,22 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
   }
 
   saveLesson(lesson) {
-    this.lessonService.updateLesson(this.lesson.id,
-      new Lesson(
-        this.lesson.id,
-        this.lesson.title,
-        this.lesson.description,
-        this.lesson.weight,
-        lesson.lessonLength,
-        this.lesson.courseId,
-        this.lesson.courseVersionNumber
-      )).subscribe(() => this.modalRefNgb.close('updated'));
+    let sub = this.courseEditionService.updateCourseEditionLesson(this.courseEditionLesson.id,
+        new CourseEditionLesson(
+          this.courseEditionLesson.id,
+          this.convertToDate(lesson.startDate),
+          this.convertToDate(lesson.endDate),
+          this.courseEditionLesson.courseEditionId,
+          this.courseEditionLesson.lessonId
+        ))
+      .subscribe(() => {
+        this.modalRefNgb.close('updated');
+        this.eventService.emit(new Event('edit-lesson-due-date-updated'));
+        sub.unsubscribe();
+      });
+  }
+
+  private convertToDate(dateObj: any): Date {
+    return new Date(`${dateObj.year}-${dateObj.month}-${dateObj.day}`);
   }
 }

@@ -27,11 +27,26 @@ export class CourseEditionService {
       )
   }
 
-  public getCourseEditionLessonList(editionId: number): Observable<CourseEditionLesson[]> {
-    return this.http.get<CourseEditionLesson[]>(`api/editions/${editionId}/course-edition-lessons`)
+  public getCourseEditionLesson(editionId: number, lessonId: number): Observable<CourseEditionLesson> {
+    return this.getCourseEditionLessonList(editionId, lessonId).pipe(
+      map((items: CourseEditionLesson[]) => {
+        return items[0];
+      })
+    );
+  }
+
+  public getCourseEditionLessonList(editionId: number, lessonId?: number): Observable<CourseEditionLesson[]> {
+    let lessonIdQuery = (lessonId === undefined || lessonId === null || lessonId <= 0) ? '' :
+      `=${lessonId}`;
+
+    return this.http.get<CourseEditionLesson[]>(`api/editions/${editionId}/course-edition-lessons?lessonId${lessonIdQuery}`)
       .pipe(
         map((objArray: any[]) => objArray.map(obj => CourseEditionLesson.fromJSON(obj)))
       );
+  }
+
+  public updateCourseEditionLesson(id: number, courseEditionLesson: CourseEditionLesson): Observable<any> {
+    return this.http.put(`api/editions/course-edition-lessons/${id}`, courseEditionLesson.toJSON(), this.httpOptions);
   }
 
   public getEditionsByCourseVersion(courseVersion: number): Observable<CourseEdition[]> {

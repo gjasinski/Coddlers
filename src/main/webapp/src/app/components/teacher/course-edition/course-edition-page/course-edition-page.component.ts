@@ -11,11 +11,12 @@ import {LessonService} from "../../../../services/lesson.service";
 import {TaskService} from "../../../../services/task.service";
 import {Submission} from "../../../../models/submission";
 import {SubmissionService} from "../../../../services/submission.service";
-import {switchMap, tap} from "rxjs/operators";
+import {filter, switchMap, tap} from "rxjs/operators";
 import {EventService} from "../../../../services/event.service";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs";
 import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
+import {Subscription} from "rxjs/internal/Subscription";
 
 @Component({
   selector: 'app-edition-page',
@@ -49,6 +50,17 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getCourseInfo();
     this.getEditionData();
+    this.watchUpdateEvents();
+  }
+
+  watchUpdateEvents() {
+    let eventSub = this.eventService.events.pipe(
+      filter((event: Event) =>
+        event.eventType === 'edit-lesson-due-date-updated'
+      ),
+      tap(() => this.updateDates())
+    ).subscribe();
+    this.subscriptionManager.add(eventSub);
   }
 
   getCourseInfo() {
@@ -100,6 +112,16 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
     this.subscriptionManager.add(routeParamsSub);
   }
 
+  updateDates() {
+    let sub = this.editionService.getCourseEditionLessonList(this.courseEdition.id).pipe(
+      tap((courseEditionLessonList: CourseEditionLesson[]) => {
+        this.lessons.forEach(lesson => {
+          this.fillLessonTimeMap(lesson, courseEditionLessonList);
+        });
+      })
+    ).subscribe(() => sub.unsubscribe());
+  }
+
   private fillLessonTimeMap(lesson: Lesson, courseEditionLessonList: CourseEditionLesson[]) {
     let foundItem = courseEditionLessonList.find((item: CourseEditionLesson) => item.lessonId == lesson.id);
     this.lessonTimeMap.set(lesson, foundItem);
@@ -147,7 +169,10 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   }
 
   openEditLessonDueDateModal(lesson: Lesson) {
-    this.eventService.emit(new Event('open-edit-lesson-due-date-modal', lesson.id));
+    this.eventService.emit(new Event('open-edit-lesson-due-date-modal', {
+      lessonId: lesson.id,
+      editionId: this.courseEdition.id
+    }));
   }
 
   ngOnDestroy(): void {

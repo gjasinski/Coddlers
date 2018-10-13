@@ -2,6 +2,7 @@ package pl.coddlers.core.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coddlers.core.exceptions.CourseEditionLessonNotFoundException;
 import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
 import pl.coddlers.core.models.converters.CourseEditionConverter;
 import pl.coddlers.core.models.converters.CourseEditionLessonConverter;
@@ -79,6 +80,13 @@ public class CourseEditionService {
         );
     }
 
+    public CourseEditionLessonDto getCourseEditionLesson(Long lessonId, Long editionId) {
+        return courseEditionLessonConverter.convertFromEntity(
+                courseEditionLessonRepository.findByLesson_IdAndCourseEdition_Id(lessonId, editionId)
+                        .orElseThrow(() -> new CourseEditionLessonNotFoundException(lessonId, editionId))
+        );
+    }
+
     private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson, Timestamp startDate) {
         CourseEditionLesson courseEditionLesson = new CourseEditionLesson();
         courseEditionLesson.setCourseEdition(courseEdition);
@@ -91,5 +99,11 @@ public class CourseEditionService {
 
     private Timestamp addDaysToDate(Timestamp date, int days) {
         return Timestamp.valueOf(date.toLocalDateTime().plusDays(days));
+    }
+
+    public void updateCourseEditionLesson(Long id, CourseEditionLessonDto courseEditionLessonDto) {
+        courseEditionLessonDto.setId(id);
+        CourseEditionLesson courseEditionLesson = courseEditionLessonConverter.convertFromDto(courseEditionLessonDto);
+        courseEditionLessonRepository.save(courseEditionLesson);
     }
 }
