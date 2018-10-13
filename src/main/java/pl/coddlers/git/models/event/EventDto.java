@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class EventDto {
 
-    @JsonProperty("object_kind")
-    private String objectKind;
+    @JsonProperty("event_name")
+    private String eventName;
     private String before;
     private String after;
     private String ref;
