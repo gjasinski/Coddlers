@@ -2,6 +2,7 @@ package pl.coddlers.core.services;
 
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +16,16 @@ import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseEditionLessonRepository;
 import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
+import pl.coddlers.mail.Mail;
+import pl.coddlers.mail.MailInitializer;
+import pl.coddlers.mail.MailScheduler;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.text.CharacterPredicates.DIGITS;
@@ -32,14 +39,16 @@ public class CourseEditionService {
     private final LessonRepository lessonRepository;
     private final CourseEditionLessonRepository courseEditionLessonRepository;
     private final UserDetailsServiceImpl userDetailsService;
+    private final Environment environment;
 
     @Autowired
-    public CourseEditionService(UserDetailsServiceImpl userDetailsService, CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository) {
+    public CourseEditionService(UserDetailsServiceImpl userDetailsService, CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository, Environment environment) {
         this.userDetailsService = userDetailsService;
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
         this.courseEditionLessonRepository = courseEditionLessonRepository;
+        this.environment = environment;
     }
 
     public CourseEditionDto getCourseEditionById(Long id) {
@@ -62,7 +71,7 @@ public class CourseEditionService {
 
     }
 
-    public List<CourseEditionLesson> cloneLessons(CourseEdition courseEdition) {
+    public List<CourseEditionLesson> createCourseEditionLessons(CourseEdition courseEdition) {
         List<Lesson> lessons = lessonRepository.findByCourseVersionId(courseEdition.getCourseVersion().getId());
         return lessons.stream()
                 .map(lesson -> {
@@ -97,6 +106,18 @@ public class CourseEditionService {
             courseEditionRepository.saveAndFlush(courseEdition);
         }
         return invitationLink;
+    }
+
+    public void sendInvitationLinkByMail(String invitationLink, List<InternetAddress> students) throws AddressException {
+        MailInitializer mailInitializer = new MailInitializer();
+        MailScheduler mailScheduler = mailInitializer.initialize();
+
+        CourseEdition courseEdition = courseEditionRepository.findByInvitationLink(invitationLink).orElseThrow(() -> new CourseEditionNotFoundException(invitationLink));
+        String emailTitle = "You have been invited to course edition \"" + courseEdition.getTitle() + "\" on Coddlers.pl";
+        String htmlMessage = "www.coddlers.pl/invite?courseEdition=" + invitationLink;
+        InternetAddress from = new InternetAddress(Objects.requireNonNull(environment.getProperty("pl.coddlers.mail.invitationmail.from")));
+        Mail mail = new Mail(from, students, emailTitle, htmlMessage);
+        mailScheduler.scheduleMail(mail);
     }
 
     private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson) {
