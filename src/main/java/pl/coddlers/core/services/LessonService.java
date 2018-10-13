@@ -111,7 +111,7 @@ public class LessonService {
         try {
             return gitProjectService.forkLesson(lesson, user, courseEdition);
         } catch (Exception ex) {
-            // TODO: 07.10.18 exception logic
+            log.error(String.format("Cannot fork lesson: %s from course edition %s for user: %s", lesson.toString(), courseEdition.toString(), user.toString()), ex);
             return null;
         }
     }
