@@ -12,7 +12,7 @@ public class CourseEditionNotFoundException extends RuntimeException {
 		super(NOT_FOUND + id);
 	}
 
-	public CourseEditionNotFoundException(String courseEditionTitle) {
-	    super("Course edition with title " + courseEditionTitle + " not found");
+	public CourseEditionNotFoundException(String invitationLink) {
+	    super("Course edition with invitation link " + invitationLink + " not found");
     }
 }

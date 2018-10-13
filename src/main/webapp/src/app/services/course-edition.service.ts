@@ -42,7 +42,7 @@ export class CourseEditionService {
     return this.http.post('api/editions', courseEdition.toJSON(), this.httpOptions);
   }
 
-  addToCourseEdition(courseEdition: string) {
-    return this.http.get('api/editions/invite?courseEdition=' + courseEdition, this.httpOptions).subscribe();
+  public addToCourseEdition(invitationLink: string) {
+    return this.http.get('api/editions/invite?courseEdition=' + invitationLink, this.httpOptions).subscribe();
   }
 }

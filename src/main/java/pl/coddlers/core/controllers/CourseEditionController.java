@@ -31,7 +31,7 @@ public class CourseEditionController {
     @PostMapping
     public ResponseEntity<Void> createEdition(@RequestBody CourseEditionDto courseEditionDto) {
         CourseEdition courseEdition = courseEditionService.createCourseEdition(courseEditionDto);
-        courseEditionService.createCourseEditionLessons(courseEdition);
+        courseEditionService.cloneLessons(courseEdition);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
@@ -41,13 +41,24 @@ public class CourseEditionController {
     }
 
     @GetMapping(value = "/invite", params = "courseEdition")
-    public ResponseEntity<Void> addStudentToCourseEdition(@RequestParam(value="courseEdition") String courseEdition) {
+    public ResponseEntity<Void> addStudentToCourseEdition(@RequestParam(value="courseEdition") String invitationLink) {
         try {
-            courseEditionService.addStudentToCourseEdition(courseEdition);
+            courseEditionService.addStudentToCourseEdition(invitationLink);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    @GetMapping(value="/getInvitationLink", params = "courseEditionId")
+    public ResponseEntity<String> getInvitationLinkForCourseEdition(@RequestParam(value = "courseEditionId") Long invitationLink) {
+        try {
+            return ResponseEntity.ok(courseEditionService.getInvitationLink(invitationLink));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

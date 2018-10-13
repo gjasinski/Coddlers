@@ -10,7 +10,7 @@ import {SubscriptionManager} from "../../../utils/SubscriptionManager";
 })
 export class InvitePageComponent implements OnInit {
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
-  private courseEdition: string;
+  private invitationLink: string;
 
   constructor(private editionService: CourseEditionService,
               private router: Router,
@@ -19,10 +19,10 @@ export class InvitePageComponent implements OnInit {
 
   ngOnInit() {
     let paramsSub = this.route.queryParamMap.subscribe(params => {
-      this.courseEdition = params.get('courseEdition');
+      this.invitationLink = params.get('courseEdition');
     });
     this.subscriptionManager.add(paramsSub);
-    this.editionService.addToCourseEdition(this.courseEdition);
+    this.editionService.addToCourseEdition(this.invitationLink);
     this.router.navigate([""]);
   }
 

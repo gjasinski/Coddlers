@@ -1,5 +1,6 @@
 package pl.coddlers.core.services;
 
+import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,27 +12,21 @@ import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseEditionLesson;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.User;
-import pl.coddlers.core.repositories.*;
+import pl.coddlers.core.repositories.CourseEditionLessonRepository;
+import pl.coddlers.core.repositories.CourseEditionRepository;
+import pl.coddlers.core.repositories.LessonRepository;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.text.CharacterPredicates.DIGITS;
+import static org.apache.commons.text.CharacterPredicates.LETTERS;
+
 @Service
 public class CourseEditionService {
-    private static final String key = "Bar12345Bar12345"; // 128 bit key
-    private static final String transformation = "AES";
-    private static final Key aesKey = new SecretKeySpec(key.getBytes(), transformation);
+    private static final int INVITATION_LINK_LENGTH = 6;
     private final CourseEditionRepository courseEditionRepository;
     private final CourseEditionConverter courseEditionConverter;
     private final LessonRepository lessonRepository;
@@ -67,7 +62,7 @@ public class CourseEditionService {
 
     }
 
-    public List<CourseEditionLesson> createCourseEditionLessons(CourseEdition courseEdition) {
+    public List<CourseEditionLesson> cloneLessons(CourseEdition courseEdition) {
         List<Lesson> lessons = lessonRepository.findByCourseVersionId(courseEdition.getCourseVersion().getId());
         return lessons.stream()
                 .map(lesson -> {
@@ -78,13 +73,30 @@ public class CourseEditionService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = Exception.class)
-    public void addStudentToCourseEdition(String encryptedCourseEditionTitle) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
-        encryptedCourseEditionTitle = encryptedCourseEditionTitle.replace(" ", "+");
-        String courseEditionTitle = decryptCourse(encryptedCourseEditionTitle);
-        CourseEdition courseEdition = courseEditionRepository.findByTitle(courseEditionTitle).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionTitle));
+    public void addStudentToCourseEdition(String invitationLink) {
+        CourseEdition courseEdition = courseEditionRepository.findByInvitationLink(invitationLink).orElseThrow(() -> new CourseEditionNotFoundException(invitationLink));
         User currentUser = userDetailsService.getCurrentUserEntity();
         courseEdition.getUsers().add(currentUser);
         courseEditionRepository.saveAndFlush(courseEdition);
+    }
+
+    public String getInvitationLink(Long courseEditionId) {
+        CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
+        RandomStringGenerator generator = new RandomStringGenerator.Builder()
+                .withinRange('0', 'z')
+                .filteredBy(LETTERS, DIGITS)
+                .build();
+        String invitationLink = courseEdition.getInvitationLink();
+
+        if (invitationLink == null) {
+            do {
+                invitationLink = generator.generate(INVITATION_LINK_LENGTH);
+            } while (courseEditionRepository.findByInvitationLink(invitationLink).isPresent());
+
+            courseEdition.setInvitationLink(invitationLink);
+            courseEditionRepository.saveAndFlush(courseEdition);
+        }
+        return invitationLink;
     }
 
     private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson) {
@@ -100,19 +112,5 @@ public class CourseEditionService {
         LocalDateTime startDate = courseEdition.getStartDate().toLocalDateTime();
         LocalDateTime endTime = startDate.plusDays(lesson.getTimeInDays());
         return Timestamp.valueOf(endTime);
-    }
-
-    private String encryptCourse(String courseName) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance(transformation);
-        cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-        byte[] encrypted = cipher.doFinal(courseName.getBytes());
-        return new String(Base64.getEncoder().encode(encrypted));
-    }
-
-    private String decryptCourse(String encryptedString) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance(transformation);
-        cipher.init(Cipher.DECRYPT_MODE, aesKey);
-        byte[] encrypted = Base64.getDecoder().decode(encryptedString);
-        return new String(cipher.doFinal(encrypted));
     }
 }

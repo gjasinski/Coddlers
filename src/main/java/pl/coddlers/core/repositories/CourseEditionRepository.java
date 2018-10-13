@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface CourseEditionRepository extends JpaRepository<CourseEdition, Long> {
     Optional<CourseEdition> findById(Long id);
 
-    Optional<CourseEdition> findByTitle(String title);
-
     List<CourseEdition> findAllByCourseVersionId(Long courseVersionId);
+
+    Optional<CourseEdition> findByInvitationLink(String invitationLink);
 }

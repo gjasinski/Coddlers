@@ -32,6 +32,9 @@ public class CourseEdition {
     @JoinColumn(name = "course_version_id")
     private CourseVersion courseVersion;
 
+    @Column
+    private String invitationLink;
+
     public CourseEdition(String title, CourseVersion courseVersion, Timestamp startDate) {
         this.title = title;
         this.courseVersion = courseVersion;
@@ -41,11 +44,6 @@ public class CourseEdition {
     @JsonIgnore
     @OneToMany(mappedBy = "courseEdition", targetEntity = CourseEditionLesson.class)
     private List<CourseEditionLesson> courseEditionLesson;
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, startDate, courseVersion, courseEditionLesson, studentLessonRepositories);
-    }
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -58,4 +56,9 @@ public class CourseEdition {
     @JsonIgnore
     @OneToMany(mappedBy = "courseEdition", targetEntity = StudentLessonRepository.class)
     private Set<StudentLessonRepository> studentLessonRepositories;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, startDate, courseVersion, courseEditionLesson, studentLessonRepositories);
+    }
 }
