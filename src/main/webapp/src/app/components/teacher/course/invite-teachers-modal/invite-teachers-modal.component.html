@@ -1,0 +1,33 @@
+<ng-template #content let-c="close" let-d="dismiss" size="lg">
+  <div class="modal-header">
+    <h3 class="modal-title">Invite teachers</h3>
+    <h3><span class="badge badge-secondary badge-pill text-center">{{emails.length}}</span></h3>
+  </div>
+  <div class="modal-body">
+    <form class="card margin-bottom border-0">
+      <div class="input-group">
+        <input class="form-control" placeholder="Invitation link" type="text">
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-secondary">Copy</button>
+        </div>
+      </div>
+    </form>
+
+    <span class="margin-bottom">Invite teachers to course by sending them an email.</span>
+    <tag-input [(ngModel)]='emails' [addOnPaste]="true" [blinkIfDupe]="true" [clearOnBlur]="true"
+               [identifyBy]="'local'" [displayBy]="'raw'" [maxItems]='20' [editable]="true" [onAdding]="parseEmail"
+               [separatorKeyCodes]="[32, 188]" [errorMessages]="asyncErrorMessages" [validators]="emailValidators"
+               placeholder="Insert new email" secondaryPlaceholder="Insert new email" theme='minimal'>
+      <tag-input-dropdown [focusFirstElement]="true" [autocompleteItems]="autocompleteEmails"
+                          [zIndex]="99999"></tag-input-dropdown>
+    </tag-input>
+
+    <form class="card border-0 float-right form-group margin-top">
+      <div class="input-group">
+        <button class="btn btn-primary float-right" (click)="sendInvitation()">Send</button>
+        <button class="btn btn-secondary back-btn float-right" (click)="cancel(); $event.preventDefault();">Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
