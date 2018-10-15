@@ -80,15 +80,13 @@ public class GitLessonService {
         };
     }
 
-    public CompletableFuture<StudentLessonRepository> forkLesson(Lesson lesson, User user, CourseEdition courseEdition) {
+    public CompletableFuture<ProjectDto> forkLesson(Lesson lesson, User user) {
         return CompletableFuture.supplyAsync(forkLessonSupplier(lesson.getGitProjectId(), user.getGitUserId()), executor)
                 .thenApply(projectDto -> {
                     createGitHook(projectDto.getId());
                     removeForkRelationship(projectDto);
                     return projectDto;
-                })
-                .thenApply(projectDto -> renameForkedRepository(courseEdition.getId(), lesson.getId(), user.getId(), projectDto))
-                .thenApply(projectDto -> createStudentLessonRepository(courseEdition, user, lesson, projectDto));
+                });
     }
 
     private Supplier<ProjectDto> forkLessonSupplier(Long lessonId, Long userId) {
@@ -119,11 +117,10 @@ public class GitLessonService {
                 Object.class);
     }
 
-    private ProjectDto renameForkedRepository(Long courseEditionId, Long lessonId, Long studentId, ProjectDto projectDto) {
-        String repositoryName = buildForkedRepositoryName(courseEditionId, lessonId, studentId);
-        String resourceUrl = gitlabApiProjects + projectDto.getId();
+    public ProjectDto renameForkedRepository(Long gitProjectId, String repositoryName) {
+        String resourceUrl = gitlabApiProjects + gitProjectId;
         UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-                .queryParam(ID, projectDto.getId())
+                .queryParam(ID, gitProjectId)
                 .queryParam(NAME, repositoryName)
                 .queryParam(PATH, repositoryName);
         HttpEntity<?> entity = getHttpEntity();
@@ -136,7 +133,7 @@ public class GitLessonService {
         return exchange.getBody();
     }
 
-    private StudentLessonRepository createStudentLessonRepository(CourseEdition courseEdition, User user, Lesson lesson, ProjectDto projectDto) {
+    public StudentLessonRepository createStudentLessonRepository(CourseEdition courseEdition, User user, Lesson lesson, ProjectDto projectDto) {
         StudentLessonRepository studentLessonRepository = new StudentLessonRepository();
         studentLessonRepository.setCourseEdition(courseEdition);
         studentLessonRepository.setLesson(lesson);
@@ -146,10 +143,7 @@ public class GitLessonService {
         return studentLessonRepository;
     }
 
-    private String buildForkedRepositoryName(Long courseEditionId, Long lessonId, Long studentId) {
-        String timestamp = Long.toString(Instant.now().getEpochSecond());
-        return courseEditionId + "_" + lessonId + "_" + studentId + "_" + timestamp;
-    }
+
 
     private void createGitHook(Long projectId) {
         String resourceUrl = gitlabApiProjects + projectId + HOOKS;

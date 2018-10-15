@@ -87,6 +87,40 @@ public class LessonService {
         }
     }
 
+    public Long createNewVersionLesson(Lesson modelLesson, CourseVersion courseVersion) {
+        try {
+            //Lesson modelLesson = lessonConverter.convertFromDto(modelLessonDto);
+            Lesson lesson = copyLessonEntity(modelLesson, courseVersion);
+            lessonRepository.save(lesson);
+            log.error(modelLesson.toString());
+
+            User currentUser = userDetailsService.getCurrentUserEntity();
+            gitProjectService.forkLesson(modelLesson, currentUser);
+            CompletableFuture<ProjectDto> gitLessonIdFuture = gitProjectService.forkLesson(modelLesson, currentUser)
+                    .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), createRepositoryName(lesson)));
+            ProjectDto projectDto = gitLessonIdFuture.get();
+            lesson.setGitProjectId(projectDto.getId());
+            lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
+            lessonRepository.save(lesson);
+            return lesson.getId();
+        } catch (Exception ex) {
+            log.error("Exception while creating new version lesson for: " + modelLesson.toString(), ex);
+            throw new LessonAlreadyExists(ex.getMessage());
+        }
+    }
+
+    private Lesson copyLessonEntity(Lesson modelLesson, CourseVersion courseVersion) {
+        Lesson lesson = new Lesson();
+        lesson.setTitle(modelLesson.getTitle());
+        lesson.setDescription(modelLesson.getDescription());
+        lesson.setWeight(modelLesson.getWeight());
+        lesson.setTimeInDays(modelLesson.getTimeInDays());
+        lesson.setTitle(modelLesson.getTitle());
+        lesson.setCourseVersion(courseVersion);
+        return lesson;
+    }
+
+
     public CompletableFuture<StudentLessonRepository> forkModelLessonForUser(CourseEdition courseEdition, Lesson lesson, User user) {
         return forkLessonForUser(courseEdition, lesson, user);
     }
@@ -105,11 +139,18 @@ public class LessonService {
 
     private CompletableFuture<StudentLessonRepository> forkLessonForUser(CourseEdition courseEdition, Lesson lesson, User user) {
         try {
-            return gitProjectService.forkLesson(lesson, user, courseEdition);
+            return gitProjectService.forkLesson(lesson, user)
+                    .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), buildForkedRepositoryName(courseEdition.getId(), lesson.getId(), user.getId())))
+                    .thenApply(projectDto -> gitProjectService.createStudentLessonRepository(courseEdition, user, lesson, projectDto));
         } catch (Exception ex) {
             log.error(String.format("Cannot fork lesson: %s from course edition %s for user: %s", lesson.toString(), courseEdition.toString(), user.toString()), ex);
             return null;
         }
+    }
+
+    private String buildForkedRepositoryName(Long courseEditionId, Long lessonId, Long studentId) {
+        String timestamp = Long.toString(Instant.now().getEpochSecond());
+        return courseEditionId + "_" + lessonId + "_" + studentId + "_" + timestamp;
     }
 
     private CompletableFuture<List<StudentLessonRepository>> mapListOfFuturesToFutureOfList(List<CompletableFuture<StudentLessonRepository>> listOfFutureRepositories) {
