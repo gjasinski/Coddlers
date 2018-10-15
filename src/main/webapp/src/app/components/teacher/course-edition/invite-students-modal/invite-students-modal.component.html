@@ -15,7 +15,7 @@
 
     <span class="margin-bottom">Invite students to course by sending them an email.</span>
     <tag-input [(ngModel)]='emails' [addOnPaste]="true" [blinkIfDupe]="true" [clearOnBlur]="true"
-               [identifyBy]="'id'" [displayBy]="'email'" [maxItems]='20' [editable]="true"
+               [identifyBy]="'id'" [displayBy]="'email.full()'" [maxItems]='20' [editable]="true"
                [separatorKeyCodes]="[32, 188]" [errorMessages]="asyncErrorMessages" [validators]="emailValidators"
                placeholder="Insert new email" secondaryPlaceholder="Insert new email" theme='minimal'>
       <tag-input-dropdown [focusFirstElement]="true" [autocompleteItems]="autocompleteEmails"
