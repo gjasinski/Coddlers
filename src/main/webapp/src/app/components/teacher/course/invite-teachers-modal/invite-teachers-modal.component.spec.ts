@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InviteTeachersModalComponent } from './invite-teachers-modal.component';
+import {by, element} from "protractor";
 
 describe('InviteTeachersModalComponent', () => {
   let component: InviteTeachersModalComponent;

@@ -6,17 +6,17 @@
   <div class="modal-body">
     <form class="card margin-bottom border-0">
       <div class="input-group">
-        <input class="form-control" placeholder="Invitation link" type="text">
+        <input #invitationLink class="form-control" placeholder="Invitation link" type="text">
         <div class="input-group-append">
-          <button type="submit" class="btn btn-secondary">Copy</button>
+          <button type="submit" class="btn btn-secondary" [ngxClipboard]="invitationLink">Copy</button>
         </div>
       </div>
     </form>
 
     <span class="margin-bottom">Invite teachers to course by sending them an email.</span>
-    <tag-input [(ngModel)]='emails' [addOnPaste]="true" [blinkIfDupe]="true" [clearOnBlur]="true"
-               [identifyBy]="'local'" [displayBy]="'raw'" [maxItems]='20' [editable]="true" [onAdding]="parseEmail"
-               [separatorKeyCodes]="[32, 188]" [errorMessages]="asyncErrorMessages" [validators]="emailValidators"
+    <tag-input [(ngModel)]='emails' [addOnPaste]="true" [blinkIfDupe]="true" [allowDupes]="false"
+               [identifyBy]="'local'" [displayBy]="'raw'" [maxItems]='20' [editable]="true"
+               [separatorKeyCodes]="[32, 188]" [validators]="emailValidators" [errorMessages]="emailValidatorsMessages"
                placeholder="Insert new email" secondaryPlaceholder="Insert new email" theme='minimal'>
       <tag-input-dropdown [focusFirstElement]="true" [autocompleteItems]="autocompleteEmails"
                           [zIndex]="99999"></tag-input-dropdown>

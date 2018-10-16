@@ -41,6 +41,7 @@ import {EditTaskModalComponent} from "./components/teacher/task/edit-task-modal/
 import {AddEditionModalComponent} from './components/teacher/course-edition/add-edition-modal/add-edition-modal.component';
 import {InviteStudentsModalComponent} from "./components/teacher/course-edition/invite-students-modal/invite-students-modal.component";
 import {TagInputModule} from "ngx-chips";
+import {ClipboardModule} from 'ngx-clipboard';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {InviteTeachersModalComponent} from './components/teacher/course/invite-teachers-modal/invite-teachers-modal.component';
 
@@ -87,6 +88,7 @@ import {InviteTeachersModalComponent} from './components/teacher/course/invite-t
     ReactiveFormsModule,
     NgbModule.forRoot(),
     TagInputModule,
+    ClipboardModule,
     BrowserAnimationsModule
   ],
   providers: [

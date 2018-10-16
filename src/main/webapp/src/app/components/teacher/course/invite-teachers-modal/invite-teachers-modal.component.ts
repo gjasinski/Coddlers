@@ -1,12 +1,14 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {Observable, of, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {TaskService} from "../../../../services/task.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {EventService} from "../../../../services/event.service";
 import {Event} from "../../../../models/event";
 import {Email} from "../../../../models/email";
+import {InvitationModalValidation} from "../../../../validators/invitation-modal-validation";
+import {ValidationMessagesConstants} from "../../../../constants/validation-messages.constants";
 
 @Component({
   selector: 'cod-invite-teachers-modal',
@@ -22,58 +24,18 @@ export class InviteTeachersModalComponent implements OnInit, OnDestroy {
   formGroup: FormGroup;
 
   emails: Email[] = [];
-
-  autocompleteEmails = ['wojtek@gmail.com', 'wojtek1@gmail.com', 'wojtek@2gmail.com', 'wojtek@3gmail.com', 'wojtek@gmail.com3']
-
-  private static hasAt(control: FormControl) {
-    if (!control.value.toString().includes('@')) {
-      return {
-        isProperEmail: true
-      };
-    }
-
-    return null;
-  }
-
-  private static localPartLength(control: FormControl) {
-    const email = Email.parseMail(control.value.toString());
-    if (email.local.length > 64 || email.local.length <= 0){
-      return {
-        invalidLengthLocal: true
-      }
-    }
-    return null;
-  }
-
-  private static domainPartLength(control: FormControl) {
-    const email = Email.parseMail(control.value.toString());
-    if (email.domain.length > 255 || email.domain.length <= 0){
-      return {
-        invalidLengthDomain: true
-      }
-    }
-    return null;
-  }
-
-  emailValidators = [InviteTeachersModalComponent.hasAt, InviteTeachersModalComponent.localPartLength,
-    InviteTeachersModalComponent.domainPartLength];
-
-  asyncErrorMessages = {
-    isProperEmail: 'Please fill with proper email with @',
-    invalidLengthLocal: 'Please fill with proper local part of email',
-    invalidLengthDomain: 'Please fill with proper domain part of email'
-  };
+  autocompleteEmails = ['teacher@coddlers.pl'];
+  emailValidatorsMessages = ValidationMessagesConstants.asyncErrorMessages;
+  emailValidators = InvitationModalValidation.validators;
 
   constructor(private formBuilder: FormBuilder,
               private taskService: TaskService,
               private modalService: NgbModal,
               private route: ActivatedRoute,
               private eventService: EventService,
-              private router: Router) {
-  }
+              private router: Router) {}
 
   ngOnInit() {
-
     this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
       if (event.eventType === 'open-invite-teachers-modal') {
         this.open();
@@ -101,11 +63,7 @@ export class InviteTeachersModalComponent implements OnInit, OnDestroy {
     this.emails.forEach(email => {
       console.log(`Sending email to ${email.raw}`);
     });
+
     this.modalRefNgb.dismiss();
   }
-
-  public parseEmail(value: string): Observable<Email> {
-    return of(Email.parseMail(value));
-  }
 }
-

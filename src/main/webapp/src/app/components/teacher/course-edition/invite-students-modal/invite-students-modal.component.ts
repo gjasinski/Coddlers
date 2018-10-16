@@ -1,12 +1,14 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {Observable, of, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {TaskService} from "../../../../services/task.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {EventService} from "../../../../services/event.service";
 import {Event} from "../../../../models/event";
 import {Email} from "../../../../models/email";
+import {InvitationModalValidation} from "../../../../validators/invitation-modal-validation";
+import {ValidationMessagesConstants} from "../../../../constants/validation-messages.constants";
 
 @Component({
   selector: 'cod-invite-students-modal',
@@ -22,36 +24,18 @@ export class InviteStudentsModalComponent implements OnInit, OnDestroy {
   formGroup: FormGroup;
 
   emails: Email[] = [];
-
-  autocompleteEmails = ['wojtek@gmail.com', 'wojtek1@gmail.com', 'wojtek@2gmail.com', 'wojtek@3gmail.com', 'wojtek@gmail.com3']
-
-  private hasAt(control: FormControl) {
-    if (!control.value.toString().includes('@')) {
-      return {
-        'hasAt': true,
-        isProperEmail: true
-      };
-    }
-
-    return null;
-  }
-
-  emailValidators = [this.hasAt];
-
-  asyncErrorMessages = {
-    isProperEmail: 'Please insert proper email'
-  };
+  autocompleteEmails = ['student@coddlers.pl'];
+  emailValidatorsMessages = ValidationMessagesConstants.asyncErrorMessages;
+  emailValidators = InvitationModalValidation.validators;
 
   constructor(private formBuilder: FormBuilder,
               private taskService: TaskService,
               private modalService: NgbModal,
               private route: ActivatedRoute,
               private eventService: EventService,
-              private router: Router) {
-  }
+              private router: Router) {}
 
   ngOnInit() {
-
     this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
       if (event.eventType === 'open-invite-students-modal') {
         this.open();
@@ -77,8 +61,9 @@ export class InviteStudentsModalComponent implements OnInit, OnDestroy {
     if (this.emails.length == 0) return;
 
     this.emails.forEach( email => {
-      console.log(`Sending email to ${email.full()}`);
+      console.log(`Sending email to ${email.raw}`);
     });
+
     this.modalRefNgb.dismiss();
   }
 }

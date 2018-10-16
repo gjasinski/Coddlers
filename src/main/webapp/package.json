@@ -26,6 +26,7 @@
     "core-js": "^2.4.1",
     "jQuery": "^1.7.4",
     "ngx-chips": "^1.9.8",
+    "ngx-clipboard": "^11.1.9",
     "rxjs": "^6.1.0",
     "zone.js": "^0.8.14"
   },
