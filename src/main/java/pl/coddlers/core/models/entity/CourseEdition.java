@@ -31,6 +31,8 @@ public class CourseEdition {
     @JoinColumn(name = "course_version_id")
     private CourseVersion courseVersion;
 
+    private Long gitGroupId;
+
     public CourseEdition(String title, CourseVersion courseVersion, Timestamp startDate) {
         this.title = title;
         this.courseVersion = courseVersion;

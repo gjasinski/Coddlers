@@ -23,8 +23,6 @@ public class Course {
 
     private Long gitGroupId;
 
-    private String gitGroupPath;
-
     @JsonIgnore
     @OneToMany(mappedBy = "course", targetEntity = CourseVersion.class)
     private List<CourseVersion> courseVersion = new ArrayList<>();

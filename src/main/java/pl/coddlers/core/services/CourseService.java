@@ -63,10 +63,8 @@ public class CourseService {
 		Teacher teacher = new Teacher(course, currentUser, true);
 		courseVersionRepository.save(courseVersion);
 		teacherRepository.save(teacher);
-		gitGroup.join();
 		ProjectDto projectDto = gitGroup.get();
 		course.setGitGroupId(projectDto.getId());
-		course.setGitGroupPath(projectDto.getPath());
         course = courseRepository.save(course);
 		return course;
 	}
