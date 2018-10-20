@@ -11,5 +11,5 @@ public interface CourseEditionRepository extends JpaRepository<CourseEdition, Lo
 
     List<CourseEdition> findAllByCourseVersionId(Long courseVersionId);
 
-    Optional<CourseEdition> findByInvitationLink(String invitationLink);
+    Optional<CourseEdition> findByInvitationToken(String invitationToken);
 }

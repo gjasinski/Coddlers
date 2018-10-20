@@ -11,7 +11,9 @@ import pl.coddlers.core.services.CourseEditionService;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -43,32 +45,43 @@ public class CourseEditionController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(value = "/sendInvitationLinkByMail", params = {"invitationLink", "students"})
-    public ResponseEntity<Void> sendInvitationLinkByMail(@RequestParam(value = "invitationLink") String invitationLink, @RequestParam(value = "students") List<InternetAddress> students) {
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/invitations", params = {"invitationToken"})
+    public ResponseEntity<Void> sendInvitationLinkByMail(HttpServletRequest request, @RequestParam(value = "invitationToken") String invitationToken, @RequestBody List<String> students) {
+        List<InternetAddress> studentsEmails = new LinkedList<>();
+        students.forEach(s -> {
+            try {
+                studentsEmails.add(new InternetAddress(s));
+            } catch (AddressException e) {
+                e.printStackTrace();
+            }
+        });
+
         try {
-            courseEditionService.sendInvitationLinkByMail(invitationLink, students);
+            courseEditionService.sendInvitationLinkByMail(request.getHeader("host"), invitationToken, studentsEmails);
         } catch (AddressException e) {
             e.printStackTrace();
         }
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/invite", params = "courseEdition")
-    public ResponseEntity<Void> addStudentToCourseEdition(@RequestParam(value = "courseEdition") String invitationLink) {
+    @PostMapping(value = "/invitations")
+    public ResponseEntity<Boolean> addStudentToCourseEdition(@RequestBody String invitationToken) {
+        boolean result = false;
         try {
-            courseEditionService.addStudentToCourseEdition(invitationLink);
+            result = courseEditionService.addStudentToCourseEdition(invitationToken);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(result);
     }
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
-    @GetMapping(value = "/getInvitationLink", params = "courseEditionId")
-    public ResponseEntity<String> getInvitationLinkForCourseEdition(@RequestParam(value = "courseEditionId") Long invitationLink) {
+    @GetMapping(value = "/invitation-tokens", params = "courseEditionId")
+    public ResponseEntity<String> getInvitationTokenForCourseEdition(HttpServletRequest request, @RequestParam(value = "courseEditionId") Long courseEditionId) {
         try {
-            return ResponseEntity.ok(courseEditionService.getInvitationLink(invitationLink));
+            return ResponseEntity.ok(courseEditionService.getInvitationToken(request.getHeader("host"), courseEditionId));
         } catch (Exception e) {
             e.printStackTrace();
         }

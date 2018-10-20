@@ -33,7 +33,7 @@ public class CourseEdition {
     private CourseVersion courseVersion;
 
     @Column
-    private String invitationLink;
+    private String invitationToken;
 
     public CourseEdition(String title, CourseVersion courseVersion, Timestamp startDate) {
         this.title = title;
@@ -59,6 +59,6 @@ public class CourseEdition {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, startDate, courseVersion, courseEditionLesson, studentLessonRepositories);
+        return Objects.hash(id, title, startDate, courseVersion, courseEditionLesson, studentLessonRepositories, invitationToken);
     }
 }

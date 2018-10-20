@@ -83,7 +83,7 @@ export const ROUTES: Routes = [
     ]
   },
   {
-    path: 'invite',
+    path: 'invitations',
     component: InvitePageComponent
   },
   // TODO refactor routes below

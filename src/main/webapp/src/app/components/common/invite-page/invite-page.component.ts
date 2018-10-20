@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {CourseEditionService} from "../../../services/course-edition.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {SubscriptionManager} from "../../../utils/SubscriptionManager";
+import {Event} from "../../../models/event";
+import {EventService} from "../../../services/event.service";
+import {PrincipalService} from "../../../auth/principal.service";
 
 @Component({
   selector: 'cod-invite-page',
@@ -9,21 +11,27 @@ import {SubscriptionManager} from "../../../utils/SubscriptionManager";
   styleUrls: ['./invite-page.component.scss']
 })
 export class InvitePageComponent implements OnInit {
-  private subscriptionManager: SubscriptionManager = new SubscriptionManager();
-  private invitationLink: string;
+  private invitationToken: string;
 
   constructor(private editionService: CourseEditionService,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private eventService: EventService,
+              private principalService: PrincipalService) {
   }
 
   ngOnInit() {
-    let paramsSub = this.route.queryParamMap.subscribe(params => {
-      this.invitationLink = params.get('courseEdition');
+    this.route.queryParamMap.subscribe(params => {
+      this.invitationToken = params.get('invitationToken');
     });
-    this.subscriptionManager.add(paramsSub);
-    this.editionService.addToCourseEdition(this.invitationLink);
-    this.router.navigate([""]);
+    this.editionService.addToCourseEdition(this.invitationToken).subscribe(result => {
+      this.principalService.redirectToRoleRootRoute();
+      if (result)
+        this.openModal();
+    });
   }
 
+  openModal(): void {
+    this.eventService.emit(new Event('open-after-add-to-course-modal'));
+  }
 }

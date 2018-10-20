@@ -34,6 +34,8 @@ import static org.apache.commons.text.CharacterPredicates.LETTERS;
 @Service
 public class CourseEditionService {
     private static final int INVITATION_LINK_LENGTH = 6;
+    private static final String INVITATION_FROM_EMAIL = "pl.coddlers.mail.invitationmail.from";
+    private static final String INVITATION_TOKEN_PATH = "pl.coddlers.mail.invitationmail.path";
     private final CourseEditionRepository courseEditionRepository;
     private final CourseEditionConverter courseEditionConverter;
     private final LessonRepository lessonRepository;
@@ -82,40 +84,45 @@ public class CourseEditionService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = Exception.class)
-    public void addStudentToCourseEdition(String invitationLink) {
-        CourseEdition courseEdition = courseEditionRepository.findByInvitationLink(invitationLink).orElseThrow(() -> new CourseEditionNotFoundException(invitationLink));
+    public boolean addStudentToCourseEdition(String invitationToken) {
+        CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken).orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
         User currentUser = userDetailsService.getCurrentUserEntity();
         courseEdition.getUsers().add(currentUser);
         courseEditionRepository.saveAndFlush(courseEdition);
+        return true;
     }
 
-    public String getInvitationLink(Long courseEditionId) {
+    public String getInvitationToken(String host, Long courseEditionId) {
         CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
                 .withinRange('0', 'z')
                 .filteredBy(LETTERS, DIGITS)
                 .build();
-        String invitationLink = courseEdition.getInvitationLink();
+        String invitationToken = courseEdition.getInvitationToken();
 
-        if (invitationLink == null) {
+        if (invitationToken == null) {
             do {
-                invitationLink = generator.generate(INVITATION_LINK_LENGTH);
-            } while (courseEditionRepository.findByInvitationLink(invitationLink).isPresent());
+                invitationToken = generator.generate(INVITATION_LINK_LENGTH);
+            } while (courseEditionRepository.findByInvitationToken(invitationToken).isPresent());
 
-            courseEdition.setInvitationLink(invitationLink);
+            courseEdition.setInvitationToken(invitationToken);
             courseEditionRepository.saveAndFlush(courseEdition);
         }
-        return invitationLink;
+        return host + environment.getProperty(INVITATION_TOKEN_PATH) + invitationToken;
     }
 
-    public void sendInvitationLinkByMail(String invitationLink, List<InternetAddress> students) throws AddressException {
+    public void sendInvitationLinkByMail(String host, String invitationToken, List<InternetAddress> students) throws AddressException {
         MailInitializer mailInitializer = new MailInitializer();
         MailScheduler mailScheduler = mailInitializer.initialize();
 
-        CourseEdition courseEdition = courseEditionRepository.findByInvitationLink(invitationLink).orElseThrow(() -> new CourseEditionNotFoundException(invitationLink));
+        CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken).orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
+        // TODO emailTitle and htmlMessage should be configured to fulfill clients expectations
         String emailTitle = "You have been invited to course edition \"" + courseEdition.getTitle() + "\" on Coddlers.pl";
-        String htmlMessage = "www.coddlers.pl/invite?courseEdition=" + invitationLink;
-        InternetAddress from = new InternetAddress(Objects.requireNonNull(environment.getProperty("pl.coddlers.mail.invitationmail.from")));
+        String invitationLink = host + environment.getProperty(INVITATION_TOKEN_PATH) + invitationToken;
+        String htmlMessage = invitationLink;
+
+        System.out.println("HTML MESSAGE = " + htmlMessage);
+        InternetAddress from = new InternetAddress(Objects.requireNonNull(environment.getProperty(INVITATION_FROM_EMAIL)));
         Mail mail = new Mail(from, students, emailTitle, htmlMessage);
         mailScheduler.scheduleMail(mail);
     }
