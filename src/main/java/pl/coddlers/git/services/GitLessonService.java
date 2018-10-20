@@ -17,7 +17,6 @@ import pl.coddlers.core.models.entity.User;
 import pl.coddlers.git.Exceptions.GitErrorHandler;
 import pl.coddlers.git.models.event.ProjectDto;
 
-import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,11 +36,14 @@ public class GitLessonService {
     private static final String PRIVATE_TOKEN = "private_token";
     private static final String USER = "user/";
     private static final String ID = "id";
-    private static final String DATE_FORMAT = "ddMMyyyyhhmmss";
-    public static final String PATH = "path";
+    private static final String PATH = "path";
+    private static final String GROUPS = "/groups/";
 
     @Value("${pl.coddlers.git.host}:${pl.coddlers.git.port}${pl.coddlers.git.event.url}")
     private String gitEventEndpoint;
+
+    @Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}" + "/")
+    private String gitlabApi;
 
     @Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}" + "/" + PROJECTS + "/")
     private String gitlabApiProjects;
@@ -78,6 +80,21 @@ public class GitLessonService {
                     ProjectDto.class)
                     .getBody();
         };
+    }
+
+    public CompletableFuture<ProjectDto> transferRepositoryToGroup(long projectId, long groupId) {
+        return CompletableFuture.supplyAsync(() -> {
+            String resourceUrl = gitlabApi + GROUPS + groupId + PROJECTS + projectId;
+            UriComponentsBuilder builder = createComponentBuilder(resourceUrl);
+            HttpEntity<?> entity = getHttpEntity();
+
+            return restTemplate.exchange(
+                    builder.build().toUriString(),
+                    HttpMethod.POST,
+                    entity,
+                    ProjectDto.class)
+                    .getBody();
+        }, executor);
     }
 
     public CompletableFuture<ProjectDto> forkLesson(Lesson lesson, User user) {
@@ -142,7 +159,6 @@ public class GitLessonService {
         studentLessonRepository.setRepositoryUrl(projectDto.getPathWithNamespace());
         return studentLessonRepository;
     }
-
 
 
     private void createGitHook(Long projectId) {

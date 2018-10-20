@@ -8,11 +8,13 @@ import pl.coddlers.core.exceptions.LessonAlreadyExists;
 import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.converters.LessonConverter;
 import pl.coddlers.core.models.dto.LessonDto;
+import pl.coddlers.core.models.entity.Course;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseVersion;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.StudentLessonRepository;
 import pl.coddlers.core.models.entity.User;
+import pl.coddlers.core.repositories.CourseRepository;
 import pl.coddlers.core.repositories.CourseVersionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.UserDataRepository;
@@ -23,6 +25,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -35,17 +38,21 @@ public class LessonService {
     private final CourseVersionRepository courseVersionRepository;
     private final GitLessonService gitProjectService;
     private final UserDataRepository userDataRepository;
+    private final CourseRepository courseRepository;
 
 
     @Autowired
-    public LessonService(UserDetailsServiceImpl userDetailsService, LessonRepository lessonRepository, LessonConverter lessonConverter,
-                         CourseVersionRepository courseVersionRepository, GitLessonService gitProjectService, UserDataRepository userDataRepository) {
+    public LessonService(UserDetailsServiceImpl userDetailsService, LessonRepository lessonRepository,
+                         LessonConverter lessonConverter, CourseVersionRepository courseVersionRepository,
+                         GitLessonService gitProjectService, UserDataRepository userDataRepository,
+                         CourseRepository courseRepository) {
         this.userDetailsService = userDetailsService;
         this.lessonRepository = lessonRepository;
         this.lessonConverter = lessonConverter;
         this.courseVersionRepository = courseVersionRepository;
         this.gitProjectService = gitProjectService;
         this.userDataRepository = userDataRepository;
+        this.courseRepository = courseRepository;
     }
 
     public Collection<LessonDto> getAllCourseVersionLessons(Long courseId, Integer courseVersionNumber) {
@@ -75,7 +82,9 @@ public class LessonService {
             Lesson lesson = lessonConverter.convertFromDto(lessonDto);
             lessonRepository.save(lesson);
             User currentUser = userDetailsService.getCurrentUserEntity();
-            CompletableFuture<ProjectDto> gitLessonIdFuture = gitProjectService.createLesson(currentUser.getGitUserId(), createRepositoryName(lesson));
+            Course byCourseVersionId = getLessonCourse(lesson);
+            CompletableFuture<ProjectDto> gitLessonIdFuture = gitProjectService.createLesson(currentUser.getGitUserId(), createRepositoryName(lesson))
+                    .thenCompose(projectDto -> gitProjectService.transferRepositoryToGroup(projectDto.getId(), byCourseVersionId.getGitGroupId()));
             ProjectDto projectDto = gitLessonIdFuture.get();
             lesson.setGitProjectId(projectDto.getId());
             lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
@@ -85,6 +94,14 @@ public class LessonService {
             log.error("Exception while creating lesson for: " + lessonDto.toString(), ex);
             throw new LessonAlreadyExists(ex.getMessage());
         }
+    }
+
+    private Course getLessonCourse(Lesson lesson) {
+        Optional<Course> byCourseVersionId = courseRepository.getByCourseVersionId(lesson.getCourseVersion().getId());
+        if (!byCourseVersionId.isPresent()) {
+            throw new IllegalArgumentException("Course not found");
+        }
+        return byCourseVersionId.get();
     }
 
     public Long createNewVersionLesson(Lesson modelLesson, CourseVersion courseVersion) {
