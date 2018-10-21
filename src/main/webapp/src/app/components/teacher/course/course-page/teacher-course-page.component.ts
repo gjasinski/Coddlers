@@ -48,30 +48,30 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     let paramsSub = this.route.paramMap.subscribe(params => {
-        let courseId: number = +params.get('courseId');
-        let courseSub = this.courseService.getCourse(courseId).subscribe((course: Course) => {
-          this.course = course;
-        });
-        this.subscriptionManager.add(courseSub);
+      let courseId: number = +params.get('courseId');
+      let courseSub = this.courseService.getCourse(courseId).subscribe((course: Course) => {
+        this.course = course;
+      });
+      this.subscriptionManager.add(courseSub);
 
-        let courseVerSub = this.courseVersionService.getCourseVersions(courseId).pipe(
-          switchMap((courseVersions: CourseVersion[]) => {
-            this.courseVersions = courseVersions;
-            if (courseVersions.length > 0) {
-              this.currentCourseVersion = courseVersions[0];
-              this.currentCourseVersionNumber = this.currentCourseVersion.versionNumber;
-              return this.lessonService.getLessonsByCourseVersion(courseId, this.currentCourseVersion.versionNumber);
-            } else {
-              return throwError(`Cannot find any version of course with id ${courseId}`);
-            }
-          }),
-          tap((lessons: Lesson[]) => {
-            this.lessons = lessons;
-          })
-        ).subscribe(() =>  {
-          this.courseEditionsSub = this.getCourseEditions().subscribe();
-        });
-        this.subscriptionManager.add(courseVerSub);
+      let courseVerSub = this.courseVersionService.getCourseVersions(courseId).pipe(
+        switchMap((courseVersions: CourseVersion[]) => {
+          this.courseVersions = courseVersions;
+          if (courseVersions.length > 0) {
+            this.currentCourseVersion = courseVersions[0];
+            this.currentCourseVersionNumber = this.currentCourseVersion.versionNumber;
+            return this.lessonService.getLessonsByCourseVersion(courseId, this.currentCourseVersion.versionNumber);
+          } else {
+            return throwError(`Cannot find any version of course with id ${courseId}`);
+          }
+        }),
+        tap((lessons: Lesson[]) => {
+          this.lessons = lessons;
+        })
+      ).subscribe(() => {
+        this.courseEditionsSub = this.getCourseEditions().subscribe();
+      });
+      this.subscriptionManager.add(courseVerSub);
     });
     this.subscriptionManager.add(paramsSub);
 
@@ -88,9 +88,9 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
     return this.courseEditionService.getEditionsByCourseVersion(this.currentCourseVersion.id)
       .pipe(
         tap(
-        courseEditions => {
-          this.courseEditions = courseEditions;
-        })
+          courseEditions => {
+            this.courseEditions = courseEditions;
+          })
       );
   }
 
@@ -128,21 +128,23 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
   }
 
   addVersion() {
-    this.addVersionSubscribtion = this.courseVersionService.createCourseVersion(this.course)
-      .pipe(
-        switchMap((c: CourseVersion) => {
-          let courseVersion = new CourseVersion(c.id, c.versionNumber);
-          this.courseVersions.push(courseVersion);
-          this.courseVersions.sort((a, b) => b.versionNumber - a.versionNumber);
-          this.currentCourseVersion = courseVersion;
-          this.currentCourseVersionNumber = courseVersion.versionNumber;
-          return this.lessonService.getLessonsByCourseVersion(this.course.id, this.currentCourseVersion.versionNumber);
-        }),
-        tap((lessons: Lesson[]) => {
-          this.lessons = lessons;
-        })
-      ).subscribe(() =>  {
-        this.courseEditionsSub = this.getCourseEditions().subscribe();
-      });
+    if (confirm("Are you sure to add new version?")) {
+      this.addVersionSubscribtion = this.courseVersionService.createCourseVersion(this.course)
+        .pipe(
+          switchMap((c: CourseVersion) => {
+            let courseVersion = new CourseVersion(c.id, c.versionNumber);
+            this.courseVersions.push(courseVersion);
+            this.courseVersions.sort((a, b) => b.versionNumber - a.versionNumber);
+            this.currentCourseVersion = courseVersion;
+            this.currentCourseVersionNumber = courseVersion.versionNumber;
+            return this.lessonService.getLessonsByCourseVersion(this.course.id, this.currentCourseVersion.versionNumber);
+          }),
+          tap((lessons: Lesson[]) => {
+            this.lessons = lessons;
+          })
+        ).subscribe(() => {
+          this.courseEditionsSub = this.getCourseEditions().subscribe();
+        });
+    }
   }
 }
