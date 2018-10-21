@@ -158,6 +158,7 @@ public class LessonService {
         try {
             return gitProjectService.forkLesson(lesson, user)
                     .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), buildForkedRepositoryName(courseEdition.getId(), lesson.getId(), user.getId())))
+                    .thenCompose(projectDto -> gitProjectService.transferRepositoryToGroup(projectDto.getId(), courseEdition.getGitGroupId()))
                     .thenApply(projectDto -> gitProjectService.createStudentLessonRepository(courseEdition, user, lesson, projectDto));
         } catch (Exception ex) {
             log.error(String.format("Cannot fork lesson: %s from course edition %s for user: %s", lesson.toString(), courseEdition.toString(), user.toString()), ex);

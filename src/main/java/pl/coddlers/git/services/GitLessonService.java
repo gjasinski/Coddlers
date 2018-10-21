@@ -1,5 +1,6 @@
 package pl.coddlers.git.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -16,12 +17,14 @@ import pl.coddlers.core.models.entity.StudentLessonRepository;
 import pl.coddlers.core.models.entity.User;
 import pl.coddlers.git.Exceptions.GitErrorHandler;
 import pl.coddlers.git.models.event.ProjectDto;
+import pl.coddlers.git.models.event.TransferRepositoryDto;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
+@Slf4j
 @Service
 public class GitLessonService {
     private static final String PROJECTS = "/projects/";
@@ -88,12 +91,20 @@ public class GitLessonService {
             UriComponentsBuilder builder = createComponentBuilder(resourceUrl);
             HttpEntity<?> entity = getHttpEntity();
 
-            return restTemplate.exchange(
+            TransferRepositoryDto body = restTemplate.exchange(
                     builder.build().toUriString(),
                     HttpMethod.POST,
                     entity,
-                    ProjectDto.class)
+                    TransferRepositoryDto.class)
                     .getBody();
+            ProjectDto[] projectsDto = body.getProjectsDto();
+            for (int i = 0; i < projectsDto.length; i++) {
+                ProjectDto project = projectsDto[i];
+                if (project.getId() == projectId) {
+                    return project;
+                }
+            }
+            throw new IllegalArgumentException("In response should be project which was transferred");
         }, executor);
     }
 
