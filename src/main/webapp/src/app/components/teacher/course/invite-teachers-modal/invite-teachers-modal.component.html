@@ -4,7 +4,7 @@
     <h3><span class="badge badge-secondary badge-pill text-center">{{emails.length}}</span></h3>
   </div>
   <div class="modal-body">
-    <form class="card margin-bottom border-0">
+    <form class="card mb-3 border-0">
       <div class="input-group">
         <input #invitationLink class="form-control" placeholder="Invitation link" type="text">
         <div class="input-group-append">
@@ -13,7 +13,7 @@
       </div>
     </form>
 
-    <span class="margin-bottom">Invite teachers to course by sending them an email.</span>
+    <span class="mb-5">Invite teachers to course by sending them an email.</span>
     <tag-input [(ngModel)]='emails' [addOnPaste]="true" [blinkIfDupe]="true" [allowDupes]="false"
                [identifyBy]="'local'" [displayBy]="'raw'" [maxItems]='20' [editable]="true"
                [separatorKeyCodes]="[32, 188]" [validators]="emailValidators" [errorMessages]="emailValidatorsMessages"
@@ -22,11 +22,11 @@
                           [zIndex]="99999"></tag-input-dropdown>
     </tag-input>
 
-    <form class="card border-0 float-right form-group margin-top">
+    <form class="card border-0 float-right form-group mt-5">
       <div class="input-group">
-        <button class="btn btn-primary float-right" (click)="sendInvitation()">Send</button>
-        <button class="btn btn-secondary back-btn float-right" (click)="cancel(); $event.preventDefault();">Cancel
+        <button class="btn btn-secondary float-right" (click)="cancel(); $event.preventDefault();">Cancel
         </button>
+        <button class="btn btn-primary float-right back-btn" (click)="sendInvitation()">Send</button>
       </div>
     </form>
   </div>
