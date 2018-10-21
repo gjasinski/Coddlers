@@ -26,6 +26,8 @@ public class Task {
 
     private Boolean isCodeTask;
 
+    private String branchNamePrefix;
+
     @JsonIgnore
     @ManyToOne(targetEntity = Lesson.class)
     private Lesson lesson;
