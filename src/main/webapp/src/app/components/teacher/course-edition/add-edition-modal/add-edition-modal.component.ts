@@ -62,6 +62,7 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
   }
 
   addEdition(courseEdition) {
+    console.error(this.currentCourseVersion);
     let c = new CourseEdition(null,
       courseEdition.title,
       this.currentCourseVersion,

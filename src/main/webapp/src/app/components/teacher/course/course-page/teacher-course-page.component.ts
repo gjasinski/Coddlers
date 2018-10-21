@@ -128,13 +128,21 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
   }
 
   addVersion() {
-    this.addVersionSubscribtion = this.courseVersionService.createCourseVersion(this.course).subscribe((courseVersion: CourseVersion) => {
-      this.courseVersions.push(courseVersion);
-      this.courseVersions.sort((a, b) => b.versionNumber - a.versionNumber);
-      this.currentCourseVersion = courseVersion;
-      this.currentCourseVersionNumber = courseVersion.versionNumber;
-      },
-      () =>{},
-      () => this.addVersionSubscribtion.unsubscribe());
+    this.addVersionSubscribtion = this.courseVersionService.createCourseVersion(this.course)
+      .pipe(
+        switchMap((c: CourseVersion) => {
+          let courseVersion = new CourseVersion(c.id, c.versionNumber);
+          this.courseVersions.push(courseVersion);
+          this.courseVersions.sort((a, b) => b.versionNumber - a.versionNumber);
+          this.currentCourseVersion = courseVersion;
+          this.currentCourseVersionNumber = courseVersion.versionNumber;
+          return this.lessonService.getLessonsByCourseVersion(this.course.id, this.currentCourseVersion.versionNumber);
+        }),
+        tap((lessons: Lesson[]) => {
+          this.lessons = lessons;
+        })
+      ).subscribe(() =>  {
+        this.courseEditionsSub = this.getCourseEditions().subscribe();
+      });
   }
 }

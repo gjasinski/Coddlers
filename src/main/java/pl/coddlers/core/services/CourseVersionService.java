@@ -35,7 +35,7 @@ public class CourseVersionService {
                 );
     }
 
-    public CourseVersion createCourseVersion(Long courseId) {
+    public CourseVersionDto createCourseVersion(Long courseId) {
         return courseVersionRepository.findFirstByCourseIdOrderByVersionNumberDesc(courseId)
                 .map((courseVersion) -> {
                     CourseVersion newCourseVersion = courseVersionRepository.save(createNewCourseVersion(courseVersion));
@@ -43,7 +43,7 @@ public class CourseVersionService {
                             .stream()
                             .map(lesson -> lessonService.createNewVersionLesson(lesson, newCourseVersion))
                             .forEach(CompletableFuture::join);
-                    return newCourseVersion;
+                    return courseVersionConverter.convertFromEntity(newCourseVersion);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Not found course version for courseId: " + courseId));
     }
