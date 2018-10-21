@@ -104,22 +104,19 @@ public class LessonService {
         return byCourseVersionId.get();
     }
 
-    public Long createNewVersionLesson(Lesson modelLesson, CourseVersion courseVersion) {
+    public Lesson createNewVersionLesson(Lesson modelLesson, CourseVersion newCourseVersion) {
         try {
-            //Lesson modelLesson = lessonConverter.convertFromDto(modelLessonDto);
-            Lesson lesson = copyLessonEntity(modelLesson, courseVersion);
-            lessonRepository.save(lesson);
-            log.error(modelLesson.toString());
-
+            Lesson lesson = lessonRepository.save(copyLessonEntity(modelLesson, newCourseVersion));
+            Course lessonCourse = getLessonCourse(modelLesson);
             User currentUser = userDetailsService.getCurrentUserEntity();
-            gitProjectService.forkLesson(modelLesson, currentUser);
             CompletableFuture<ProjectDto> gitLessonIdFuture = gitProjectService.forkLesson(modelLesson, currentUser)
-                    .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), createRepositoryName(lesson)));
+                    .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), createRepositoryName(lesson)))
+                    .thenCompose(projectDto -> gitProjectService.transferRepositoryToGroup(projectDto.getId(), lessonCourse.getGitGroupId()));
             ProjectDto projectDto = gitLessonIdFuture.get();
             lesson.setGitProjectId(projectDto.getId());
             lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
             lessonRepository.save(lesson);
-            return lesson.getId();
+            return lesson;
         } catch (Exception ex) {
             log.error("Exception while creating new version lesson for: " + modelLesson.toString(), ex);
             throw new LessonAlreadyExists(ex.getMessage());

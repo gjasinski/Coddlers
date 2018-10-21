@@ -11,6 +11,7 @@ import pl.coddlers.core.repositories.LessonRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseVersionService {
@@ -39,9 +40,11 @@ public class CourseVersionService {
     public CourseVersion createCourseVersion(Long courseId) {
         return courseVersionRepository.findFirstByCourseIdOrderByVersionNumberDesc(courseId)
                 .map((courseVersion) -> {
-                    courseVersionRepository.save(createNewCourseVersion(courseVersion));
-                    List<Lesson> allCourseVersionLessons = lessonRepository.findByCourseVersionId(courseVersion.getId());
-                    allCourseVersionLessons.forEach(lesson -> lessonService.createNewVersionLesson(lesson, courseVersion));
+                    CourseVersion newCourseVersion = courseVersionRepository.save(createNewCourseVersion(courseVersion));
+                    lessonRepository.saveAll(lessonRepository.findByCourseVersionId(courseVersion.getId())
+                            .stream()
+                            .map(lesson -> lessonService.createNewVersionLesson(lesson, newCourseVersion))
+                            .collect(Collectors.toList()));
                     return courseVersion;
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Not found course version for courseId: " + courseId));
