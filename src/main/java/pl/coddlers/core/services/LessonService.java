@@ -104,23 +104,23 @@ public class LessonService {
         return byCourseVersionId.get();
     }
 
-    public Lesson createNewVersionLesson(Lesson modelLesson, CourseVersion newCourseVersion) {
-        try {
-            Lesson lesson = lessonRepository.save(copyLessonEntity(modelLesson, newCourseVersion));
-            Course lessonCourse = getLessonCourse(modelLesson);
-            User currentUser = userDetailsService.getCurrentUserEntity();
-            CompletableFuture<ProjectDto> gitLessonIdFuture = gitProjectService.forkLesson(modelLesson, currentUser)
-                    .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), createRepositoryName(lesson)))
-                    .thenCompose(projectDto -> gitProjectService.transferRepositoryToGroup(projectDto.getId(), lessonCourse.getGitGroupId()));
-            ProjectDto projectDto = gitLessonIdFuture.get();
-            lesson.setGitProjectId(projectDto.getId());
-            lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
-            lessonRepository.save(lesson);
-            return lesson;
-        } catch (Exception ex) {
-            log.error("Exception while creating new version lesson for: " + modelLesson.toString(), ex);
-            throw new LessonAlreadyExists(ex.getMessage());
-        }
+    public CompletableFuture<Lesson> createNewVersionLesson(Lesson modelLesson, CourseVersion newCourseVersion) {
+            try {
+                Lesson lesson = lessonRepository.save(copyLessonEntity(modelLesson, newCourseVersion));
+                Course lessonCourse = getLessonCourse(modelLesson);
+                User currentUser = userDetailsService.getCurrentUserEntity();
+                return gitProjectService.forkLesson(modelLesson, currentUser)
+                        .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), createRepositoryName(lesson)))
+                        .thenCompose(projectDto -> gitProjectService.transferRepositoryToGroup(projectDto.getId(), lessonCourse.getGitGroupId()))
+                        .thenApply(projectDto -> {
+                            lesson.setGitProjectId(projectDto.getId());
+                            lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
+                            return lessonRepository.save(lesson);
+                        });
+            } catch (Exception ex) {
+                log.error("Exception while creating new version lesson for: " + modelLesson.toString(), ex);
+                throw new LessonAlreadyExists(ex.getMessage());
+            }
     }
 
     private Lesson copyLessonEntity(Lesson modelLesson, CourseVersion courseVersion) {

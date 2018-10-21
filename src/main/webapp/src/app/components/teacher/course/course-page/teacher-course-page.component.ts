@@ -130,8 +130,10 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
   addVersion() {
     this.addVersionSubscribtion = this.courseVersionService.createCourseVersion(this.course).subscribe((courseVersion: CourseVersion) => {
       this.courseVersions.push(courseVersion);
-      this.courseVersions.sort((a, b) => a.versionNumber - b.versionNumber);
-    },
+      this.courseVersions.sort((a, b) => b.versionNumber - a.versionNumber);
+      this.currentCourseVersion = courseVersion;
+      this.currentCourseVersionNumber = courseVersion.versionNumber;
+      },
       () =>{},
       () => this.addVersionSubscribtion.unsubscribe());
   }

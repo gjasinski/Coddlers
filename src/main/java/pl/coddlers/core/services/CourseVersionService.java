@@ -5,13 +5,11 @@ import org.springframework.stereotype.Service;
 import pl.coddlers.core.models.converters.CourseVersionConverter;
 import pl.coddlers.core.models.dto.CourseVersionDto;
 import pl.coddlers.core.models.entity.CourseVersion;
-import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.repositories.CourseVersionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class CourseVersionService {
@@ -41,11 +39,11 @@ public class CourseVersionService {
         return courseVersionRepository.findFirstByCourseIdOrderByVersionNumberDesc(courseId)
                 .map((courseVersion) -> {
                     CourseVersion newCourseVersion = courseVersionRepository.save(createNewCourseVersion(courseVersion));
-                    lessonRepository.saveAll(lessonRepository.findByCourseVersionId(courseVersion.getId())
+                    lessonRepository.findByCourseVersionId(courseVersion.getId())
                             .stream()
                             .map(lesson -> lessonService.createNewVersionLesson(lesson, newCourseVersion))
-                            .collect(Collectors.toList()));
-                    return courseVersion;
+                            .forEach(CompletableFuture::join);
+                    return newCourseVersion;
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Not found course version for courseId: " + courseId));
     }
