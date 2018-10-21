@@ -59,7 +59,7 @@ public class GitGroupService {
         }, executor);
     }
 
-    public CompletableFuture<Void> addUserToGroup(Long gitUserId, Long gitGroupId) {
+    public CompletableFuture<Void> addUserToGroupAsMaintainer(Long gitUserId, Long gitGroupId) {
         return CompletableFuture.runAsync(() -> {
             String resourceUrl = gitlabApi + GROUPS + gitGroupId + MEMBERS;
 

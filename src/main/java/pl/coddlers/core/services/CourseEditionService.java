@@ -68,7 +68,7 @@ public class CourseEditionService {
 
     private void addTeachersToGroup(Long gitGroupId) {
         User currentUser = userDetailsService.getCurrentUserEntity();
-        gitGroupService.addUserToGroup(currentUser.getGitUserId(), gitGroupId);
+        gitGroupService.addUserToGroupAsMaintainer(currentUser.getGitUserId(), gitGroupId);
         // TODO: 20.10.18 add all teacher to group from database
     }
 

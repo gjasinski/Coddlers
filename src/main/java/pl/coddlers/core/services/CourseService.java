@@ -72,7 +72,7 @@ public class CourseService {
     private CompletableFuture<ProjectDto> createGitGroup(Course course, User currentUser) {
         return gitGroupService.createGroup(createGroupName(course))
                     .thenApplyAsync(gitGroupDto -> {
-                        gitGroupService.addUserToGroup(currentUser.getGitUserId(), gitGroupDto.getId()).join();
+                        gitGroupService.addUserToGroupAsMaintainer(currentUser.getGitUserId(), gitGroupDto.getId()).join();
                         return gitGroupDto;
                     });
     }
