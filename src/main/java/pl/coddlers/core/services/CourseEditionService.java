@@ -87,12 +87,14 @@ public class CourseEditionService {
     public boolean addStudentToCourseEdition(String invitationToken) {
         CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken).orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
         User currentUser = userDetailsService.getCurrentUserEntity();
+        if (courseEdition.getUsers().contains(currentUser))
+            return false;
         courseEdition.getUsers().add(currentUser);
         courseEditionRepository.saveAndFlush(courseEdition);
         return true;
     }
 
-    public String getInvitationToken(String host, Long courseEditionId) {
+    public String getInvitationLink(String host, Long courseEditionId) {
         CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
                 .withinRange('0', 'z')
@@ -111,20 +113,24 @@ public class CourseEditionService {
         return host + environment.getProperty(INVITATION_TOKEN_PATH) + invitationToken;
     }
 
-    public void sendInvitationLinkByMail(String host, String invitationToken, List<InternetAddress> students) throws AddressException {
+    public void sendInvitationLinkByMail(String invitationLink, List<InternetAddress> students) throws AddressException {
         MailInitializer mailInitializer = new MailInitializer();
         MailScheduler mailScheduler = mailInitializer.initialize();
 
-        CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken).orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
         // TODO emailTitle and htmlMessage should be configured to fulfill clients expectations
-        String emailTitle = "You have been invited to course edition \"" + courseEdition.getTitle() + "\" on Coddlers.pl";
-        String invitationLink = host + environment.getProperty(INVITATION_TOKEN_PATH) + invitationToken;
-        String htmlMessage = invitationLink;
+        String invitationToken = getInvitationTokenFromInvitationLink(invitationLink);
+        CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken).orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
+        String emailTitle = "Invitation to course \"" + courseEdition.getTitle() + "\" on Coddlers.pl";
+        String htmlMessage = "You have been invited to course \"" + courseEdition.getTitle() + "\" on www.Coddlers.pl. Click on link below to join the course!<br>" + invitationLink;
 
-        System.out.println("HTML MESSAGE = " + htmlMessage);
         InternetAddress from = new InternetAddress(Objects.requireNonNull(environment.getProperty(INVITATION_FROM_EMAIL)));
         Mail mail = new Mail(from, students, emailTitle, htmlMessage);
         mailScheduler.scheduleMail(mail);
+    }
+
+    private String getInvitationTokenFromInvitationLink(String invitationLink) {
+        String[] invitationLinkSplitted = invitationLink.split("=");
+        return invitationLinkSplitted[invitationLinkSplitted.length - 1];
     }
 
     private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson) {

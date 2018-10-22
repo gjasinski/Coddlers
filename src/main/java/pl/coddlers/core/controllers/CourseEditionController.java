@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.core.models.dto.CourseEditionDto;
+import pl.coddlers.core.models.dto.InvitationDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.services.CourseEditionService;
 
@@ -46,19 +47,14 @@ public class CourseEditionController {
     }
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
-    @PostMapping(value = "/invitations", params = {"invitationToken"})
-    public ResponseEntity<Void> sendInvitationLinkByMail(HttpServletRequest request, @RequestParam(value = "invitationToken") String invitationToken, @RequestBody List<String> students) {
-        List<InternetAddress> studentsEmails = new LinkedList<>();
-        students.forEach(s -> {
-            try {
-                studentsEmails.add(new InternetAddress(s));
-            } catch (AddressException e) {
-                e.printStackTrace();
-            }
-        });
-
+    @PostMapping(value = "/invitations/emails")
+    public ResponseEntity<Void> sendInvitationLinkByMail(@RequestBody InvitationDto invitationDto) {
+        List<InternetAddress> studentEmails = new LinkedList<>();
         try {
-            courseEditionService.sendInvitationLinkByMail(request.getHeader("host"), invitationToken, studentsEmails);
+            for (String studentEmail : invitationDto.getStudentEmails()) {
+                studentEmails.add(new InternetAddress(studentEmail));
+            }
+            courseEditionService.sendInvitationLinkByMail(invitationDto.getInvitationLink(), studentEmails);
         } catch (AddressException e) {
             e.printStackTrace();
         }
@@ -78,10 +74,10 @@ public class CourseEditionController {
     }
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
-    @GetMapping(value = "/invitation-tokens", params = "courseEditionId")
-    public ResponseEntity<String> getInvitationTokenForCourseEdition(HttpServletRequest request, @RequestParam(value = "courseEditionId") Long courseEditionId) {
+    @GetMapping(value = "/invitations", params = "courseEditionId")
+    public ResponseEntity<String> getInvitationLinkForCourseEdition(HttpServletRequest request, @RequestParam(value = "courseEditionId") Long courseEditionId) {
         try {
-            return ResponseEntity.ok(courseEditionService.getInvitationToken(request.getHeader("host"), courseEditionId));
+            return ResponseEntity.ok(courseEditionService.getInvitationLink(request.getHeader("host"), courseEditionId));
         } catch (Exception e) {
             e.printStackTrace();
         }

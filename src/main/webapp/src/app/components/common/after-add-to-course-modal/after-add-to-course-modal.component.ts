@@ -14,7 +14,8 @@ export class AfterAddToCourseModalComponent implements OnInit {
   @ViewChild('content')
   private modalRef: TemplateRef<any>;
   private modalRefNgb: NgbModalRef;
-
+  private headerMsg: string;
+  private bodyMsg: string;
 
   constructor(private modalService: NgbModal,
               private eventService: EventService) { }
@@ -22,6 +23,14 @@ export class AfterAddToCourseModalComponent implements OnInit {
   ngOnInit() {
     this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
       if (event.eventType === 'open-after-add-to-course-modal') {
+        if (event.eventData) {
+          this.headerMsg = "Welcome in new course";
+          this.bodyMsg = "You have been successfully added to course!";
+        }
+        else {
+          this.headerMsg = "Something went wrong :(";
+          this.bodyMsg = "You haven not been added to any course. Some error occurred. Check your invitation link and check if you are not a member of this course."
+        }
         this.open();
       }
     });

@@ -26,12 +26,11 @@ export class InvitePageComponent implements OnInit {
     });
     this.editionService.addToCourseEdition(this.invitationToken).subscribe(result => {
       this.principalService.redirectToRoleRootRoute();
-      if (result)
-        this.openModal();
+      this.openModal(result);
     });
   }
 
-  openModal(): void {
-    this.eventService.emit(new Event('open-after-add-to-course-modal'));
+  openModal(result): void {
+    this.eventService.emit(new Event('open-after-add-to-course-modal', result));
   }
 }
