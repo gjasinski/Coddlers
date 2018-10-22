@@ -7,6 +7,7 @@ import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -69,5 +70,10 @@ public class User {
 
     public String getFullName() {
         return firstname + " " + lastname;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstname, lastname, profilePictureName, userMail, password, gitUserId, accountTypes, courseEditions, userGroups, studentLessonRepositories, submissions, courseGrades);
     }
 }
