@@ -2,6 +2,7 @@ package pl.coddlers.core.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -9,14 +10,14 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 
 @Entity
 @Data
 @NoArgsConstructor
-@ToString(exclude={"courseVersion", "courseEditionLesson", "users", "studentLessonRepositories"})
+@ToString(exclude = {"courseVersion", "courseEditionLesson", "users", "studentLessonRepositories"})
+@EqualsAndHashCode(exclude = "users")
 public class CourseEdition {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -56,23 +57,4 @@ public class CourseEdition {
     @JsonIgnore
     @OneToMany(mappedBy = "courseEdition", targetEntity = StudentLessonRepository.class)
     private Set<StudentLessonRepository> studentLessonRepositories;
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, startDate, courseVersion, courseEditionLesson, studentLessonRepositories, invitationToken);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CourseEdition)) return false;
-        CourseEdition that = (CourseEdition) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(title, that.title) &&
-                Objects.equals(startDate, that.startDate) &&
-                Objects.equals(courseVersion, that.courseVersion) &&
-                Objects.equals(invitationToken, that.invitationToken) &&
-                Objects.equals(courseEditionLesson, that.courseEditionLesson) &&
-                Objects.equals(studentLessonRepositories, that.studentLessonRepositories);
-    }
 }
