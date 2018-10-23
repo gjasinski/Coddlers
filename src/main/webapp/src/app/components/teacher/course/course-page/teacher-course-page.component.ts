@@ -135,4 +135,8 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
       () =>{},
       () => this.addVersionSubscribtion.unsubscribe());
   }
+
+  inviteTeachers(): void {
+    this.eventService.emit(new Event('open-invite-teachers-modal'));
+  }
 }
