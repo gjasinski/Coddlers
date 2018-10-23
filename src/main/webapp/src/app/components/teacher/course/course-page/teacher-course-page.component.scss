@@ -3,9 +3,11 @@ h1 {
   margin-bottom: 8px;
   line-height: 1.2
 }
-.tab-title{
+
+.tab-title {
   color: black;
 }
+
 :host ::ng-deep .tabset-course a.nav-link {
   background-color: gray;
   color: black;
@@ -15,17 +17,21 @@ h1 {
   background-color: white;
   color: black;
 }
-.versions-dropdown{
+
+.versions-dropdown {
   width: 110px;
   text-align: right;
 }
+
 .note-image {
   width: 80%;
   height: 80%;
 }
-.people-button{
+
+.people-button {
   width: 130px;
 }
+
 .lesson-header {
   h3 {
     display: inline-block;
@@ -57,6 +63,7 @@ h1 {
     margin-bottom: 0;
   }
 }
+
 .edition-item {
   background-color: #f8f8f8;
   margin-bottom: 15px;
