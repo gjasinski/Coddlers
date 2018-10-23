@@ -61,4 +61,18 @@ public class CourseEdition {
     public int hashCode() {
         return Objects.hash(id, title, startDate, courseVersion, courseEditionLesson, studentLessonRepositories, invitationToken);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CourseEdition)) return false;
+        CourseEdition that = (CourseEdition) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(startDate, that.startDate) &&
+                Objects.equals(courseVersion, that.courseVersion) &&
+                Objects.equals(invitationToken, that.invitationToken) &&
+                Objects.equals(courseEditionLesson, that.courseEditionLesson) &&
+                Objects.equals(studentLessonRepositories, that.studentLessonRepositories);
+    }
 }

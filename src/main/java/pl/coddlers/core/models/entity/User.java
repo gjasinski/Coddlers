@@ -76,4 +76,24 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, firstname, lastname, profilePictureName, userMail, password, gitUserId, accountTypes, courseEditions, userGroups, studentLessonRepositories, submissions, courseGrades);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(firstname, user.firstname) &&
+                Objects.equals(lastname, user.lastname) &&
+                Objects.equals(profilePictureName, user.profilePictureName) &&
+                Objects.equals(userMail, user.userMail) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(gitUserId, user.gitUserId) &&
+                Objects.equals(accountTypes, user.accountTypes) &&
+                Objects.equals(courseEditions, user.courseEditions) &&
+                Objects.equals(userGroups, user.userGroups) &&
+                Objects.equals(studentLessonRepositories, user.studentLessonRepositories) &&
+                Objects.equals(submissions, user.submissions) &&
+                Objects.equals(courseGrades, user.courseGrades);
+    }
 }
