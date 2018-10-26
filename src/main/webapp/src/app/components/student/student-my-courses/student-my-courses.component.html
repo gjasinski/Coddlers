@@ -14,8 +14,18 @@
     <div class="col-md-10">
       <ul class="course-list">
         <li class="course-item card" *ngFor="let course of courses | courseFilter : searchText">
-          <a class="card-body" [routerLink]="['/teacher', 'courses', course.id]">
-            <h3>{{ course.course.title + " " + course.courseEdition.title }}</h3>
+          <a class="card-body" [routerLink]="['/student', 'edition', course.courseEdition.id]">
+            <div class="row">
+              <div class="col-md-7">
+                <h3>{{ course.course.title}}</h3>
+                <h6>{{ course.courseEdition.title }}</h6>
+                <h6>{{ course.courseEdition.startDate | date: 'dd LLLL yyyy'}}</h6>
+              </div>
+              <div class="col-md-5" style="text-align: right">
+                <h6>Submitted: {{ course.course.title}}</h6>
+                <h6>Graded: {{ course.courseEdition.title }}</h6>
+              </div>
+            </div>
           </a>
         </li>
       </ul>
