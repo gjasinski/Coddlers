@@ -3,8 +3,16 @@ package pl.coddlers.core.models.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -12,24 +20,26 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
+@ToString(exclude={"tasks", "courseVersion", "courseEditionLessons", "notes", "studentLessonRepositories"})
 public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String title;
 
     private String description;
 
     private Integer weight;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Integer timeInDays;
 
-    // TODO only for prototype purposes
     @JsonIgnore
-    private Long gitStudentProjectId;
+    private Long gitProjectId;
+
+    private String repositoryUrl;
 
     @OneToMany(mappedBy = "lesson", targetEntity = Task.class)
     private List<Task> tasks = new ArrayList<>();
@@ -49,8 +59,4 @@ public class Lesson {
     @JsonIgnore
     @OneToMany(mappedBy = "lesson", targetEntity = StudentLessonRepository.class)
     private List<StudentLessonRepository> studentLessonRepositories;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "lesson", targetEntity = CourseVersionLessonRepository.class)
-    private List<CourseVersionLessonRepository> courseVersionLessonRepositories;
 }

@@ -19,7 +19,7 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
   @ViewChild('content')
   private modalRef: TemplateRef<any>;
   private modalRefNgb: NgbModalRef;
-  private formGroup: FormGroup;
+  formGroup: FormGroup;
   private lessonId: number;
 
   constructor(private formBuilder: FormBuilder,
@@ -57,6 +57,11 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
     this.modalRefNgb = this.modalService.open(this.modalRef);
   }
 
+  cancel(): void {
+    this.modalRefNgb.dismiss();
+    this.resetForm();
+  }
+
   addTask(task) {
     this.taskService.createTask(new Task(null,
       this.lessonId,
@@ -66,8 +71,17 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
       task.isCodeTask)
     ).subscribe(() => {
       this.modalRefNgb.close('created');
-      this.formGroup.reset();
+      this.resetForm();
       this.router.navigate([this.router.url]);
+    });
+  }
+
+  private resetForm(): void {
+    this.formGroup.reset({
+      'title': '',
+      'description': '',
+      'maxPoints': '',
+      'isCodeTask': true
     });
   }
 }

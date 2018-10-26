@@ -4,7 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
@@ -15,7 +21,7 @@ public class CourseVersion {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Integer versionNumber;
 
     @JsonIgnore
@@ -33,10 +39,6 @@ public class CourseVersion {
     @JsonIgnore
     @OneToMany(mappedBy = "courseVersion", targetEntity = Note.class)
     private List<Note> notes;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "courseVersion", targetEntity = CourseVersionLessonRepository.class)
-    private List<CourseVersionLessonRepository> courseLessonRepositories;
 
     public CourseVersion(Integer versionNumber, Course course) {
         this.versionNumber = versionNumber;

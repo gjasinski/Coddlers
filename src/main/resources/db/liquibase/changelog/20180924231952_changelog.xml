@@ -1,0 +1,373 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="damian (generated)" id="1537824012699-1">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-2">
+        <createTable tableName="account_type">
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-3">
+        <createTable tableName="comment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="commentPK"/>
+            </column>
+            <column name="text" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="submission_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-4">
+        <createTable tableName="course">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="coursePK"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-5">
+        <createTable tableName="course_edition">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="course_editionPK"/>
+            </column>
+            <column name="start_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_version_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-6">
+        <createTable tableName="course_edition_lesson">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="course_edition_lessonPK"/>
+            </column>
+            <column name="end_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="start_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="course_edition_id" type="BIGINT"/>
+            <column name="lesson_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-7">
+        <createTable tableName="course_edition_students">
+            <column name="course_edition_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-8">
+        <createTable tableName="course_grade">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="course_gradePK"/>
+            </column>
+            <column name="course_grade" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-9">
+        <createTable tableName="course_version">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="course_versionPK"/>
+            </column>
+            <column name="version_number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-10">
+        <createTable tableName="course_version_lesson_repository">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="course_version_lesson_repositoryPK"/>
+            </column>
+            <column name="git_repository_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="repository_url" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_version_id" type="BIGINT"/>
+            <column name="lesson_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-11">
+        <createTable tableName="lesson">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="lessonPK"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="git_student_project_id" type="BIGINT"/>
+            <column name="time_in_days" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="weight" type="INT"/>
+            <column name="course_version_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-12">
+        <createTable tableName="note">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="notePK"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_version_id" type="BIGINT"/>
+            <column name="lesson_id" type="BIGINT"/>
+            <column name="task_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-13">
+        <createTable tableName="note_attachment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="note_attachmentPK"/>
+            </column>
+            <column name="file_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="note_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-14">
+        <createTable tableName="student_lesson_repository">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="student_lesson_repositoryPK"/>
+            </column>
+            <column name="git_repository_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="repository_url" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_edition_id" type="BIGINT"/>
+            <column name="lesson_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-15">
+        <createTable tableName="submission">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="submissionPK"/>
+            </column>
+            <column name="branch_name" type="VARCHAR(255)"/>
+            <column name="last_commit_hash" type="VARCHAR(255)"/>
+            <column name="points" type="INT"/>
+            <column name="submission_time" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_edition_id" type="BIGINT"/>
+            <column name="student_lesson_repository_id" type="BIGINT"/>
+            <column name="submission_status_type_name" type="VARCHAR(50)"/>
+            <column name="task_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-16">
+        <createTable tableName="submission_status_type">
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-17">
+        <createTable tableName="task">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="taskPK"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="is_code_task" type="BOOLEAN"/>
+            <column name="max_points" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lesson_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-18">
+        <createTable tableName="teacher">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="teacherPK"/>
+            </column>
+            <column name="is_course_owner" type="BOOLEAN"/>
+            <column name="course_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-19">
+        <createTable tableName="user_account_type">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_type_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-20">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="usersPK"/>
+            </column>
+            <column name="firstname" type="VARCHAR(255)"/>
+            <column name="git_user_id" type="BIGINT"/>
+            <column name="lastname" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="profile_picture_name" type="VARCHAR(255)"/>
+            <column name="user_mail" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-21">
+        <createTable tableName="users_group">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="users_groupPK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-22">
+        <createTable tableName="users_groups_relation">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-23">
+        <addPrimaryKey columnNames="course_edition_id, user_id" tableName="course_edition_students"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-24">
+        <addPrimaryKey columnNames="user_id, account_type_name" tableName="user_account_type"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-25">
+        <addPrimaryKey columnNames="user_id, group_id" tableName="users_groups_relation"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-26">
+        <addPrimaryKey columnNames="name" constraintName="account_typePK" tableName="account_type"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-27">
+        <addPrimaryKey columnNames="name" constraintName="submission_status_typePK" tableName="submission_status_type"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-28">
+        <addUniqueConstraint columnNames="user_mail" constraintName="UC_USERSUSER_MAIL_COL" tableName="users"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-29">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="course_grade" constraintName="FK17s4r19m46hb22jft0agamjfv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-30">
+        <addForeignKeyConstraint baseColumnNames="course_edition_id" baseTableName="submission" constraintName="FK1cuio6gkhss2wf9bt0nsxbv7y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_edition"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-31">
+        <addForeignKeyConstraint baseColumnNames="task_id" baseTableName="note" constraintName="FK1r6bkt3ogywucunmxafm6gvnn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_version"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-32">
+        <addForeignKeyConstraint baseColumnNames="lesson_id" baseTableName="note" constraintName="FK2q32vg3mm2mjqh166a65y8mjx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_version"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-33">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_grade" constraintName="FK33qmbpnunukw8uo8l9daynxj4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-34">
+        <addForeignKeyConstraint baseColumnNames="submission_id" baseTableName="comment" constraintName="FK4keu694ggt1ouwg3s71mfqi4d" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="submission"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-35">
+        <addForeignKeyConstraint baseColumnNames="lesson_id" baseTableName="task" constraintName="FK5x8hrayewoued0usmps6rhk9e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="lesson"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-36">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="users_groups_relation" constraintName="FK6rwbwwnq0frpdm5pc8rc86vm7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users_group"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-37">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_version" constraintName="FK6yglm1887hjjbrm60ll1eg2fv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-38">
+        <addForeignKeyConstraint baseColumnNames="submission_status_type_name" baseTableName="submission" constraintName="FK7ate7vflpu78x0bb2ie700nv9" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="submission_status_type"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-39">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_account_type" constraintName="FK89d362vjek1ua9tgqv98rhtod" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-40">
+        <addForeignKeyConstraint baseColumnNames="lesson_id" baseTableName="course_version_lesson_repository" constraintName="FK930gq32ys4wqogqv3vt37qtoa" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="lesson"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-41">
+        <addForeignKeyConstraint baseColumnNames="note_id" baseTableName="note_attachment" constraintName="FKacil52cy2u8jlli0etaafbetx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="note"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-42">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="teacher" constraintName="FKcp1vpkh4bh0qux9vtvs0fkwrn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-43">
+        <addForeignKeyConstraint baseColumnNames="course_version_id" baseTableName="course_edition" constraintName="FKd2itjkysp89cmpo8el1v0nr6v" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_version"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-44">
+        <addForeignKeyConstraint baseColumnNames="course_version_id" baseTableName="course_version_lesson_repository" constraintName="FKeq8f2virjj069xbqfot9rjs1g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_version"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-45">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="teacher" constraintName="FKf75wvk4ch3gnhje998pq0lcid" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-46">
+        <addForeignKeyConstraint baseColumnNames="course_version_id" baseTableName="note" constraintName="FKfork5ta4f9vhg9cb9x11updvy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_version"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-47">
+        <addForeignKeyConstraint baseColumnNames="course_edition_id" baseTableName="student_lesson_repository" constraintName="FKgeuc5w2comyinf1j7378ybpju" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_edition"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-48">
+        <addForeignKeyConstraint baseColumnNames="task_id" baseTableName="submission" constraintName="FKh66q0hdbqk19lop36gyg3hvg0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="task"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-49">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="submission" constraintName="FKioe5xddu66v3aktrkyxj4vfx9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-50">
+        <addForeignKeyConstraint baseColumnNames="course_edition_id" baseTableName="course_edition_students" constraintName="FKivdw3w5k2hueub5v2aehkl4ws" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_edition"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-51">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="course_edition_students" constraintName="FKklhvnbj0glur95wk49gws17dt" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-52">
+        <addForeignKeyConstraint baseColumnNames="lesson_id" baseTableName="student_lesson_repository" constraintName="FKl469ql9hgcxoajdn6ro32neh1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="lesson"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-53">
+        <addForeignKeyConstraint baseColumnNames="account_type_name" baseTableName="user_account_type" constraintName="FKli91nmc0dnsa3ma2t78uq20ap" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="account_type"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-54">
+        <addForeignKeyConstraint baseColumnNames="course_edition_id" baseTableName="course_edition_lesson" constraintName="FKmh211wyfs85sxwmkgtayq87cs" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_edition"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-55">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="student_lesson_repository" constraintName="FKp5fm8e2y7qxs2gla6v8xr2px8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-56">
+        <addForeignKeyConstraint baseColumnNames="course_version_id" baseTableName="lesson" constraintName="FKpwv8rk116meya9iny4fykx34a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_version"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-57">
+        <addForeignKeyConstraint baseColumnNames="student_lesson_repository_id" baseTableName="submission" constraintName="FKss37mi8xafqmal3a7mks4t52p" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student_lesson_repository"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-58">
+        <addForeignKeyConstraint baseColumnNames="lesson_id" baseTableName="course_edition_lesson" constraintName="FKx3xjnv2538a41eqh46hlssbe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="lesson"/>
+    </changeSet>
+    <changeSet author="damian (generated)" id="1537824012699-59">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="users_groups_relation" constraintName="FKxd9vb57skls9sns9jttulh62" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,4 +1,4 @@
-<ng-template #content let-c="close" let-d="dismiss">
+<ng-template #content>
   <div class="modal-header">
     <h4 class="modal-title">Add task</h4>
   </div>
@@ -29,7 +29,7 @@
         <input formControlName="isCodeTask" class="checkmark" type="checkbox" id="task-isCodeTask">
       </div>
 
-      <button class="btn btn-secondary back-btn" (click)="c('closed'); $event.preventDefault();">Cancel</button>
+      <button class="btn btn-secondary back-btn" (click)="cancel(); $event.preventDefault();">Cancel</button>
       <input type="submit" class="btn btn-primary" value="Create" [disabled]="!formGroup.valid">
     </form>
   </div>

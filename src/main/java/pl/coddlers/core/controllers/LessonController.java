@@ -14,12 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.core.models.dto.LessonDto;
 import pl.coddlers.core.services.LessonService;
-import pl.coddlers.git.services.GitLessonService;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/lessons")
@@ -27,25 +25,15 @@ public class LessonController {
 
     private final LessonService lessonService;
 
-    private final GitLessonService gitProjectService;
 
     @Autowired
-    public LessonController(LessonService lessonService, GitLessonService gitProjectService) {
+    public LessonController(LessonService lessonService) {
         this.lessonService = lessonService;
-        this.gitProjectService = gitProjectService;
     }
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<Long> createLesson(@Valid @RequestBody LessonDto lessonDto) throws ExecutionException, InterruptedException {
-        // TODO this code is only for prototype purposes
-//        long tutorGitId = 20;
-//        long studentId = 19;
-//        Long gitStudentProjectId = gitProjectService.createLesson(tutorGitId, lessonDto.getTitle())
-//                .thenCompose((gitTutorProjectId) -> gitProjectService.forkLesson(gitTutorProjectId, studentId)).get();
-        // TODO only for prototype purposes
-//        lessonDto.setGitStudentProjectId(gitStudentProjectId);
-
+    public ResponseEntity<Long> createLesson(@Valid @RequestBody LessonDto lessonDto) {
         Long id = lessonService.createLesson(lessonDto);
 
         URI location = ServletUriComponentsBuilder
@@ -58,13 +46,13 @@ public class LessonController {
     }
 
     // TODO prevent students and teachers to get lessons not assigned to them
-	@GetMapping(params = {"courseId", "courseVersion"})
-	public ResponseEntity<Collection<LessonDto>> getLessons(@RequestParam(value = "courseId") Long courseId,
+    @GetMapping(params = {"courseId", "courseVersion"})
+    public ResponseEntity<Collection<LessonDto>> getLessons(@RequestParam(value = "courseId") Long courseId,
                                                             @RequestParam(value = "courseVersion", required = false) Integer courseVersion) {
-		return ResponseEntity.ok(lessonService.getAllCourseVersionLessons(courseId, courseVersion));
-	}
+        return ResponseEntity.ok(lessonService.getAllCourseVersionLessons(courseId, courseVersion));
+    }
 
-	// TODO prevent students and teachers to get lessons not assigned to them
+    // TODO prevent students and teachers to get lessons not assigned to them
     @GetMapping(value = "{id}")
     public ResponseEntity<LessonDto> getLesson(@PathVariable Long id) {
         return ResponseEntity.ok(lessonService.getLessonById(id));

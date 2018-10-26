@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LessonService} from "../../../../services/lesson.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {Lesson} from "../../../../models/lesson";
@@ -11,17 +11,19 @@ import {Task} from "../../../../models/task";
 import {TaskService} from "../../../../services/task.service";
 import {Event} from "../../../../models/event";
 import {EventService} from "../../../../services/event.service";
+import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 
 @Component({
   selector: 'cod-teacher-lesson-page',
   templateUrl: './teacher-lesson-page.component.html',
   styleUrls: ['./teacher-lesson-page.component.scss']
 })
-export class TeacherLessonPageComponent implements OnInit {
+export class TeacherLessonPageComponent implements OnInit, OnDestroy {
   private lesson: Lesson;
   private course: Course;
   private tasks: Task[] = [];
-  private tasksVisibility: boolean[];
+  private tasksVisibility: boolean[] = new Array(this.tasks.length);
+  private subscriptionManager: SubscriptionManager = new SubscriptionManager();
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -33,17 +35,23 @@ export class TeacherLessonPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.router.events.pipe(
+    let routerEventSub = this.router.events.pipe(
       filter(e => (e instanceof NavigationEnd && e.url.split('/').length === 6)),
       switchMap(() => this.getLessonsAndTasks())
     ).subscribe();
+    this.subscriptionManager.add(routerEventSub);
 
-    this.getLessonsAndTasks().subscribe(() => this.tasksVisibility = new Array(this.tasks.length));
+    let getLessonsSub = this.getLessonsAndTasks().subscribe();
+    this.subscriptionManager.add(getLessonsSub);
 
-    this.route.parent.params.subscribe(params =>
-      this.courseService.getCourse(params.courseId).subscribe(
-        (course: Course) => this.course = course)
-    );
+    let routeParamsSub = this.route.parent.params.subscribe(params =>
+      this.courseService.getCourse(params.courseId)
+        .subscribe((course: Course) => this.course = course));
+    this.subscriptionManager.add(routeParamsSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionManager.unsubscribeAll();
   }
 
   private getLessonsAndTasks(): Observable<any> {
