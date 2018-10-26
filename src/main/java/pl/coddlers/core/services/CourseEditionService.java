@@ -5,12 +5,15 @@ import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
 import pl.coddlers.core.models.converters.CourseEditionConverter;
 import pl.coddlers.core.models.dto.CourseEditionDto;
+import pl.coddlers.core.models.dto.CourseWithCourseEditionDto;
+import pl.coddlers.core.models.entity.Course;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseEditionLesson;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseEditionLessonRepository;
 import pl.coddlers.core.repositories.CourseEditionRepository;
+import pl.coddlers.core.repositories.CourseRepository;
 import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.UserDataRepository;
 
@@ -26,17 +29,18 @@ public class CourseEditionService {
     private final CourseEditionConverter courseEditionConverter;
     private final LessonRepository lessonRepository;
     private final CourseEditionLessonRepository courseEditionLessonRepository;
-
+    private final CourseRepository courseRepository;
     private final UserDetailsServiceImpl userDetailsService;
 
     private final UserDataRepository userDataRepository;
 
     @Autowired
-    public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository, UserDetailsServiceImpl userDetailsService, UserDataRepository userDataRepository) {
+    public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository, CourseRepository courseRepository, UserDetailsServiceImpl userDetailsService, UserDataRepository userDataRepository) {
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
         this.courseEditionLessonRepository = courseEditionLessonRepository;
+        this.courseRepository = courseRepository;
         this.userDetailsService = userDetailsService;
         this.userDataRepository = userDataRepository;
     }
@@ -90,7 +94,7 @@ public class CourseEditionService {
         Long userId = userDetailsService.getCurrentUserEntity().getId();
         Optional<User> user = userDataRepository.findById(userId);
         if (user.isPresent()) {
-            return user.get().getCourseEditions()
+            return courseEditionRepository.findAllCourseEditionWithEnrolledStudent(user.get().getId())
                     .stream()
                     .map(courseEditionConverter::convertFromEntity)
                     .collect(Collectors.toList());

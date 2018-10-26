@@ -4,6 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Course} from "../../../models/course";
 import {CourseEditionService} from "../../../services/course-edition.service";
 import {CourseEdition} from "../../../models/courseEdition";
+import {CourseWithCourseEdition} from "../../../models/courseWithCourseEdition";
 
 @Component({
   selector: 'cod-student-my-courses',
@@ -11,14 +12,14 @@ import {CourseEdition} from "../../../models/courseEdition";
   styleUrls: ['./student-my-courses.component.scss']
 })
 export class StudentMyCoursesComponent implements OnInit {
-  private courses: CourseEdition[];
+  private courses: CourseWithCourseEdition[];
 
   constructor(private courseEditionService: CourseEditionService,
               private route: ActivatedRoute,) {
   }
 
   ngOnInit(): void {
-    this.courseEditionService.getCourses().subscribe((courses: CourseEdition[]) => {
+    this.courseEditionService.getCourses().subscribe((courses: CourseWithCourseEdition[]) => {
       this.courses = courses;
     });
   }

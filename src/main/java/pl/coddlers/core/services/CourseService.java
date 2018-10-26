@@ -1,5 +1,6 @@
 package pl.coddlers.core.services;
 
+import jdk.nashorn.internal.runtime.options.Option;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CourseNotFoundException;
@@ -16,6 +17,7 @@ import pl.coddlers.core.repositories.TeacherRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseService {
@@ -41,6 +43,10 @@ public class CourseService {
 		Course course = validateCourse(id);
 
 		return courseConverter.convertFromEntity(course);
+	}
+
+	public Optional<CourseDto> getCourseByCourseVersionId(Long courseVersionId){
+		return courseRepository.getByCourseVersionId(courseVersionId).map(courseConverter::convertFromEntity);
 	}
 
 	public Collection<CourseDto> getCourses() throws WrongDateException {
