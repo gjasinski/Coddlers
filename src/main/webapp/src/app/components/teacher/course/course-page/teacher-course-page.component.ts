@@ -1,4 +1,3 @@
-///<reference path="../../../../services/course-version.service.ts"/>
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {CourseService} from "../../../../services/course.service";
@@ -128,7 +127,8 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
   }
 
   addVersion() {
-    if (confirm("Are you sure to add new version?")) {
+    this.openYesNoModal()
+/*
       this.addVersionSubscribtion = this.courseVersionService.createCourseVersion(this.course)
         .pipe(
           switchMap((c: CourseVersion) => {
@@ -145,10 +145,14 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
         ).subscribe(() => {
           this.courseEditionsSub = this.getCourseEditions().subscribe();
         });
-    }
+*/
   }
 
   inviteTeachers(): void {
     this.eventService.emit(new Event('open-invite-teachers-modal'));
+  }
+
+  private openYesNoModal(): void{
+    this.eventService.emit(new Event('open-yes-no-modal'));
   }
 }
