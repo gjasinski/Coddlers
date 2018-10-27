@@ -10,6 +10,7 @@ import {CourseService} from "./services/course.service";
 import {TeacherCoursesComponent} from "./components/teacher/course/courses/teacher-courses.component";
 import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {CourseFilterPipe} from "./filters/course-filter.pipe";
+import {CourseWithCourseEditionFilterPipe} from "./filters/course-with-course-edition-filter.pipe";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NavbarComponent} from "./components/common/navbar/navbar.component";
 import {TeacherCoursePageComponent} from "./components/teacher/course/course-page/teacher-course-page.component";
@@ -52,6 +53,7 @@ import { StudentMyCoursesComponent } from './components/student/student-my-cours
     TeacherCoursesComponent,
     PageNotFoundComponent,
     CourseFilterPipe,
+    CourseWithCourseEditionFilterPipe,
     NavbarComponent,
     TeacherCoursePageComponent,
     AddCoursePageComponent,

@@ -11,20 +11,37 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-12">
       <ul class="course-list">
-        <li class="course-item card" *ngFor="let course of courses | courseFilter : searchText">
+        <li class="course-item card" *ngFor="let course of courses | courseWithCourseEditionFilter : searchText">
           <a class="card-body" [routerLink]="['/student', 'edition', course.courseEdition.id]">
             <div class="row">
-              <div class="col-md-7">
+              <div class="col-md-6">
                 <h3>{{ course.course.title}}</h3>
                 <h6>{{ course.courseEdition.title }}</h6>
                 <h6>{{ course.courseEdition.startDate | date: 'dd LLLL yyyy'}}</h6>
               </div>
-              <div class="col-md-5" style="text-align: right">
-                <h6>Submitted: {{ course.submittedTasks}}</h6>
-                <h6>Graded: {{ course.gradedTasks }}</h6>
-                <h6>Graded: {{ course.allTasks }}</h6>
+              <div class="col-md-6" style="text-align: right">
+                <div class="row">
+                  <div class="col-md-5">
+                    <h6>Submitted: {{course.submittedTasks}}/{{course.allTasks}}</h6>
+                  </div>
+                  <div class="col-md-7">
+                    <ngb-progressbar *ngIf="course.allTasks != 0" type="info"
+                                     [value]="course.submittedTasks * 100 / course.allTasks"></ngb-progressbar>
+                    <ngb-progressbar *ngIf="course.allTasks === 0" type="info" [value]="100"></ngb-progressbar>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-5">
+                    <h6>Graded: {{ course.gradedTasks}}/{{course.allTasks}}</h6>
+                  </div>
+                  <div class="col-md-7">
+                    <ngb-progressbar *ngIf="course.allTasks != 0" type="info"
+                                     [value]="course.gradedTasks * 100 / course.allTasks"></ngb-progressbar>
+                    <ngb-progressbar *ngIf="course.allTasks === 0" type="info" [value]="100"></ngb-progressbar>
+                  </div>
+                </div>
               </div>
             </div>
           </a>
