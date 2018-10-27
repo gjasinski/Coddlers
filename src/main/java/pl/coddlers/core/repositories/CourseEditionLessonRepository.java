@@ -15,9 +15,9 @@ public interface CourseEditionLessonRepository extends JpaRepository<CourseEditi
     List<CourseEditionLesson> findByCourseEdition_Id(long courseEditionId);
 
     @Query(value = "select * from course_edition_lesson as c " +
-            "where date_part('YEAR', c.start_date) = date_part('YEAR', ?1) and " +
-            "date_part('MONTH', c.start_date) = date_part('MONTH', ?1) and " +
-            "date_part('DAY', c.start_date) = date_part('DAY', ?1)",
+            "where date_part('YEAR', c.start_date) = date_part('YEAR', cast(?1 AS date)) and " +
+            "date_part('MONTH', c.start_date) = date_part('MONTH', cast(?1 AS date)) and " +
+            "date_part('DAY', c.start_date) = date_part('DAY', cast(?1 AS date))",
             nativeQuery = true)
-    List<CourseEditionLesson> findByDate(@Param("date") Date date);
+    List<CourseEditionLesson> findByDate(Date date);
 }

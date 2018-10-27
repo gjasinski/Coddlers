@@ -14,7 +14,6 @@ import pl.coddlers.core.services.LessonService;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 @Slf4j
 @Component
@@ -36,10 +35,10 @@ public class GitScheduledTasks {
     @Scheduled(cron = "0 50 23 * * 1-7", zone = "CET")
     public void lazyRepositoryForking() {
         log.info("Executed lazy forking task");
-        Date dt = new Date();
-        LocalDateTime localDateTime = LocalDateTime.from(dt.toInstant()).plusDays(1);
+        LocalDateTime localDateTime = LocalDateTime.now().plusDays(1);
         java.sql.Date sqlDate = java.sql.Date.valueOf(localDateTime.toLocalDate());
         Collection<CourseEditionLesson> courseEditionLessons = courseEditionLessonRepository.findByDate(sqlDate);
+        log.debug(courseEditionLessons.toString());
 
         courseEditionLessons.forEach(courseEditionLesson -> {
             Lesson lesson = lessonRepository.getOne(courseEditionLesson.getLesson().getId());
