@@ -1,6 +1,5 @@
 package pl.coddlers.core.services;
 
-import jdk.nashorn.internal.runtime.options.Option;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CourseNotFoundException;
