@@ -75,11 +75,18 @@
       </div>
     </div>
     <div class="col-md-2">
-      <label for="students-list">People</label>
-      <button id="students-list" class="btn btn-secondary float-md-right" role="button">Students</button>
+      <div class="row">
+        <h3>People</h3>
+      </div>
+      <div class="row">
+        <button id="students-list" class="btn btn-secondary people-button float-md-right" (click)="inviteStudents()">
+          Students
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
 <router-outlet></router-outlet>
 <cod-edit-lesson-due-date-modal></cod-edit-lesson-due-date-modal>
+<cod-invite-students-modal></cod-invite-students-modal>

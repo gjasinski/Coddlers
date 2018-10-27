@@ -11,14 +11,19 @@ import pl.coddlers.core.models.dto.CourseEditionLessonDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseEditionLesson;
 import pl.coddlers.core.models.entity.Lesson;
+import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseEditionLessonRepository;
 import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
+import pl.coddlers.git.services.GitGroupService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,17 +33,22 @@ public class CourseEditionService {
     private final LessonRepository lessonRepository;
     private final CourseEditionLessonRepository courseEditionLessonRepository;
     private final CourseEditionLessonConverter courseEditionLessonConverter;
+    private final GitGroupService gitGroupService;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public CourseEditionService(CourseEditionRepository courseEditionRepository,
-                                CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository,
-                                CourseEditionLessonRepository courseEditionLessonRepository,
-                                CourseEditionLessonConverter courseEditionLessonConverter) {
+    public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter,
+                                LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository,
+                                GitGroupService gitGroupService, UserDetailsServiceImpl userDetailsService,
+                                CourseEditionLessonConverter courseEditionLessonConverter
+    ) {
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
         this.courseEditionLessonRepository = courseEditionLessonRepository;
         this.courseEditionLessonConverter = courseEditionLessonConverter;
+        this.gitGroupService = gitGroupService;
+        this.userDetailsService = userDetailsService;
     }
 
     public CourseEditionDto getCourseEditionById(Long id) {
@@ -56,9 +66,24 @@ public class CourseEditionService {
                 .collect(Collectors.toList());
     }
 
-    public CourseEdition createCourseEdition(CourseEditionDto courseEditionDto) {
-        return courseEditionRepository.save(courseEditionConverter.convertFromDto(courseEditionDto));
+    public CourseEdition createCourseEdition(CourseEditionDto courseEditionDto) throws ExecutionException, InterruptedException {
+        CourseEdition courseEdition = courseEditionRepository.save(courseEditionConverter.convertFromDto(courseEditionDto));
+        Long gitGroupId = gitGroupService.createGroup(createGroupName(courseEditionDto, courseEdition.getId())).get().getId();
+        courseEdition.setGitGroupId(gitGroupId);
+        courseEditionRepository.save(courseEdition);
+        addTeachersToGroup(gitGroupId);
+        return courseEdition;
+    }
 
+    private void addTeachersToGroup(Long gitGroupId) {
+        User currentUser = userDetailsService.getCurrentUserEntity();
+        gitGroupService.addUserToGroupAsMaintainer(currentUser.getGitUserId(), gitGroupId);
+        // TODO: 20.10.18 add all teacher to group from database
+    }
+
+    private String createGroupName(CourseEditionDto courseEditionDto, Long courseEditionId) {
+        Long courseVersionId = courseEditionDto.getCourseVersion().getId();
+        return courseVersionId + "_" + courseEditionId + "_" + Long.toString(Instant.now().getEpochSecond());
     }
 
     public List<CourseEditionLesson> createCourseEditionLessons(CourseEdition courseEdition) {

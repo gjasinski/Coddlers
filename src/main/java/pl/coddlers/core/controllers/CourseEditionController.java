@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("api/editions")
@@ -52,7 +53,7 @@ public class CourseEditionController {
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<Void> createEdition(@RequestBody CourseEditionDto courseEditionDto) {
+    public ResponseEntity<Void> createEdition(@RequestBody CourseEditionDto courseEditionDto) throws ExecutionException, InterruptedException {
         CourseEdition courseEdition = courseEditionService.createCourseEdition(courseEditionDto);
         courseEditionService.createCourseEditionLessons(courseEdition);
 

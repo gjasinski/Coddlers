@@ -178,4 +178,8 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptionManager.unsubscribeAll();
   }
+
+  inviteStudents(): void {
+    this.eventService.emit(new Event('open-invite-students-modal'));
+  }
 }

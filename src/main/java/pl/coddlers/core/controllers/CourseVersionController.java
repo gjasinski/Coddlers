@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.coddlers.core.models.dto.CourseDto;
 import pl.coddlers.core.models.dto.CourseEditionDto;
 import pl.coddlers.core.models.dto.CourseVersionDto;
-import pl.coddlers.core.models.entity.CourseVersion;
 import pl.coddlers.core.services.CourseEditionService;
 import pl.coddlers.core.services.CourseVersionService;
 
@@ -45,7 +44,7 @@ public class CourseVersionController {
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<CourseVersion> createCourseVersion(@RequestBody CourseDto course){
+    public ResponseEntity<CourseVersionDto> createCourseVersion(@RequestBody CourseDto course){
         return ResponseEntity.ok(courseVersionService.createCourseVersion(course.getId()));
     }
 }

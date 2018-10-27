@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.core.models.dto.CourseDto;
@@ -19,6 +18,7 @@ import pl.coddlers.core.services.CourseService;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -33,7 +33,7 @@ public class CourseController {
 
 	@PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
 	@PostMapping
-	public ResponseEntity<Void> createCourse(@Valid @RequestBody CourseDto courseDto) {
+	public ResponseEntity<Void> createCourse(@Valid @RequestBody CourseDto courseDto) throws ExecutionException, InterruptedException {
 		Course course = courseService.createCourse(courseDto);
 
 		URI location = ServletUriComponentsBuilder

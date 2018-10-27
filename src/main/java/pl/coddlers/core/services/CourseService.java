@@ -13,9 +13,14 @@ import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseRepository;
 import pl.coddlers.core.repositories.CourseVersionRepository;
 import pl.coddlers.core.repositories.TeacherRepository;
+import pl.coddlers.git.models.event.ProjectDto;
+import pl.coddlers.git.services.GitGroupService;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class CourseService {
@@ -25,16 +30,18 @@ public class CourseService {
 	private final UserDetailsServiceImpl userDetailsService;
 	private final CourseVersionRepository courseVersionRepository;
 	private final TeacherRepository teacherRepository;
+	private final GitGroupService gitGroupService;
 
 	@Autowired
 	public CourseService(CourseRepository courseRepository, CourseConverter courseConverter,
-						 UserDetailsServiceImpl userDetailsService, CourseVersionRepository courseVersionRepository,
-						 TeacherRepository teacherRepository) {
+	                     UserDetailsServiceImpl userDetailsService, CourseVersionRepository courseVersionRepository,
+	                     TeacherRepository teacherRepository, GitGroupService gitGroupService) {
 		this.courseRepository = courseRepository;
 		this.courseConverter = courseConverter;
 		this.userDetailsService = userDetailsService;
 		this.courseVersionRepository = courseVersionRepository;
 		this.teacherRepository = teacherRepository;
+		this.gitGroupService = gitGroupService;
 	}
 
 	public CourseDto getCourseById(Long id) {
@@ -48,18 +55,33 @@ public class CourseService {
 		return courseConverter.convertFromEntities(courseList);
 	}
 
-	public Course createCourse(final CourseDto courseDto) {
+	public Course createCourse(final CourseDto courseDto) throws ExecutionException, InterruptedException {
 		Course course = courseRepository.save(courseConverter.convertFromDto(courseDto));
 		User currentUser = userDetailsService.getCurrentUserEntity();
-		CourseVersion courseVersion = new CourseVersion(1, course);
+        CompletableFuture<ProjectDto> gitGroup = createGitGroup(course, currentUser);
+        CourseVersion courseVersion = new CourseVersion(1, course);
 		Teacher teacher = new Teacher(course, currentUser, true);
 		courseVersionRepository.save(courseVersion);
 		teacherRepository.save(teacher);
-
+		ProjectDto projectDto = gitGroup.get();
+		course.setGitGroupId(projectDto.getId());
+        course = courseRepository.save(course);
 		return course;
 	}
 
-	public void updateCourse(final CourseDto courseDto) {
+    private CompletableFuture<ProjectDto> createGitGroup(Course course, User currentUser) {
+        return gitGroupService.createGroup(createGroupName(course))
+                    .thenApplyAsync(gitGroupDto -> {
+                        gitGroupService.addUserToGroupAsMaintainer(currentUser.getGitUserId(), gitGroupDto.getId()).join();
+                        return gitGroupDto;
+                    });
+    }
+
+    private String createGroupName(Course course) {
+        return course.getId() + "_" + Long.toString(Instant.now().getEpochSecond());
+    }
+
+    public void updateCourse(final CourseDto courseDto) {
 		Course course = courseConverter.convertFromDto(courseDto);
 		course.setId(courseDto.getId());
 		courseRepository.save(course);
