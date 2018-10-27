@@ -30,21 +30,23 @@ public class GitScheduledTasks {
         this.courseEditionLessonRepository = courseEditionLessonRepository;
         this.courseEditionRepository = courseEditionRepository;
         this.lessonRepository = lessonRepository;
+        lazyRepositoryForking();
     }
 
-    @Scheduled(cron = "0 50 23 * * 1-7", zone = "CET")
+    //@Scheduled(cron = "0 50 23 * * 1-7", zone = "CET")
     public void lazyRepositoryForking() {
-        log.info("Executed lazy forking task");
+        log.debug("Executed lazy forking task");
         LocalDateTime localDateTime = LocalDateTime.now().plusDays(1);
         java.sql.Date sqlDate = java.sql.Date.valueOf(localDateTime.toLocalDate());
         Collection<CourseEditionLesson> courseEditionLessons = courseEditionLessonRepository.findByDate(sqlDate);
-        log.debug(courseEditionLessons.toString());
+        //log.debug(courseEditionLessons.toString());
 
         courseEditionLessons.forEach(courseEditionLesson -> {
             Lesson lesson = lessonRepository.getOne(courseEditionLesson.getLesson().getId());
-            CourseEdition courseEdition = courseEditionRepository.getOne(courseEditionLesson.getCourseEdition().getId());
+            CourseEdition courseEdition = courseEditionRepository.findById(courseEditionLesson.getCourseEdition().getId()).get();
+            lesson = lessonRepository.findById(lesson.getId()).get();
             lessonService.forkModelLesson(courseEdition, lesson).whenComplete(((studentLessonRepositories, throwable) -> {
-                log.info(String.format("Created %d repositories", studentLessonRepositories.size()));
+                log.debug(String.format("Created %d repositories", studentLessonRepositories.size()));
             }));
         });
     }
