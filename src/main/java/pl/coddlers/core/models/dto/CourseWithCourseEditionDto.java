@@ -13,4 +13,10 @@ public class CourseWithCourseEditionDto {
 
     @NotNull
     private CourseEditionDto courseEdition;
+
+    private int submittedTasks;
+
+    private int gradedTasks;
+
+    private int allTasks;
 }

@@ -22,8 +22,9 @@
                 <h6>{{ course.courseEdition.startDate | date: 'dd LLLL yyyy'}}</h6>
               </div>
               <div class="col-md-5" style="text-align: right">
-                <h6>Submitted: {{ course.course.title}}</h6>
-                <h6>Graded: {{ course.courseEdition.title }}</h6>
+                <h6>Submitted: {{ course.submittedTasks}}</h6>
+                <h6>Graded: {{ course.gradedTasks }}</h6>
+                <h6>Graded: {{ course.allTasks }}</h6>
               </div>
             </div>
           </a>
