@@ -1,12 +1,14 @@
-<ng-template #content data-target=".bd-example-modal-sm">
+<ng-template #content>
   <div class="modal-header">
-    <h4 id="modal-basic-title">Confirm</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-    </button>
+    <div class="center">
+      <h4 id="modal-basic-title">Confirm</h4>
+    </div>
   </div>
   <div class="modal-body">
-    <button class="btn btn-secondary center-right" (click)="cancel(); $event.preventDefault();">Cancel</button>
-    <button class="btn btn-primary center-right back-btn" (click)="sendInvitation()">Send</button>
+    <div class="center">
+      <button class="btn btn-secondary" (click)="cancel(); $event.preventDefault();">Cancel</button>
+      <button class="btn btn-primary back-btn" (click)="confirm()">Confirm</button>
+    </div>
   </div>
 </ng-template>
 

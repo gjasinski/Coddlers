@@ -59,7 +59,7 @@
                     </button>
                   </div>
                 </div>
-                <button class="btn btn-outline-secondary" (click)="addVersion()">+</button>
+                <button class="btn btn-outline-secondary" (click)="openYesNoModal()">+</button>
               </div>
               <br/>
               <div class="row">
@@ -99,7 +99,7 @@
                   <input [(ngModel)]="searchText" class="search-input" type="text">
                 </div>
                 <div class="col-md-6">
-                  <button class="btn btn-primary float-right" (click)="addNewEdition()">Add new edition</button>
+                  <button class="btn btn-primary float-right" (click)="openYesNoModal()">Add new edition</button>
                 </div>
               </div>
               <br/>
@@ -139,7 +139,7 @@
                     </button>
                   </div>
                 </div>
-                <button class="btn btn-outline-secondary" (click)="addVersion()">+</button>
+                <button class="btn btn-outline-secondary" (click)="openYesNoModal()">+</button>
               </div>
             </div>
           </div>
@@ -153,5 +153,5 @@
 <router-outlet></router-outlet>
 <cod-add-edition-modal [courseVersions]="courseVersions" [currentCourseVersion]="currentCourseVersion"></cod-add-edition-modal>
 <cod-invite-teachers-modal></cod-invite-teachers-modal>
-<cod-yes-no-modal></cod-yes-no-modal>
+<cod-yes-no-modal (confirmed)="onConfirmedCreateNewVersion($event)"></cod-yes-no-modal>
 

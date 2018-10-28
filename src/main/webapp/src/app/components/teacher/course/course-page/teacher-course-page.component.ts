@@ -126,9 +126,8 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
     this.courseEditionsSub.unsubscribe();
   }
 
-  addVersion() {
-    this.openYesNoModal()
-/*
+  onConfirmedCreateNewVersion(confirmed: boolean) {
+    if (confirmed) {
       this.addVersionSubscribtion = this.courseVersionService.createCourseVersion(this.course)
         .pipe(
           switchMap((c: CourseVersion) => {
@@ -145,14 +144,14 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
         ).subscribe(() => {
           this.courseEditionsSub = this.getCourseEditions().subscribe();
         });
-*/
+    }
   }
 
   inviteTeachers(): void {
     this.eventService.emit(new Event('open-invite-teachers-modal'));
   }
 
-  private openYesNoModal(): void{
+  private openYesNoModal(): void {
     this.eventService.emit(new Event('open-yes-no-modal'));
   }
 }
