@@ -133,9 +133,10 @@ public class CourseEditionService {
             Long courseVersionId = edition.getCourseVersion().getId();
             CourseDto courseDto = courseService.getCourseByCourseVersionId(courseVersionId)
                     .orElseThrow(() -> new IllegalStateException(exceptionMessage(edition)));
-            int allTasks = submissionService.countAllTask(currentUser.getId(), edition.getId());
-            int gradedTasks = submissionService.countAllGradedTasks(currentUser.getId(), edition.getId());
-            int submittedTasks = submissionService.countAllSubmittedTasks(currentUser.getId(), edition.getId());
+            CourseEdition courseEdition = courseEditionRepository.getOne(edition.getId());
+            int allTasks = submissionService.countAllTask(currentUser, courseEdition);
+            int gradedTasks = submissionService.countAllGradedTasks(currentUser, courseEdition);
+            int submittedTasks = submissionService.countAllSubmittedTasks(currentUser, courseEdition);
             return new CourseWithCourseEditionDto(courseDto, edition, submittedTasks, gradedTasks, allTasks);
         };
     }
