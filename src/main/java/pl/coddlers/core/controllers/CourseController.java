@@ -33,7 +33,7 @@ public class CourseController {
 
 	@PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
 	@PostMapping
-	public ResponseEntity<Void> createCourse(@Valid @RequestBody CourseDto courseDto) throws ExecutionException, InterruptedException {
+	public ResponseEntity<Void> createCourse(@Valid @RequestBody CourseDto courseDto) {
 		Course course = courseService.createCourse(courseDto);
 
 		URI location = ServletUriComponentsBuilder

@@ -1,8 +1,10 @@
 package pl.coddlers.core.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
+import pl.coddlers.core.exceptions.GitAsynchronousOperationException;
 import pl.coddlers.core.models.converters.CourseEditionConverter;
 import pl.coddlers.core.models.dto.CourseEditionDto;
 import pl.coddlers.core.models.entity.CourseEdition;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CourseEditionService {
     private final CourseEditionRepository courseEditionRepository;
@@ -57,13 +60,18 @@ public class CourseEditionService {
                 .collect(Collectors.toList());
     }
 
-    public CourseEdition createCourseEdition(CourseEditionDto courseEditionDto) throws ExecutionException, InterruptedException {
-        CourseEdition courseEdition = courseEditionRepository.save(courseEditionConverter.convertFromDto(courseEditionDto));
-        Long gitGroupId = gitGroupService.createGroup(createGroupName(courseEditionDto, courseEdition.getId())).get().getId();
-        courseEdition.setGitGroupId(gitGroupId);
-        courseEditionRepository.save(courseEdition);
-        addTeachersToGroup(gitGroupId);
-        return courseEdition;
+    public CourseEdition createCourseEdition(CourseEditionDto courseEditionDto) {
+        try {
+            CourseEdition courseEdition = courseEditionRepository.save(courseEditionConverter.convertFromDto(courseEditionDto));
+            Long gitGroupId = gitGroupService.createGroup(createGroupName(courseEditionDto, courseEdition.getId())).get().getId();
+            courseEdition.setGitGroupId(gitGroupId);
+            courseEditionRepository.save(courseEdition);
+            addTeachersToGroup(gitGroupId);
+            return courseEdition;
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(String.format("Cannot create new course edition for %s", courseEditionDto.toString()), e);
+            throw new GitAsynchronousOperationException("Cannot create new course edition");
+        }
     }
 
     private void addTeachersToGroup(Long gitGroupId) {

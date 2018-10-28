@@ -35,7 +35,7 @@ public class CourseEditionController {
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<Void> createEdition(@RequestBody CourseEditionDto courseEditionDto) throws ExecutionException, InterruptedException {
+    public ResponseEntity<Void> createEdition(@RequestBody CourseEditionDto courseEditionDto) {
         CourseEdition courseEdition = courseEditionService.createCourseEdition(courseEditionDto);
         courseEditionService.createCourseEditionLessons(courseEdition);
 
