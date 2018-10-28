@@ -21,6 +21,8 @@ public class Course {
 
     private String description;
 
+    private Long gitGroupId;
+
     @JsonIgnore
     @OneToMany(mappedBy = "course", targetEntity = CourseVersion.class)
     private List<CourseVersion> courseVersion = new ArrayList<>();

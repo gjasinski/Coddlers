@@ -4,4 +4,6 @@
     <include file="db/liquibase/changelog/20180924232100_changelog.xml"/>
     <include file="db/liquibase/changelog/20180930172851_changelog.xml"/>
     <include file="db/liquibase/changelog/20181006165627_changelog.xml"/>
+    <include file="db/liquibase/changelog/20181020195458_changelog.xml"/>
+    <include file="db/liquibase/changelog/20181020203106_changelog.xml"/>
 </databaseChangeLog>

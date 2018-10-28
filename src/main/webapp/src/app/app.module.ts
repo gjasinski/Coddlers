@@ -46,6 +46,7 @@ import {ClipboardModule} from 'ngx-clipboard';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {InviteTeachersModalComponent} from './components/teacher/course/invite-teachers-modal/invite-teachers-modal.component';
 import { StudentMyCoursesComponent } from './components/student/student-my-courses/student-my-courses.component';
+import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { StudentMyCoursesComponent } from './components/student/student-my-cours
     HasAnyAuthorityDirective,
     LoginModalComponent,
     RegisterModalComponent,
+    YesNoModalComponent,
     EditLessonDueDateModalComponent,
     StudentDashboardComponent,
     TeacherDashboardComponent,

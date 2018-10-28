@@ -1,5 +1,6 @@
 package pl.coddlers.git.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -12,13 +13,14 @@ import pl.coddlers.core.models.entity.StudentLessonRepository;
 import pl.coddlers.core.models.entity.User;
 import pl.coddlers.git.exceptions.GitErrorHandler;
 import pl.coddlers.git.models.event.ProjectDto;
+import pl.coddlers.git.models.event.TransferRepositoryDto;
 
-import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
+@Slf4j
 @Service
 public class GitLessonService {
     private static final String PROJECTS = "/projects/";
@@ -33,11 +35,14 @@ public class GitLessonService {
     private static final String PRIVATE_TOKEN = "private_token";
     private static final String USER = "user/";
     private static final String ID = "id";
-    private static final String DATE_FORMAT = "ddMMyyyyhhmmss";
-    public static final String PATH = "path";
+    private static final String PATH = "path";
+    private static final String GROUPS = "/groups/";
 
     @Value("${pl.coddlers.git.host}:${pl.coddlers.git.port}${pl.coddlers.git.event.url}")
     private String gitEventEndpoint;
+
+    @Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}" + "/")
+    private String gitlabApi;
 
     @Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}" + "/" + PROJECTS + "/")
     private String gitlabApiProjects;
@@ -76,15 +81,36 @@ public class GitLessonService {
         };
     }
 
-    public CompletableFuture<StudentLessonRepository> forkLesson(Lesson lesson, User user, CourseEdition courseEdition) {
+    public CompletableFuture<ProjectDto> transferRepositoryToGroup(long projectId, long groupId) {
+        return CompletableFuture.supplyAsync(() -> {
+            String resourceUrl = gitlabApi + GROUPS + groupId + PROJECTS + projectId;
+            UriComponentsBuilder builder = createComponentBuilder(resourceUrl);
+            HttpEntity<?> entity = getHttpEntity();
+
+            TransferRepositoryDto body = restTemplate.exchange(
+                    builder.build().toUriString(),
+                    HttpMethod.POST,
+                    entity,
+                    TransferRepositoryDto.class)
+                    .getBody();
+            ProjectDto[] projectsDto = body.getProjectsDto();
+            for (int i = 0; i < projectsDto.length; i++) {
+                ProjectDto project = projectsDto[i];
+                if (project.getId() == projectId) {
+                    return project;
+                }
+            }
+            throw new IllegalArgumentException("In response should be project which was transferred");
+        }, executor);
+    }
+
+    public CompletableFuture<ProjectDto> forkLesson(Lesson lesson, User user) {
         return CompletableFuture.supplyAsync(forkLessonSupplier(lesson.getGitProjectId(), user.getGitUserId()), executor)
                 .thenApply(projectDto -> {
                     createGitHook(projectDto.getId());
                     removeForkRelationship(projectDto);
                     return projectDto;
-                })
-                .thenApply(projectDto -> renameForkedRepository(courseEdition.getId(), lesson.getId(), user.getId(), projectDto))
-                .thenApply(projectDto -> createStudentLessonRepository(courseEdition, user, lesson, projectDto));
+                });
     }
 
     private Supplier<ProjectDto> forkLessonSupplier(Long lessonId, Long userId) {
@@ -115,11 +141,10 @@ public class GitLessonService {
                 Object.class);
     }
 
-    private ProjectDto renameForkedRepository(Long courseEditionId, Long lessonId, Long studentId, ProjectDto projectDto) {
-        String repositoryName = buildForkedRepositoryName(courseEditionId, lessonId, studentId);
-        String resourceUrl = gitlabApiProjects + projectDto.getId();
+    public ProjectDto renameForkedRepository(Long gitProjectId, String repositoryName) {
+        String resourceUrl = gitlabApiProjects + gitProjectId;
         UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-                .queryParam(ID, projectDto.getId())
+                .queryParam(ID, gitProjectId)
                 .queryParam(NAME, repositoryName)
                 .queryParam(PATH, repositoryName);
         HttpEntity<?> entity = getHttpEntity();
@@ -132,7 +157,7 @@ public class GitLessonService {
         return exchange.getBody();
     }
 
-    private StudentLessonRepository createStudentLessonRepository(CourseEdition courseEdition, User user, Lesson lesson, ProjectDto projectDto) {
+    public StudentLessonRepository createStudentLessonRepository(CourseEdition courseEdition, User user, Lesson lesson, ProjectDto projectDto) {
         StudentLessonRepository studentLessonRepository = new StudentLessonRepository();
         studentLessonRepository.setCourseEdition(courseEdition);
         studentLessonRepository.setLesson(lesson);
@@ -142,10 +167,6 @@ public class GitLessonService {
         return studentLessonRepository;
     }
 
-    private String buildForkedRepositoryName(Long courseEditionId, Long lessonId, Long studentId) {
-        String timestamp = Long.toString(Instant.now().getEpochSecond());
-        return courseEditionId + "_" + lessonId + "_" + studentId + "_" + timestamp;
-    }
 
     private void createGitHook(Long projectId) {
         String resourceUrl = gitlabApiProjects + projectId + HOOKS;

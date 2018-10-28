@@ -1,8 +1,10 @@
 package pl.coddlers.core.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
+import pl.coddlers.core.exceptions.GitAsynchronousOperationException;
 import pl.coddlers.core.models.converters.CourseEditionConverter;
 import pl.coddlers.core.models.dto.CourseDto;
 import pl.coddlers.core.models.dto.CourseEditionDto;
@@ -16,13 +18,17 @@ import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.CourseRepository;
 import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.UserDataRepository;
+import pl.coddlers.git.services.GitGroupService;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Function;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CourseEditionService {
     private final CourseEditionConverter courseEditionConverter;
@@ -31,15 +37,22 @@ public class CourseEditionService {
     private final LessonRepository lessonRepository;
     private final SubmissionService submissionService;
     private final CourseService courseService;
+    private final GitGroupService gitGroupService;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter, LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository, CourseRepository courseRepository, UserDetailsServiceImpl userDetailsService, UserDataRepository userDataRepository, SubmissionService submissionService, CourseService courseService) {
+    public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter,
+                                LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository,
+                                GitGroupService gitGroupService, UserDetailsServiceImpl userDetailsService,
+                                SubmissionService submissionService, CourseService courseService) {
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
         this.courseEditionLessonRepository = courseEditionLessonRepository;
         this.submissionService = submissionService;
         this.courseService = courseService;
+        this.gitGroupService = gitGroupService;
+        this.userDetailsService = userDetailsService;
     }
 
     public CourseEditionDto getCourseEditionById(Long id) {
@@ -58,8 +71,28 @@ public class CourseEditionService {
     }
 
     public CourseEdition createCourseEdition(CourseEditionDto courseEditionDto) {
-        return courseEditionRepository.save(courseEditionConverter.convertFromDto(courseEditionDto));
+        try {
+            CourseEdition courseEdition = courseEditionRepository.save(courseEditionConverter.convertFromDto(courseEditionDto));
+            Long gitGroupId = gitGroupService.createGroup(createGroupName(courseEditionDto, courseEdition.getId())).get().getId();
+            courseEdition.setGitGroupId(gitGroupId);
+            courseEditionRepository.save(courseEdition);
+            addTeachersToGroup(gitGroupId);
+            return courseEdition;
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(String.format("Cannot create new course edition for %s", courseEditionDto.toString()), e);
+            throw new GitAsynchronousOperationException("Cannot create new course edition");
+        }
+    }
 
+    private void addTeachersToGroup(Long gitGroupId) {
+        User currentUser = userDetailsService.getCurrentUserEntity();
+        gitGroupService.addUserToGroupAsMaintainer(currentUser.getGitUserId(), gitGroupId);
+        // TODO: 20.10.18 add all teacher to group from database
+    }
+
+    private String createGroupName(CourseEditionDto courseEditionDto, Long courseEditionId) {
+        Long courseVersionId = courseEditionDto.getCourseVersion().getId();
+        return courseVersionId + "_" + courseEditionId + "_" + Long.toString(Instant.now().getEpochSecond());
     }
 
     public List<CourseEditionLesson> createCourseEditionLessons(CourseEdition courseEdition) {
