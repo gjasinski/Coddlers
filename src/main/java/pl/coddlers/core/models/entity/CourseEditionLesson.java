@@ -2,6 +2,7 @@ package pl.coddlers.core.models.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -9,6 +10,7 @@ import java.sql.Timestamp;
 @Entity
 @Data
 @NoArgsConstructor
+@ToString(exclude={"courseEdition", "lesson"})
 public class CourseEditionLesson {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
