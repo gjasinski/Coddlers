@@ -105,19 +105,19 @@ public class GitLessonService {
     }
 
     public CompletableFuture<ProjectDto> forkLesson(Lesson lesson, User user) {
-        return CompletableFuture.supplyAsync(forkLessonSupplier(lesson.getGitProjectId(), user.getGitUserId()), executor)
+        return CompletableFuture.supplyAsync(forkLessonSupplier(lesson.getGitProjectId(), user), executor)
                 .thenApply(projectDto -> {
-                    createGitHook(projectDto.getId());
                     removeForkRelationship(projectDto);
+                    createGitHook(projectDto.getId());
                     return projectDto;
                 });
     }
 
-    private Supplier<ProjectDto> forkLessonSupplier(Long lessonId, Long userId) {
+    private Supplier<ProjectDto> forkLessonSupplier(Long lessonId, User user) {
         return () -> {
             String resourceUrl = gitlabApiProjects + lessonId + FORK;
             UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
-                    .queryParam(NAMESPACE, userId);
+                    .queryParam(NAMESPACE, user.getUserMail().replace("@", "_at_"));
             HttpEntity<?> entity = getHttpEntity();
 
             ResponseEntity<ProjectDto> exchange = restTemplate.exchange(
