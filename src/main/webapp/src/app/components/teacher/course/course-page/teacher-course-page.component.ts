@@ -34,6 +34,7 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
   private courseEditionsSub: Subscription;
   private addVersionSubscribtion: Subscription;
+  private createNewVersionFailed: boolean = false;
 
   constructor(private courseService: CourseService,
               private route: ActivatedRoute,
@@ -142,8 +143,11 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
             this.lessons = lessons;
           })
         ).subscribe(() => {
-          this.courseEditionsSub = this.getCourseEditions().subscribe();
-        });
+            this.courseEditionsSub = this.getCourseEditions().subscribe();
+          },
+          (error: any) => {
+            this.createNewVersionFailed = true;
+          });
     }
   }
 

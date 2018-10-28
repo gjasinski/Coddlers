@@ -1,6 +1,9 @@
 <div *ngIf="route.children.length === 0">
   <div class="col-md-12">
     <h1>{{course?.title}}</h1>
+    <div class="alert alert-danger" *ngIf="createNewVersionFailed" role="alert">
+      Operation of creating new course version failed - please contact with administrator immediately.
+    </div>
   </div>
 
   <ngb-tabset class="tabset-course">

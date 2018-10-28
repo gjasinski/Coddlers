@@ -21,6 +21,7 @@ import pl.coddlers.git.services.GitGroupService;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -53,10 +54,14 @@ public class CourseService {
         return courseConverter.convertFromEntity(course);
     }
 
-    public Collection<CourseDto> getCourses() throws WrongDateException {
-        List<Course> courseList = courseRepository.getByUserId(userDetailsService.getCurrentUserEntity().getId());
-        return courseConverter.convertFromEntities(courseList);
-    }
+	public Optional<CourseDto> getCourseByCourseVersionId(Long courseVersionId){
+		return courseRepository.getByCourseVersionId(courseVersionId).map(courseConverter::convertFromEntity);
+	}
+
+	public Collection<CourseDto> getCourses() throws WrongDateException {
+		List<Course> courseList = courseRepository.getByUserId(userDetailsService.getCurrentUserEntity().getId());
+		return courseConverter.convertFromEntities(courseList);
+	}
 
     public Course createCourse(final CourseDto courseDto) {
         try {
