@@ -15,6 +15,7 @@ import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.services.CourseEditionService;
 
 import java.net.URI;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("api/editions")

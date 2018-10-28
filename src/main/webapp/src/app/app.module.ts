@@ -44,6 +44,7 @@ import {TagInputModule} from "ngx-chips";
 import {ClipboardModule} from 'ngx-clipboard';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {InviteTeachersModalComponent} from './components/teacher/course/invite-teachers-modal/invite-teachers-modal.component';
+import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import {InviteTeachersModalComponent} from './components/teacher/course/invite-t
     HasAnyAuthorityDirective,
     LoginModalComponent,
     RegisterModalComponent,
+    YesNoModalComponent,
     EditLessonDueDateModalComponent,
     StudentDashboardComponent,
     TeacherDashboardComponent,

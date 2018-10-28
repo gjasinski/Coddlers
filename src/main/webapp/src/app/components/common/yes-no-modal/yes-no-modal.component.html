@@ -1,0 +1,14 @@
+<ng-template #content>
+  <div class="modal-header">
+    <div class="center">
+      <h4 id="modal-basic-title">Confirm</h4>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="center">
+      <button class="btn btn-secondary" (click)="cancel(); $event.preventDefault();">Cancel</button>
+      <button class="btn btn-primary back-btn" (click)="confirm()">Confirm</button>
+    </div>
+  </div>
+</ng-template>
+
