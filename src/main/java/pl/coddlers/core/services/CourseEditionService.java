@@ -59,13 +59,12 @@ public class CourseEditionService {
     private final SubmissionService submissionService;
     private final CourseService courseService;
     private final GitGroupService gitGroupService;
-    private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter,
                                 LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository,
                                 GitGroupService gitGroupService, UserDetailsServiceImpl userDetailsService,
-                                SubmissionService submissionService, CourseService courseService) {
+                                SubmissionService submissionService, CourseService courseService, Environment environment) {
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
