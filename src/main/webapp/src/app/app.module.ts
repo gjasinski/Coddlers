@@ -40,6 +40,8 @@ import {EditLessonDueDateModalComponent} from "./components/teacher/course-editi
 import {AddTaskModalComponent} from "./components/teacher/task/add-task-modal/add-task-modal.component";
 import {EditTaskModalComponent} from "./components/teacher/task/edit-task-modal/edit-task-modal.component";
 import {AddEditionModalComponent} from './components/teacher/course-edition/add-edition-modal/add-edition-modal.component';
+import {InvitePageComponent} from './components/common/invite-page/invite-page.component';
+import {AfterAddToCourseModalComponent} from './components/common/after-add-to-course-modal/after-add-to-course-modal.component';
 import {InviteStudentsModalComponent} from "./components/teacher/course-edition/invite-students-modal/invite-students-modal.component";
 import {TagInputModule} from "ngx-chips";
 import {ClipboardModule} from 'ngx-clipboard';
@@ -75,6 +77,8 @@ import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal
     StudentDashboardComponent,
     TeacherDashboardComponent,
     AddEditionModalComponent,
+    InvitePageComponent,
+    AfterAddToCourseModalComponent,
     InviteStudentsModalComponent,
     InviteTeachersModalComponent,
     StudentMyCoursesComponent

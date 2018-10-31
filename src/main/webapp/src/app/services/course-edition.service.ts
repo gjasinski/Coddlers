@@ -44,6 +44,10 @@ export class CourseEditionService {
     return this.http.post('api/editions', courseEdition.toJSON(), this.httpOptions);
   }
 
+  public addToCourseEdition(invitationToken: string): Observable<any> {
+    return this.http.post('api/editions/invitations', invitationToken, this.httpOptions);
+  }
+
   public getCourses(): Observable<CourseWithCourseEdition[]> {
     return this.http.get<CourseWithCourseEdition[]>('api/editions')
       .pipe(
@@ -51,7 +55,6 @@ export class CourseEditionService {
           console.error(objArray);
           return objArray.map(obj => CourseWithCourseEdition.fromJSON(obj))
         })
-
       );
   }
 }

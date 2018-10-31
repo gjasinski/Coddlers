@@ -20,4 +20,5 @@ public class CourseEditionDto {
     @NotNull
     private Timestamp startDate;
 
+    private String invitationToken;
 }
