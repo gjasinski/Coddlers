@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.core.models.dto.CourseEditionDto;
 import pl.coddlers.core.models.dto.InvitationDto;
+import pl.coddlers.core.models.dto.CourseWithCourseEditionDto;
 import pl.coddlers.core.models.entity.CourseEdition;
+import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.services.CourseEditionService;
+import pl.coddlers.core.services.UserDetailsServiceImpl;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -22,10 +25,12 @@ import java.util.List;
 public class CourseEditionController {
 
     private final CourseEditionService courseEditionService;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public CourseEditionController(CourseEditionService courseEditionService) {
+    public CourseEditionController(CourseEditionService courseEditionService, UserDetailsServiceImpl userDetailsService) {
         this.courseEditionService = courseEditionService;
+        this.userDetailsService = userDetailsService;
     }
 
     @GetMapping(value = "/{id}")
@@ -82,5 +87,12 @@ public class CourseEditionController {
             e.printStackTrace();
         }
         return null;
+    }
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @GetMapping
+    public ResponseEntity<List<CourseWithCourseEditionDto>> getCourses() {
+        User currentUser = userDetailsService.getCurrentUserEntity();
+        return ResponseEntity.ok(courseEditionService.getAllEditionsWithEnrolledStudent(currentUser));
+
     }
 }

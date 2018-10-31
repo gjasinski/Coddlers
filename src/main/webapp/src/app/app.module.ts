@@ -10,6 +10,7 @@ import {CourseService} from "./services/course.service";
 import {TeacherCoursesComponent} from "./components/teacher/course/courses/teacher-courses.component";
 import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {CourseFilterPipe} from "./filters/course-filter.pipe";
+import {CourseWithCourseEditionFilterPipe} from "./filters/course-with-course-edition-filter.pipe";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NavbarComponent} from "./components/common/navbar/navbar.component";
 import {TeacherCoursePageComponent} from "./components/teacher/course/course-page/teacher-course-page.component";
@@ -41,7 +42,13 @@ import {EditTaskModalComponent} from "./components/teacher/task/edit-task-modal/
 import {AddEditionModalComponent} from './components/teacher/course-edition/add-edition-modal/add-edition-modal.component';
 import {InvitePageComponent} from './components/common/invite-page/invite-page.component';
 import {AfterAddToCourseModalComponent} from './components/common/after-add-to-course-modal/after-add-to-course-modal.component';
-
+import {InviteStudentsModalComponent} from "./components/teacher/course-edition/invite-students-modal/invite-students-modal.component";
+import {TagInputModule} from "ngx-chips";
+import {ClipboardModule} from 'ngx-clipboard';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {InviteTeachersModalComponent} from './components/teacher/course/invite-teachers-modal/invite-teachers-modal.component';
+import { StudentMyCoursesComponent } from './components/student/student-my-courses/student-my-courses.component';
+import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +56,7 @@ import {AfterAddToCourseModalComponent} from './components/common/after-add-to-c
     TeacherCoursesComponent,
     PageNotFoundComponent,
     CourseFilterPipe,
+    CourseWithCourseEditionFilterPipe,
     NavbarComponent,
     TeacherCoursePageComponent,
     AddCoursePageComponent,
@@ -64,12 +72,16 @@ import {AfterAddToCourseModalComponent} from './components/common/after-add-to-c
     HasAnyAuthorityDirective,
     LoginModalComponent,
     RegisterModalComponent,
+    YesNoModalComponent,
     EditLessonDueDateModalComponent,
     StudentDashboardComponent,
     TeacherDashboardComponent,
     AddEditionModalComponent,
     InvitePageComponent,
-    AfterAddToCourseModalComponent
+    AfterAddToCourseModalComponent,
+    InviteStudentsModalComponent,
+    InviteTeachersModalComponent,
+    StudentMyCoursesComponent
   ],
   imports: [
     BrowserModule,
@@ -84,7 +96,10 @@ import {AfterAddToCourseModalComponent} from './components/common/after-add-to-c
     ),
     FormsModule,
     ReactiveFormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    TagInputModule,
+    ClipboardModule,
+    BrowserAnimationsModule
   ],
   providers: [
     CourseService,

@@ -27,6 +27,9 @@ public class ProjectDto {
     @JsonProperty("path_with_namespace")
     private String pathWithNamespace;
 
+    @JsonProperty("path")
+    private String path;
+
     @JsonProperty("default_branch")
     private String defaultBranch;
     private String homepage;

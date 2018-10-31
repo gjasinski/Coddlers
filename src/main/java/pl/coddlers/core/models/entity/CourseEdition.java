@@ -35,6 +35,8 @@ public class CourseEdition {
 
     @Column
     private String invitationToken;
+  
+    private Long gitGroupId;
 
     public CourseEdition(String title, CourseVersion courseVersion, Timestamp startDate) {
         this.title = title;
