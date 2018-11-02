@@ -19,6 +19,18 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     List<Lesson> getCourseEditionLessons(@Param("courseVersionId") Long courseVersionId);
 
     @Query("select l from Lesson l " +
+            "join l.courseVersion v " +
+            "join v.courseEditions e " +
+            "where e.id = :courseEditionId")
+    List<Lesson> getLessonsByCourseEditionId(@Param("courseEditionId") Long courseEditionId);
+
+    @Query("select l from CourseEditionLesson t " +
+            "join t.lesson l " +
+            "where t.courseEdition.id = :courseEditionId " +
+            "order by t.startDate asc")
+    List<Lesson> getLessonsByCourseEditionIdOrderByStartDate(@Param("courseEditionId") Long courseEditionId);
+
+    @Query("select l from Lesson l " +
             "join l.tasks t " +
             "where t.id = :taskId")
     Optional<Lesson> findByTaskId(@Param("taskId") Long taskId);

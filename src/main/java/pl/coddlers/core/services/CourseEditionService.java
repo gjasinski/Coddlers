@@ -1,17 +1,20 @@
 package pl.coddlers.core.services;
 
-import org.apache.commons.text.RandomStringGenerator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.coddlers.core.exceptions.CourseEditionLessonNotFoundException;
 import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
 import pl.coddlers.core.exceptions.GitAsynchronousOperationException;
 import pl.coddlers.core.models.converters.CourseEditionConverter;
+import pl.coddlers.core.models.converters.CourseEditionLessonConverter;
 import pl.coddlers.core.models.dto.CourseDto;
 import pl.coddlers.core.models.dto.CourseEditionDto;
+import pl.coddlers.core.models.dto.CourseEditionLessonDto;
 import pl.coddlers.core.models.dto.CourseWithCourseEditionDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseEditionLesson;
@@ -19,29 +22,26 @@ import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseEditionLessonRepository;
 import pl.coddlers.core.repositories.CourseEditionRepository;
-import pl.coddlers.core.repositories.CourseRepository;
 import pl.coddlers.core.repositories.LessonRepository;
+import pl.coddlers.git.services.GitGroupService;
 import pl.coddlers.mail.Mail;
 import pl.coddlers.mail.MailInitializer;
 import pl.coddlers.mail.MailScheduler;
-import pl.coddlers.core.repositories.UserDataRepository;
-import pl.coddlers.git.services.GitGroupService;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.text.CharacterPredicates.DIGITS;
 import static org.apache.commons.text.CharacterPredicates.LETTERS;
-
-import java.util.function.Function;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -49,22 +49,26 @@ public class CourseEditionService {
     private static final int INVITATION_LINK_LENGTH = 6;
     private static final String INVITATION_FROM_EMAIL = "pl.coddlers.mail.invitationmail.from";
     private static final String INVITATION_TOKEN_PATH = "pl.coddlers.mail.invitationmail.path";
-  
+
     private final CourseEditionConverter courseEditionConverter;
     private final CourseEditionRepository courseEditionRepository;
     private final CourseEditionLessonRepository courseEditionLessonRepository;
+
+    private final CourseEditionLessonConverter courseEditionLessonConverter;
+    private final GitGroupService gitGroupService;
+
     private final UserDetailsServiceImpl userDetailsService;
     private final Environment environment;
     private final LessonRepository lessonRepository;
     private final SubmissionService submissionService;
     private final CourseService courseService;
-    private final GitGroupService gitGroupService;
 
     @Autowired
     public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter,
                                 LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository,
                                 GitGroupService gitGroupService, UserDetailsServiceImpl userDetailsService,
-                                SubmissionService submissionService, CourseService courseService, Environment environment) {
+                                SubmissionService submissionService, CourseService courseService, Environment environment,
+                                CourseEditionLessonConverter courseEditionLessonConverter) {
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
@@ -72,6 +76,7 @@ public class CourseEditionService {
         this.environment = environment;
         this.submissionService = submissionService;
         this.courseService = courseService;
+        this.courseEditionLessonConverter = courseEditionLessonConverter;
         this.gitGroupService = gitGroupService;
         this.userDetailsService = userDetailsService;
     }
@@ -118,17 +123,27 @@ public class CourseEditionService {
 
     public List<CourseEditionLesson> createCourseEditionLessons(CourseEdition courseEdition) {
         List<Lesson> lessons = lessonRepository.findByCourseVersionId(courseEdition.getCourseVersion().getId());
-        return lessons.stream()
-                .map(lesson -> {
-                    CourseEditionLesson courseEditionLesson = createCourseEditionLesson(courseEdition, lesson);
-                    return courseEditionLessonRepository.save(courseEditionLesson);
-                })
-                .collect(Collectors.toList());
+        List<CourseEditionLesson> courseEditionLessons = new ArrayList<>();
+        Timestamp startDate = courseEdition.getStartDate();
+
+        for (Lesson lesson : lessons) {
+            CourseEditionLesson courseEditionLesson = createCourseEditionLesson(courseEdition, lesson, startDate);
+            startDate = addDaysToDate(courseEditionLesson.getEndDate(), 1);
+            courseEditionLessons.add(courseEditionLessonRepository.save(courseEditionLesson));
+        }
+        return courseEditionLessons;
+    }
+
+    public Collection<CourseEditionLessonDto> getCourseEditionLessonList(Long editionId) {
+        return courseEditionLessonConverter.convertFromEntities(
+                courseEditionLessonRepository.findByCourseEdition_Id(editionId)
+        );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = Exception.class)
     public boolean addStudentToCourseEdition(String invitationToken) {
-        CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken).orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
+        CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken)
+                .orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
         User currentUser = userDetailsService.getCurrentUserEntity();
         if (courseEdition.getUsers().contains(currentUser))
             return false;
@@ -138,7 +153,8 @@ public class CourseEditionService {
     }
 
     public String getInvitationLink(String host, Long courseEditionId) {
-        CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
+        CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId)
+                .orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
                 .withinRange('0', 'z')
                 .filteredBy(LETTERS, DIGITS)
@@ -162,9 +178,11 @@ public class CourseEditionService {
 
         // TODO emailTitle and htmlMessage should be configured to fulfill clients expectations
         String invitationToken = getInvitationTokenFromInvitationLink(invitationLink);
-        CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken).orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
+        CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken)
+                .orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
         String emailTitle = "Invitation to course \"" + courseEdition.getTitle() + "\" on Coddlers.pl";
-        String htmlMessage = "You have been invited to course \"" + courseEdition.getTitle() + "\" on www.Coddlers.pl. Click on link below to join the course!<br>" + invitationLink;
+        String htmlMessage = "You have been invited to course \"" + courseEdition.getTitle() + "\" on www.Coddlers.pl. " +
+                "Click on link below to join the course!<br>" + invitationLink;
 
         InternetAddress from = new InternetAddress(Objects.requireNonNull(environment.getProperty(INVITATION_FROM_EMAIL)));
         Mail mail = new Mail(from, students, emailTitle, htmlMessage);
@@ -176,19 +194,31 @@ public class CourseEditionService {
         return invitationLinkSplitted[invitationLinkSplitted.length - 1];
     }
 
-    private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson) {
+    public CourseEditionLessonDto getCourseEditionLesson(Long lessonId, Long editionId) {
+        return courseEditionLessonConverter.convertFromEntity(
+                courseEditionLessonRepository.findByLesson_IdAndCourseEdition_Id(lessonId, editionId)
+                        .orElseThrow(() -> new CourseEditionLessonNotFoundException(lessonId, editionId))
+        );
+    }
+
+    private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson, Timestamp startDate) {
         CourseEditionLesson courseEditionLesson = new CourseEditionLesson();
         courseEditionLesson.setCourseEdition(courseEdition);
         courseEditionLesson.setLesson(lesson);
-        courseEditionLesson.setStartDate(courseEdition.getStartDate());
-        courseEditionLesson.setEndDate(getEndDate(courseEdition, lesson));
+        Timestamp endDate = addDaysToDate(startDate, lesson.getTimeInDays());
+        courseEditionLesson.setStartDate(startDate);
+        courseEditionLesson.setEndDate(endDate);
         return courseEditionLesson;
     }
 
-    private Timestamp getEndDate(CourseEdition courseEdition, Lesson lesson) {
-        LocalDateTime startDate = courseEdition.getStartDate().toLocalDateTime();
-        LocalDateTime endTime = startDate.plusDays(lesson.getTimeInDays());
-        return Timestamp.valueOf(endTime);
+    private Timestamp addDaysToDate(Timestamp date, int days) {
+        return Timestamp.valueOf(date.toLocalDateTime().plusDays(days));
+    }
+
+    public void updateCourseEditionLesson(Long id, CourseEditionLessonDto courseEditionLessonDto) {
+        courseEditionLessonDto.setId(id);
+        CourseEditionLesson courseEditionLesson = courseEditionLessonConverter.convertFromDto(courseEditionLessonDto);
+        courseEditionLessonRepository.save(courseEditionLesson);
     }
 
     public List<CourseWithCourseEditionDto> getAllEditionsWithEnrolledStudent(User user) {

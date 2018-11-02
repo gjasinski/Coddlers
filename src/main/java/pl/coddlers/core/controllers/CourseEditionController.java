@@ -6,8 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.core.models.dto.CourseEditionDto;
-import pl.coddlers.core.models.dto.InvitationDto;
+import pl.coddlers.core.models.dto.CourseEditionLessonDto;
 import pl.coddlers.core.models.dto.CourseWithCourseEditionDto;
+import pl.coddlers.core.models.dto.InvitationDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.services.CourseEditionService;
@@ -16,9 +17,13 @@ import pl.coddlers.core.services.UserDetailsServiceImpl;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("api/editions")
@@ -36,6 +41,25 @@ public class CourseEditionController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<CourseEditionDto> getCourseEdition(@PathVariable Long id) {
         return ResponseEntity.ok(courseEditionService.getCourseEditionById(id));
+    }
+
+    @GetMapping(value = "/{id}/course-edition-lessons", params = {"lessonId"})
+    public ResponseEntity<Collection<CourseEditionLessonDto>> getCourseEditionLessonList(@PathVariable Long id,
+                                                                                         @RequestParam(value = "lessonId", required = false) Long lessonId) {
+        if (lessonId != null) {
+            return ResponseEntity.ok(Collections.singletonList(courseEditionService.getCourseEditionLesson(lessonId, id)));
+        }
+
+        return ResponseEntity.ok(courseEditionService.getCourseEditionLessonList(id));
+    }
+
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    @PutMapping(value = "/course-edition-lessons/{id}")
+    public ResponseEntity<Void> updateCourseEditionLesson(@PathVariable Long id,
+                                                          @Valid @RequestBody CourseEditionLessonDto courseEditionLessonDto) {
+        courseEditionService.updateCourseEditionLesson(id, courseEditionLessonDto);
+
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
@@ -88,6 +112,7 @@ public class CourseEditionController {
         }
         return null;
     }
+
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping
     public ResponseEntity<List<CourseWithCourseEditionDto>> getCourses() {
