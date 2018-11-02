@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
+import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseEditionLesson;
 import pl.coddlers.core.models.entity.Lesson;
@@ -51,8 +53,8 @@ public class GitScheduledTasks {
 
         courseEditionLessons.forEach(courseEditionLesson -> {
             try {
-                Lesson lesson = lessonRepository.findById(courseEditionLesson.getLesson().getId()).get();
-                CourseEdition courseEdition = courseEditionRepository.findById(courseEditionLesson.getCourseEdition().getId()).get();
+                Lesson lesson = lessonRepository.findById(courseEditionLesson.getLesson().getId()).orElseThrow(() -> new LessonNotFoundException(courseEditionLesson.getLesson().getId()));
+                CourseEdition courseEdition = courseEditionRepository.findById(courseEditionLesson.getCourseEdition().getId()).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionLesson.getCourseEdition().getId()));
                 lessonService.forkModelLesson(courseEdition, lesson)
                         .whenComplete(((studentLessonRepositories, throwable) -> {
                             studentLessonRepositoryRepository.saveAll(studentLessonRepositories);

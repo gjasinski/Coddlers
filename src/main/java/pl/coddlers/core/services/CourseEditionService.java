@@ -62,13 +62,14 @@ public class CourseEditionService {
     private final LessonRepository lessonRepository;
     private final SubmissionService submissionService;
     private final CourseService courseService;
+    private final LessonService lessonService;
 
     @Autowired
     public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter,
                                 LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository,
                                 GitGroupService gitGroupService, UserDetailsServiceImpl userDetailsService,
                                 SubmissionService submissionService, CourseService courseService, Environment environment,
-                                CourseEditionLessonConverter courseEditionLessonConverter) {
+                                CourseEditionLessonConverter courseEditionLessonConverter, LessonService lessonService) {
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
@@ -79,6 +80,7 @@ public class CourseEditionService {
         this.courseEditionLessonConverter = courseEditionLessonConverter;
         this.gitGroupService = gitGroupService;
         this.userDetailsService = userDetailsService;
+        this.lessonService = lessonService;
     }
 
     public CourseEditionDto getCourseEditionById(Long id) {
@@ -149,6 +151,10 @@ public class CourseEditionService {
             return false;
         courseEdition.getUsers().add(currentUser);
         courseEditionRepository.saveAndFlush(courseEdition);
+
+        courseEdition.getCourseEditionLesson().stream()
+                .filter(courseEditionLesson -> courseEditionLesson.getStartDate().before(new Timestamp(System.currentTimeMillis())))
+                .forEach(courseEditionLesson -> lessonService.forkModelLessonForUser(courseEdition, courseEditionLesson.getLesson(), currentUser));
         return true;
     }
 

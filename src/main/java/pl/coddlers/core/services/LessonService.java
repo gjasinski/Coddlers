@@ -8,16 +8,8 @@ import pl.coddlers.core.exceptions.LessonAlreadyExists;
 import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.converters.LessonConverter;
 import pl.coddlers.core.models.dto.LessonDto;
-import pl.coddlers.core.models.entity.Course;
-import pl.coddlers.core.models.entity.CourseEdition;
-import pl.coddlers.core.models.entity.CourseVersion;
-import pl.coddlers.core.models.entity.Lesson;
-import pl.coddlers.core.models.entity.StudentLessonRepository;
-import pl.coddlers.core.models.entity.User;
-import pl.coddlers.core.repositories.CourseRepository;
-import pl.coddlers.core.repositories.CourseVersionRepository;
-import pl.coddlers.core.repositories.LessonRepository;
-import pl.coddlers.core.repositories.UserDataRepository;
+import pl.coddlers.core.models.entity.*;
+import pl.coddlers.core.repositories.*;
 import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.services.GitLessonService;
 
@@ -39,13 +31,14 @@ public class LessonService {
     private final GitLessonService gitProjectService;
     private final UserDataRepository userDataRepository;
     private final CourseRepository courseRepository;
+    private final SubmissionRepository submissionRepository;
 
 
     @Autowired
     public LessonService(UserDetailsServiceImpl userDetailsService, LessonRepository lessonRepository,
                          LessonConverter lessonConverter, CourseVersionRepository courseVersionRepository,
                          GitLessonService gitProjectService, UserDataRepository userDataRepository,
-                         CourseRepository courseRepository) {
+                         CourseRepository courseRepository, SubmissionRepository submissionRepository) {
         this.userDetailsService = userDetailsService;
         this.lessonRepository = lessonRepository;
         this.lessonConverter = lessonConverter;
@@ -53,6 +46,7 @@ public class LessonService {
         this.gitProjectService = gitProjectService;
         this.userDataRepository = userDataRepository;
         this.courseRepository = courseRepository;
+        this.submissionRepository = submissionRepository;
     }
 
     public Collection<LessonDto> getAllCourseVersionLessons(Long courseId, Integer courseVersionNumber) {
@@ -109,22 +103,22 @@ public class LessonService {
     }
 
     public CompletableFuture<Lesson> createNewVersionLesson(Lesson modelLesson, CourseVersion newCourseVersion) {
-            try {
-                Lesson lesson = lessonRepository.save(copyLessonEntity(modelLesson, newCourseVersion));
-                Course lessonCourse = getLessonCourse(modelLesson);
-                User currentUser = userDetailsService.getCurrentUserEntity();
-                return gitProjectService.forkLesson(modelLesson, currentUser)
-                        .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), createRepositoryName(lesson)))
-                        .thenCompose(projectDto -> gitProjectService.transferRepositoryToGroup(projectDto.getId(), lessonCourse.getGitGroupId()))
-                        .thenApply(projectDto -> {
-                            lesson.setGitProjectId(projectDto.getId());
-                            lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
-                            return lessonRepository.save(lesson);
-                        });
-            } catch (Exception ex) {
-                log.error("Exception while creating new version lesson for: " + modelLesson.toString(), ex);
-                throw new LessonAlreadyExists(ex.getMessage());
-            }
+        try {
+            Lesson lesson = lessonRepository.save(copyLessonEntity(modelLesson, newCourseVersion));
+            Course lessonCourse = getLessonCourse(modelLesson);
+            User currentUser = userDetailsService.getCurrentUserEntity();
+            return gitProjectService.forkLesson(modelLesson, currentUser)
+                    .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), createRepositoryName(lesson)))
+                    .thenCompose(projectDto -> gitProjectService.transferRepositoryToGroup(projectDto.getId(), lessonCourse.getGitGroupId()))
+                    .thenApply(projectDto -> {
+                        lesson.setGitProjectId(projectDto.getId());
+                        lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
+                        return lessonRepository.save(lesson);
+                    });
+        } catch (Exception ex) {
+            log.error("Exception while creating new version lesson for: " + modelLesson.toString(), ex);
+            throw new LessonAlreadyExists(ex.getMessage());
+        }
     }
 
     private Lesson copyLessonEntity(Lesson modelLesson, CourseVersion courseVersion) {
@@ -160,11 +154,28 @@ public class LessonService {
             return gitProjectService.forkLesson(lesson, user)
                     .thenApply(projectDto -> gitProjectService.renameForkedRepository(projectDto.getId(), buildForkedRepositoryName(courseEdition.getId(), lesson.getId(), user.getId())))
                     .thenCompose(projectDto -> gitProjectService.transferRepositoryToGroup(projectDto.getId(), courseEdition.getGitGroupId()))
-                    .thenApply(projectDto -> gitProjectService.createStudentLessonRepository(courseEdition, user, lesson, projectDto));
+                    .thenApply(projectDto -> gitProjectService.createStudentLessonRepository(courseEdition, user, lesson, projectDto))
+                    .thenApply(studentLessonRepository -> {
+                        lesson.getTasks().forEach(task -> createSubmission(courseEdition, task, user, studentLessonRepository));
+                        return studentLessonRepository;
+                    });
         } catch (Exception ex) {
             log.error(String.format("Cannot fork lesson: %s from course edition %s for user: %s", lesson.toString(), courseEdition.toString(), user.toString()), ex);
             return null;
         }
+    }
+
+    private void createSubmission(CourseEdition courseEdition, Task task, User user, StudentLessonRepository studentLessonRepository) {
+        Submission submission = new Submission();
+        SubmissionStatusType submissionStatusType = new SubmissionStatusType();
+        submissionStatusType.setName(SubmissionStatusTypeEnum.NOT_SUBMITTED.getStatus());
+        submission.setSubmissionStatusType(submissionStatusType);
+        submission.setUser(user);
+        submission.setCourseEdition(courseEdition);
+        submission.setStudentLessonRepository(studentLessonRepository);
+        submission.setTask(task);
+        submission.setBranchName(task.getBranchNamePrefix());
+        submissionRepository.saveAndFlush(submission);
     }
 
     private String buildForkedRepositoryName(Long courseEditionId, Long lessonId, Long studentId) {
