@@ -13,8 +13,10 @@ import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.StudentLessonRepositoryRepository;
 import pl.coddlers.core.services.LessonService;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 
 @Slf4j
 @Component
@@ -39,19 +41,30 @@ public class GitScheduledTasks {
     @Scheduled(cron = "0 50 23 * * 1-7", zone = "CET")
     public void lazyRepositoryForking() {
         log.info("Executed lazy forking task");
-        LocalDateTime localDateTime = LocalDateTime.now().plusDays(1);
-        java.sql.Date sqlDate = java.sql.Date.valueOf(localDateTime.toLocalDate());
-        Collection<CourseEditionLesson> courseEditionLessons = courseEditionLessonRepository.findByDate(sqlDate);
+        LocalDate localDate = LocalDate.now().plusDays(1);
+        Timestamp t1 = Timestamp.valueOf(localDate.atTime(0, 0));
+        Timestamp t2 = Timestamp.valueOf(localDate.atTime(23, 59, 59));
+
+        Collection<CourseEditionLesson> courseEditionLessons = courseEditionLessonRepository.findAllByStartDateBetween(t1, t2);
         log.debug(String.format("Forking repositories for all enrolled students for this courseEditionLessons: %s",
                 courseEditionLessons.toString()));
 
         courseEditionLessons.forEach(courseEditionLesson -> {
-            Lesson lesson = lessonRepository.findById(courseEditionLesson.getLesson().getId()).get();
-            CourseEdition courseEdition = courseEditionRepository.findById(courseEditionLesson.getCourseEdition().getId()).get();
-            lessonService.forkModelLesson(courseEdition, lesson).whenComplete(((studentLessonRepositories, throwable) -> {
-                studentLessonRepositoryRepository.saveAll(studentLessonRepositories);
-                log.info(String.format("Created %d repositories", studentLessonRepositories.size()));
-            }));
+            try {
+                Lesson lesson = lessonRepository.findById(courseEditionLesson.getLesson().getId()).get();
+                CourseEdition courseEdition = courseEditionRepository.findById(courseEditionLesson.getCourseEdition().getId()).get();
+                lessonService.forkModelLesson(courseEdition, lesson)
+                        .whenComplete(((studentLessonRepositories, throwable) -> {
+                            studentLessonRepositoryRepository.saveAll(studentLessonRepositories);
+                            log.info(String.format("Created %d repositories", studentLessonRepositories.size()));
+                        }))
+                        .exceptionally(ex -> {
+                            log.error(String.format("Error while forking lesson with id %d for courseEdition with id %d", lesson.getId(), courseEdition.getId()), ex);
+                            return Collections.emptyList();
+                        });
+            } catch (Exception ex) {
+                log.error(ex.getMessage(), ex);
+            }
         });
     }
 }
