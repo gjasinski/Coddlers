@@ -5,8 +5,12 @@ export class SubmissionStatusType {
     this._name = name;
   }
 
-  get name(): string {
-    return this._name;
+  get nameWithSpaces(): string {
+    return this._name.toLowerCase().replace(/[_]/g, " ");
+  }
+
+  get nameWithUnderscores(): string {
+    return this._name.toLowerCase();
   }
 
   public static fromJSON(jsonObj: any): SubmissionStatusType {
@@ -15,7 +19,7 @@ export class SubmissionStatusType {
 
   public toJSON() {
     return {
-      id: this.name
+      id: this.nameWithUnderscores
     }
   }
 }

@@ -16,7 +16,6 @@ import {EventService} from "../../../../services/event.service";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs";
 import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
-import {Subscription} from "rxjs/internal/Subscription";
 
 @Component({
   selector: 'app-edition-page',
@@ -30,7 +29,7 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
   submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
   lessonTimeMap: Map<Lesson, CourseEditionLesson> = new Map<Lesson, CourseEditionLesson>();
-  showTask: boolean[] = [];
+  showTask: Map<Task, boolean> = new Map<Task, boolean>();
   lessons = [];
   courseEditionLessonList: CourseEditionLesson[];
   editionEndDate: Date;
@@ -81,7 +80,7 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
         this.submissionsMap.clear();
         this.courseMap.clear();
         this.lessonTimeMap.clear();
-        this.showTask = [];
+        this.showTask.clear();
 
         return forkJoin(
           this.lessonService.getLessonsByCourseEditionId(params.editionId),
@@ -141,8 +140,7 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
 
   getSubmissions(tasks: Task[]): void {
     tasks.forEach(task => {
-      this.showTask.push(false);
-
+      this.showTask.set(task, false);
       let submissionSub = this.submissionService.getSubmissions(task.id)
         .subscribe((submissions: Submission[]) => {
           this.submissionsMap.set(task, submissions);
@@ -156,8 +154,8 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
     this.showLesson[index] = !this.showLesson[index]
   }
 
-  changeVisibilityForSubmissions(index: number) {
-    this.showTask[index] = !this.showTask[index];
+  changeVisibilityForSubmissions(task: Task) {
+    this.showTask.set(task, !this.showTask.get(task));
   }
 
   navigateToCourse() {

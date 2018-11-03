@@ -1,21 +1,19 @@
-import {User} from "./user";
-import {Task} from "./task";
 import {SubmissionStatusType} from "./submissionStatusType";
 
 export class Submission {
   private _id: number;
-  private _task: Task;
-  private _user: User;
+  private _taskId: number;
+  private _userId: number;
   private _submissionTime: Date;
   private _submissionStatusType: SubmissionStatusType;
   private _points: number;
 
-  constructor(id: number, task: Task, user: User, submissionTime: Date, submissionStatusType: SubmissionStatusType, points: number) {
+  constructor(id: number, taskId: number, userId: number, submissionTime: Date, submissionStatusType: string, points: number) {
     this._id = id;
-    this._task = task;
-    this._user = user;
+    this._taskId = taskId;
+    this._userId = userId;
     this._submissionTime = submissionTime;
-    this._submissionStatusType = submissionStatusType;
+    this._submissionStatusType = new SubmissionStatusType(submissionStatusType);
     this._points = points;
   }
 
@@ -23,12 +21,12 @@ export class Submission {
     return this._id;
   }
 
-  get task(): Task {
-    return this._task;
+  get taskId(): number {
+    return this._taskId;
   }
 
-  get user(): User {
-    return this._user;
+  get userId(): number {
+    return this._userId;
   }
 
   get submissionTime(): Date {
@@ -44,15 +42,15 @@ export class Submission {
   }
 
   public static fromJSON(jsonObj: any): Submission {
-    return new Submission(+jsonObj.id, jsonObj.task, jsonObj.user,
-      new Date(jsonObj.submissionTime), jsonObj.submissionStatusType, +jsonObj.points);
+    return new Submission(+jsonObj.id, jsonObj.taskId, jsonObj.userId,
+      new Date(jsonObj.submissionTime), jsonObj.submissionStatusTypeEnum, +jsonObj.points);
   }
 
   public toJSON() {
     return {
       id: this.id,
-      task: this.task,
-      user: this.user,
+      taskId: this.taskId,
+      userId: this.userId,
       submissionTime: this.submissionTime,
       points: this.points,
       submissionStatusType: this.submissionStatusType
