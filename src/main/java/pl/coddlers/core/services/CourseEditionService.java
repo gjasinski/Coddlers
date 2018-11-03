@@ -23,6 +23,7 @@ import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.CourseEditionLessonRepository;
 import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
+import pl.coddlers.core.repositories.StudentLessonRepositoryRepository;
 import pl.coddlers.git.services.GitGroupService;
 import pl.coddlers.mail.Mail;
 import pl.coddlers.mail.MailInitializer;
@@ -53,6 +54,7 @@ public class CourseEditionService {
     private final CourseEditionConverter courseEditionConverter;
     private final CourseEditionRepository courseEditionRepository;
     private final CourseEditionLessonRepository courseEditionLessonRepository;
+    private final StudentLessonRepositoryRepository studentLessonRepositoryRepository;
 
     private final CourseEditionLessonConverter courseEditionLessonConverter;
     private final GitGroupService gitGroupService;
@@ -69,7 +71,8 @@ public class CourseEditionService {
                                 LessonRepository lessonRepository, CourseEditionLessonRepository courseEditionLessonRepository,
                                 GitGroupService gitGroupService, UserDetailsServiceImpl userDetailsService,
                                 SubmissionService submissionService, CourseService courseService, Environment environment,
-                                CourseEditionLessonConverter courseEditionLessonConverter, LessonService lessonService) {
+                                CourseEditionLessonConverter courseEditionLessonConverter, LessonService lessonService,
+                                StudentLessonRepositoryRepository studentLessonRepositoryRepository) {
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
@@ -81,6 +84,7 @@ public class CourseEditionService {
         this.gitGroupService = gitGroupService;
         this.userDetailsService = userDetailsService;
         this.lessonService = lessonService;
+        this.studentLessonRepositoryRepository = studentLessonRepositoryRepository;
     }
 
     public CourseEditionDto getCourseEditionById(Long id) {
@@ -154,7 +158,13 @@ public class CourseEditionService {
 
         courseEdition.getCourseEditionLesson().stream()
                 .filter(courseEditionLesson -> courseEditionLesson.getStartDate().before(new Timestamp(System.currentTimeMillis())))
-                .forEach(courseEditionLesson -> lessonService.forkModelLessonForUser(courseEdition, courseEditionLesson.getLesson(), currentUser));
+                .forEach(courseEditionLesson ->
+                        lessonService.forkModelLessonForUser(courseEdition, courseEditionLesson.getLesson(), currentUser)
+                                .thenAccept(studentLessonRepositoryRepository::save)
+                                .exceptionally(ex -> {
+                                    log.error(String.format("Cannot fork lesson: %s from course edition %s for user: %s", courseEditionLesson.getLesson().toString(), courseEdition.toString(), currentUser.toString()), ex);
+                                    return null;
+                                }));
         return true;
     }
 
