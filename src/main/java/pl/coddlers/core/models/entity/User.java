@@ -72,7 +72,7 @@ public class User {
     private Set<CourseGrade> courseGrades = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author", targetEntity = Comment.class)
-    private List<Comment> comment = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public String getFullName() {
         return firstname + " " + lastname;

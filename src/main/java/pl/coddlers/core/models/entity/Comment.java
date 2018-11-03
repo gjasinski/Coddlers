@@ -23,7 +23,7 @@ public class Comment {
     @Column(nullable = false)
     private Timestamp creationTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
     @JoinColumn(name = "user_id")
     private User author;
 
