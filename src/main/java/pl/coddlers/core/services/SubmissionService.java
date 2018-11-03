@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.SubmissionNotFoundException;
 import pl.coddlers.core.models.converters.SubmissionConverter;
 import pl.coddlers.core.models.dto.SubmissionDto;
-import pl.coddlers.core.models.entity.CourseEdition;
-import pl.coddlers.core.models.entity.Submission;
-import pl.coddlers.core.models.entity.SubmissionStatusTypeEnum;
-import pl.coddlers.core.models.entity.User;
+import pl.coddlers.core.models.entity.*;
 import pl.coddlers.core.repositories.SubmissionRepository;
 
 import java.util.Collection;
@@ -62,5 +59,18 @@ public class SubmissionService {
 
 	public int countAllTask(User user, CourseEdition courseEdition){
 		return submissionRepository.countAllByUserAndCourseEdition(user, courseEdition);
+	}
+
+	public void createSubmission(CourseEdition courseEdition, Task task, User user, StudentLessonRepository studentLessonRepository) {
+		Submission submission = new Submission();
+		SubmissionStatusType submissionStatusType = new SubmissionStatusType();
+		submissionStatusType.setName(SubmissionStatusTypeEnum.NOT_SUBMITTED.getStatus());
+		submission.setSubmissionStatusType(submissionStatusType);
+		submission.setUser(user);
+		submission.setCourseEdition(courseEdition);
+		submission.setStudentLessonRepository(studentLessonRepository);
+		submission.setTask(task);
+		submission.setBranchName(task.getBranchNamePrefix());
+		submissionRepository.saveAndFlush(submission);
 	}
 }
