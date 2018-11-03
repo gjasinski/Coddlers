@@ -39,8 +39,11 @@ export const ROUTES: Routes = [
         component: StudentDashboardComponent
       },
       {
-        path: 'courses',
-        component: StudentMyCoursesComponent
+        path: 'course-editions',
+        component: StudentMyCoursesComponent,
+        children: [
+          {path: ':courseEditionId/lessons/:lessonId', component: StudentLessonPageComponent}
+        ]
       }
     ]
   },
@@ -103,8 +106,7 @@ export const ROUTES: Routes = [
         children: [
           {path: 'edit-lesson', component: EditLessonPageComponent},
         ]
-      },
-      {path: 'student/lessons/:lessonId', component: StudentLessonPageComponent}
+      }
     ]
   },
   {path: '**', component: PageNotFoundComponent}

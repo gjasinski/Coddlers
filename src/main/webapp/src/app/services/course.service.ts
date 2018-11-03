@@ -28,6 +28,13 @@ export class CourseService {
       )
   }
 
+  public getCourseByCourseEditionId(courseEditionId: number): Observable<Course> {
+    return this.http.get<Course>(`api/courses/editions/${courseEditionId}`)
+      .pipe(
+        map(obj => Course.fromJSON(obj))
+      )
+  }
+
   public createCourse(course: Course): Observable<any> {
     return this.http.post('api/courses', course.toJSON(), this.httpOptions);
   }

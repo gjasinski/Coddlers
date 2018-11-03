@@ -18,7 +18,6 @@ import pl.coddlers.core.services.CourseService;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -61,5 +60,12 @@ public class CourseController {
 		courseService.updateCourse(courseDto);
 
 		return ResponseEntity.ok().build();
+	}
+
+	@PreAuthorize("hasRole('ROLE_STUDENT')")
+	@GetMapping(value = "/editions/{id}")
+	public ResponseEntity<CourseDto> getCourseByCourseEdition(@PathVariable Long id) {
+		return ResponseEntity.ok(courseService.getCourseByCourseEditionId(id));
+
 	}
 }

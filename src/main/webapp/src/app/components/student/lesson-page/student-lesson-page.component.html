@@ -1,9 +1,13 @@
+<div class="col-md-12">
+  <h1 (click)="navigateToCourseEdition()">{{course?.title}}</h1>
+</div>
+
 <div *ngIf="route.children.length === 0" class="content-container">
   <div class="row">
     <div class="col-md-10">
       <div class="row">
         <div class="col-12">
-          <h2>Lesson - {{lesson?.title}}</h2>
+          <h2>Lesson: {{lesson?.title}}</h2>
           <h4>{{course?.title}}</h4>
 
           <div class="line"></div>

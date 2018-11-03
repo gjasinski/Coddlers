@@ -1,3 +1,4 @@
+///<reference path="../../../../../node_modules/rxjs/internal/Observable.d.ts"/>
 import { Component, OnInit } from '@angular/core';
 import {Lesson} from "../../../models/lesson";
 import {Task} from "../../../models/task";
@@ -9,6 +10,7 @@ import {Location} from "@angular/common";
 import {LessonService} from "../../../services/lesson.service";
 import {CourseService} from "../../../services/course.service";
 import {TaskService} from "../../../services/task.service";
+import {CourseEdition} from "../../../models/courseEdition";
 
 @Component({
   selector: 'cod-student-lesson-page',
@@ -17,6 +19,7 @@ import {TaskService} from "../../../services/task.service";
 })
 export class StudentLessonPageComponent implements OnInit {
   private lesson: Lesson;
+  private courseEdition: CourseEdition;
   private course: Course;
   private tasks: Task[] = [];
   private repoUrl: string;
@@ -29,14 +32,19 @@ export class StudentLessonPageComponent implements OnInit {
               private taskService: TaskService) { }
 
   ngOnInit() {
-    this.getLessonAndTasks().subscribe();
-
-    this.route.parent.params.subscribe(params => {
-      this.courseService.getCourse(params.courseId).subscribe((course: Course) => {
-        this.course = course;
-      })
+    let subscribtion = this.getLessonAndTasks().subscribe();
+    let routeParamsSub = this.route.parent.params.subscribe(params => {
+      //console.error(+params.get("courseEditionId"));
+      //console.error(params.lessonId );
+      //this.courseService.getCourseByCourseEditionId(params.get("courseEditionId")).subscribe(v => this.course = v);
     });
-  }
+
+ //   this.route.parent.params.subscribe(params => {
+     // console.error(params.courseId)});
+/*    this.route.queryParamMap.subscribe(params => {
+      console.error(params.get('lessonId'));
+    });*/
+    }
 
   private getLessonAndTasks(): Observable<any> {
     return this.getLesson()
@@ -56,6 +64,7 @@ export class StudentLessonPageComponent implements OnInit {
         map((lesson: Lesson) => {
           this.lesson = lesson;
           let repoName: string = this.lesson.title.toLowerCase().replace(' ', '-');
+          // todo change repo url
           this.repoUrl = `http://coddlers.pl:10080/student/${repoName}.git`;
 
           return this.lesson;
@@ -74,6 +83,10 @@ export class StudentLessonPageComponent implements OnInit {
   back(e) {
     e.preventDefault();
     this._location.back();
+  }
+
+  navigateToCourseEdition() {
+    this.router.navigate(["student", "course-editions", this.course.id]);
   }
 
 }

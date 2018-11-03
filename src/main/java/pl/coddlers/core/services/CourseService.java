@@ -106,4 +106,10 @@ public class CourseService {
         );
     }
 
+    public CourseDto getCourseByCourseEditionId(Long id) {
+        Course course = courseRepository.getByCourseEditionId(id)
+                .orElseThrow(() -> new CourseNotFoundException(String.format("Course for courseEditionId %s not found", id)));
+
+        return courseConverter.convertFromEntity(course);
+    }
 }
