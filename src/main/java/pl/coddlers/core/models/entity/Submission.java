@@ -1,8 +1,8 @@
 package pl.coddlers.core.models.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -47,4 +47,8 @@ public class Submission {
     @ManyToOne(targetEntity = Task.class)
     @JoinColumn(name = "task_id")
     private Task task;
+
+    public SubmissionStatusTypeEnum getSubmissionStatusTypeEnum() {
+        return SubmissionStatusTypeEnum.getEnumByStatusName(submissionStatusType.getName());
+    }
 }
