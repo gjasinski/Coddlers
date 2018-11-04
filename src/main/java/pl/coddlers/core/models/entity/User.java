@@ -7,7 +7,9 @@ import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -68,6 +70,9 @@ public class User {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = CourseGrade.class)
     private Set<CourseGrade> courseGrades = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author", targetEntity = Comment.class)
+    private List<Comment> comments = new ArrayList<>();
 
     public String getFullName() {
         return firstname + " " + lastname;
