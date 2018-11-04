@@ -20,10 +20,14 @@
           Weight: {{lesson?.weight}}
           <br>
           Max points: {{countPointsForLesson()}}
-        </div>
-        <br>
-        <div class="col-12">
           <br>
+          <br>
+          <h4>Clone repository</h4>
+          <div class="repo-url">
+            <code>{{repoUrl}}</code>
+          </div>
+        </div>
+        <div class="col-12">
           <h4>Tasks</h4>
 
           <div *ngFor="let task of tasks;let i = index">
@@ -46,15 +50,6 @@
                   <div class="col-2">
                     <button class="btn btn-secondary">Notes</button>
                   </div>
-                </div>
-
-                <div *ngIf="submissions[i].submissionStatusType.toString() !== 'GRADED'">
-                  <h4>Clone repository</h4>
-                  <div class="repo-url">
-                    <code>{{repoUrl}}</code>
-                  </div>
-                  <h4>Repository structure</h4>
-                  <br>
                 </div>
 
                 <h5>Max points for task: {{task.maxPoints}}</h5>

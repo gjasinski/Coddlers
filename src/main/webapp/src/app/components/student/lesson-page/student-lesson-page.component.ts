@@ -1,4 +1,3 @@
-///<reference path="../../../../../node_modules/rxjs/internal/Observable.d.ts"/>
 import {Component, OnInit} from '@angular/core';
 import {Lesson} from "../../../models/lesson";
 import {Task} from "../../../models/task";
