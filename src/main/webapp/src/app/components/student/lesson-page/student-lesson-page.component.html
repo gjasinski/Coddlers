@@ -51,6 +51,16 @@
                     <button class="btn btn-secondary">Notes</button>
                   </div>
                 </div>
+                <div *ngIf="submissions[i].submissionStatusType.toString() !== 'GRADED'">
+                  <h4>Master branch - you should push your work to this branch</h4>
+                  <div class="repo-url">
+                    <code>git push origin {{task.branchNamePrefix}}-master</code>
+                  </div>
+                  <h4>Develop branch - your work on this branch will not be marked</h4>
+                  <div class="repo-url">
+                    <code>git push origin {{task.branchNamePrefix}}-develop</code>
+                  </div>
+                </div>
 
                 <h5>Max points for task: {{task.maxPoints}}</h5>
                 <h4>Status</h4>
