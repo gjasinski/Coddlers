@@ -1,16 +1,12 @@
 package pl.coddlers.git.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.coddlers.core.models.dto.SubmissionDto;
-import pl.coddlers.core.models.entity.Submission;
 import pl.coddlers.core.services.SubmissionService;
 import pl.coddlers.git.models.event.EventDto;
 
@@ -39,9 +35,9 @@ public class GitHookController {
 			log.debug(String.format("Received push event. Pushed to %s in %s", branchName, repoUrl));
 
 			SubmissionDto submissionDto = submissionService.getSubmissionByBranchNameAndRepoName(branchName, repoUrl);
-			if (submissionDto.getSubmissionStatusTypeEnum() == NOT_SUBMITTED ||
-			 	submissionDto.getSubmissionStatusTypeEnum() ==  CHANGES_REQUESTED) {
-				submissionDto.setSubmissionStatusTypeEnum(WAITING_FOR_REVIEW);
+			if (submissionDto.getSubmissionStatusType() == NOT_SUBMITTED ||
+			 	submissionDto.getSubmissionStatusType() ==  CHANGES_REQUESTED) {
+				submissionDto.setSubmissionStatusType(WAITING_FOR_REVIEW);
 				submissionService.updateSubmission(submissionDto);
 			}
 		}

@@ -30,6 +30,13 @@ public class SubmissionController {
         return ResponseEntity.ok(submissionService.getAllTaskSubmissions(taskId));
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @GetMapping(params = {"lessonId", "courseEditionId"})
+    public ResponseEntity<Collection<SubmissionDto>> getStudentSubmission(@RequestParam(value = "courseEditionId") Long courseEditionId,
+                                                              @RequestParam(value = "lessonId") Long lessonId) {
+        return ResponseEntity.ok(submissionService.getTaskSubmission(lessonId, courseEditionId));
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<Void> createSubmission(@Valid @RequestBody SubmissionDto submissionDto) {

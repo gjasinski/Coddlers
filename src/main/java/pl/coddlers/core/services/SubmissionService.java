@@ -6,7 +6,9 @@ import pl.coddlers.core.exceptions.SubmissionNotFoundException;
 import pl.coddlers.core.models.converters.SubmissionConverter;
 import pl.coddlers.core.models.dto.SubmissionDto;
 import pl.coddlers.core.models.entity.*;
+import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.SubmissionRepository;
+import pl.coddlers.core.repositories.TaskRepository;
 
 import java.util.Collection;
 
@@ -15,11 +17,15 @@ public class SubmissionService {
 
 	private final SubmissionRepository submissionRepository;
 	private final SubmissionConverter submissionConverter;
+	private final CourseEditionRepository courseEditionRepository;
+	private final UserDetailsServiceImpl userDetailsService;
 
 	@Autowired
-	public SubmissionService(SubmissionRepository submissionRepository, SubmissionConverter submissionConverter) {
+	public SubmissionService(SubmissionRepository submissionRepository, SubmissionConverter submissionConverter, CourseEditionRepository courseEditionRepository, UserDetailsServiceImpl userDetailsService) {
 		this.submissionRepository = submissionRepository;
 		this.submissionConverter = submissionConverter;
+		this.courseEditionRepository = courseEditionRepository;
+		this.userDetailsService = userDetailsService;
 	}
 
 	public Collection<SubmissionDto> getAllTaskSubmissions(long taskId) {
@@ -72,5 +78,11 @@ public class SubmissionService {
 		submission.setTask(task);
 		submission.setBranchName(task.getBranchNamePrefix());
 		submissionRepository.saveAndFlush(submission);
+	}
+
+	public Collection<SubmissionDto> getTaskSubmission(Long lessonId, Long courseEditionId) {
+		User currentUser = userDetailsService.getCurrentUserEntity();
+		CourseEdition courseEdition = courseEditionRepository.getOne(courseEditionId);
+		return submissionConverter.convertFromEntities(submissionRepository.findSubmissionForTaskAndUser(lessonId, currentUser.getId(), courseEdition));
 	}
 }

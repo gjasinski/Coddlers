@@ -20,4 +20,11 @@ export class SubmissionService {
         map((objArray: any[]) => objArray.map(obj => Submission.fromJSON(obj)))
       );
   }
+
+  public getSubmissionsForLesson(courseEditionId: number, lessonId: number): Observable<Submission[]> {
+    return this.http.get<Submission[]>(`/api/submissions?courseEditionId=${courseEditionId}&lessonId=${lessonId}`)
+      .pipe(
+        map((objArray: any[]) => objArray.map(obj => Submission.fromJSON(obj)))
+      );
+  }
 }
