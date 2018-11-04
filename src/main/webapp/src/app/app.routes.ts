@@ -7,7 +7,6 @@ import {AddLessonPageComponent} from "./components/teacher/lesson/add-lesson-pag
 import {TeacherLessonPageComponent} from "./components/teacher/lesson/lesson-page/teacher-lesson-page.component";
 import {EditLessonPageComponent} from "./components/teacher/lesson/edit-lesson-page/edit-lesson-page.component";
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
-import {StudentLessonPageComponent} from "./components/student/lesson-page/student-lesson-page.component";
 import {LandingPageComponent} from "./components/common/landing-page/landing-page.component";
 import {StudentDashboardComponent} from "./components/student/dashboard/student-dashboard.component";
 import {TeacherDashboardComponent} from "./components/teacher/dashboard/teacher-dashboard.component";
@@ -93,21 +92,6 @@ export const ROUTES: Routes = [
   {
     path: 'invitations',
     component: InvitePageComponent
-  },
-  // TODO refactor routes below
-  {
-    path: 'courses/:courseId',
-    component: TeacherCoursePageComponent,
-    children: [
-      {path: 'add-lesson', component: AddLessonPageComponent},
-      {
-        path: 'lessons/:lessonId',
-        component: TeacherLessonPageComponent,
-        children: [
-          {path: 'edit-lesson', component: EditLessonPageComponent},
-        ]
-      }
-    ]
   },
   {path: '**', component: PageNotFoundComponent}
 ];

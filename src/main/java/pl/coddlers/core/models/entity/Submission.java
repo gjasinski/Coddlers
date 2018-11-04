@@ -49,4 +49,8 @@ public class Submission {
     @ManyToOne(targetEntity = Task.class)
     @JoinColumn(name = "task_id")
     private Task task;
+
+    public SubmissionStatusTypeEnum getSubmissionStatusTypeEnum() {
+        return SubmissionStatusTypeEnum.getEnumByStatusName(submissionStatusType.getName());
+    }
 }

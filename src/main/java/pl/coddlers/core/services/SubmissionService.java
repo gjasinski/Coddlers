@@ -28,61 +28,73 @@ public class SubmissionService {
 		this.userDetailsService = userDetailsService;
 	}
 
-	public Collection<SubmissionDto> getAllTaskSubmissions(long taskId) {
-		return submissionConverter.convertFromEntities(submissionRepository.findByTaskId(taskId));
-	}
+    public Collection<SubmissionDto> getAllTaskSubmissions(long taskId) {
+        return submissionConverter.convertFromEntities(submissionRepository.findByTaskId(taskId));
+    }
 
-	public SubmissionDto getSubmissionByBranchNameAndRepoName(String branchName, String repoName) {
-		return submissionConverter.convertFromEntity(
-				submissionRepository.findByBranchNameAndStudentLessonRepository_RepositoryUrl(branchName, repoName)
-				.orElseThrow(() -> new SubmissionNotFoundException(branchName, repoName))
-		);
-	}
+    public SubmissionDto getSubmissionByBranchNameAndRepoName(String branchName, String repoName) {
+        return submissionConverter.convertFromEntity(
+                submissionRepository.findByBranchNameAndStudentLessonRepository_RepositoryUrl(branchName, repoName)
+                        .orElseThrow(() -> new SubmissionNotFoundException(branchName, repoName))
+        );
+    }
 
-	public void updateSubmission(SubmissionDto submissionDto) {
-		if (submissionDto.getId() == null || !submissionRepository.existsById(submissionDto.getId())) {
-			throw new SubmissionNotFoundException(submissionDto.getId());
-		}
-		submissionRepository.save(submissionConverter.convertFromDto(submissionDto));
-	}
+    public void updateSubmission(SubmissionDto submissionDto) {
+        if (submissionDto.getId() == null || !submissionRepository.existsById(submissionDto.getId())) {
+            throw new SubmissionNotFoundException(submissionDto.getId());
+        }
+        submissionRepository.save(submissionConverter.convertFromDto(submissionDto));
+    }
 
-	public Submission createSubmission(SubmissionDto submissionDto) {
-		return submissionRepository.save(submissionConverter.convertFromDto(submissionDto));
-	}
+    public Submission updateSubmission(Submission submission) {
+        if (submission.getId() == null || !submissionRepository.existsById(submission.getId())) {
+            throw new SubmissionNotFoundException(submission.getId());
+        }
+        return submissionRepository.save(submission);
+    }
 
-	public int countAllSubmittedTasks(User user, CourseEdition courseEdition) {
-		return submissionRepository.countAllByUserAndCourseEditionAndSubmissionStatusTypeName(user,
-				courseEdition,
-				SubmissionStatusTypeEnum.WAITING_FOR_REVIEW.getStatus()) +
-				countAllGradedTasks(user, courseEdition);
-	}
 
-	public int countAllGradedTasks(User user, CourseEdition courseEdition) {
-		return submissionRepository.countAllByUserAndCourseEditionAndSubmissionStatusTypeName(user,
-						courseEdition,
-						SubmissionStatusTypeEnum.GRADED.getStatus());
-	}
+    public Submission createSubmission(SubmissionDto submissionDto) {
+        return submissionRepository.save(submissionConverter.convertFromDto(submissionDto));
+    }
 
-	public int countAllTask(User user, CourseEdition courseEdition){
-		return submissionRepository.countAllByUserAndCourseEdition(user, courseEdition);
-	}
+    public void createSubmission(CourseEdition courseEdition, Task task, User user, StudentLessonRepository studentLessonRepository) {
+        Submission submission = new Submission();
+        SubmissionStatusType submissionStatusType = new SubmissionStatusType();
+        submissionStatusType.setName(SubmissionStatusTypeEnum.NOT_SUBMITTED.getStatus());
+        submission.setSubmissionStatusType(submissionStatusType);
+        submission.setUser(user);
+        submission.setCourseEdition(courseEdition);
+        submission.setStudentLessonRepository(studentLessonRepository);
+        submission.setTask(task);
+        submission.setBranchName(task.getBranchNamePrefix());
+        submissionRepository.saveAndFlush(submission);
+    }
 
-	public void createSubmission(CourseEdition courseEdition, Task task, User user, StudentLessonRepository studentLessonRepository) {
-		Submission submission = new Submission();
-		SubmissionStatusType submissionStatusType = new SubmissionStatusType();
-		submissionStatusType.setName(SubmissionStatusTypeEnum.NOT_SUBMITTED.getStatus());
-		submission.setSubmissionStatusType(submissionStatusType);
-		submission.setUser(user);
-		submission.setCourseEdition(courseEdition);
-		submission.setStudentLessonRepository(studentLessonRepository);
-		submission.setTask(task);
-		submission.setBranchName(task.getBranchNamePrefix());
-		submissionRepository.saveAndFlush(submission);
-	}
+    public int countAllSubmittedTasks(User user, CourseEdition courseEdition) {
+        return submissionRepository.countAllByUserAndCourseEditionAndSubmissionStatusTypeName(user,
+                courseEdition,
+                SubmissionStatusTypeEnum.WAITING_FOR_REVIEW.getStatus()) +
+                countAllGradedTasks(user, courseEdition);
+    }
 
-	public Collection<SubmissionDto> getTaskSubmission(Long lessonId, Long courseEditionId) {
-		User currentUser = userDetailsService.getCurrentUserEntity();
-		CourseEdition courseEdition = courseEditionRepository.getOne(courseEditionId);
-		return submissionConverter.convertFromEntities(submissionRepository.findSubmissionForTaskAndUser(lessonId, currentUser.getId(), courseEdition));
-	}
+    public int countAllGradedTasks(User user, CourseEdition courseEdition) {
+        return submissionRepository.countAllByUserAndCourseEditionAndSubmissionStatusTypeName(user,
+                courseEdition,
+                SubmissionStatusTypeEnum.GRADED.getStatus());
+    }
+
+    public int countAllTask(User user, CourseEdition courseEdition) {
+        return submissionRepository.countAllByUserAndCourseEdition(user, courseEdition);
+    }
+
+    public Submission getSubmissionById(Long id) {
+        return submissionRepository.findById(id).orElseThrow(() -> new SubmissionNotFoundException(id));
+    }
+
+    public Collection<SubmissionDto> getTaskSubmission(Long lessonId, Long courseEditionId) {
+        User currentUser = userDetailsService.getCurrentUserEntity();
+        CourseEdition courseEdition = courseEditionRepository.getOne(courseEditionId);
+        return submissionConverter.convertFromEntities(submissionRepository.findSubmissionForTaskAndUser(lessonId, currentUser.getId(), courseEdition));
+    }
 }
