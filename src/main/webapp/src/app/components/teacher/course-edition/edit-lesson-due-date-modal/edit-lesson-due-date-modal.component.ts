@@ -64,8 +64,8 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
   private getDateObj(date: Date): any {
     return {
       year: date.getFullYear(),
-      month: date.getUTCMonth() + 1,
-      day: date.getUTCDate()
+      month: date.getMonth() + 1,
+      day: date.getDate()
     }
   }
 
@@ -99,6 +99,6 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
   }
 
   private convertToDate(dateObj: any): Date {
-    return new Date(dateObj.year, dateObj.month - 1, dateObj.day, 1);
+    return new Date(dateObj.year, dateObj.month - 1, dateObj.day);
   }
 }
