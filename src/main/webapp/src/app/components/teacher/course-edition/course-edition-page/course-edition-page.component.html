@@ -61,7 +61,8 @@
                     <td>
                       <img src="assets/img/{{submission.submissionStatusType.nameWithUnderscores}}.png" class="submission-status-img"/>
                     </td>
-                    <td>{{submission.points}}</td>
+                    <td *ngIf="submission.submissionStatusType.nameWithSpaces == 'graded'">{{submission.points}}</td>
+                    <td *ngIf="submission.submissionStatusType.nameWithSpaces != 'graded'">-</td>
                     <td>
                       <div class="dots"></div>
                     </td>
