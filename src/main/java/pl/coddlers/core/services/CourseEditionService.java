@@ -20,6 +20,7 @@ import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.CourseEditionLesson;
 import pl.coddlers.core.models.entity.Lesson;
 import pl.coddlers.core.models.entity.User;
+import pl.coddlers.core.models.other.Invitation;
 import pl.coddlers.core.repositories.CourseEditionLessonRepository;
 import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
@@ -168,7 +169,7 @@ public class CourseEditionService {
         return true;
     }
 
-    public String getInvitationLink(String host, Long courseEditionId) {
+    public Invitation getInvitationLink(String host, Long courseEditionId) {
         CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId)
                 .orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
@@ -185,7 +186,7 @@ public class CourseEditionService {
             courseEdition.setInvitationToken(invitationToken);
             courseEditionRepository.saveAndFlush(courseEdition);
         }
-        return host + environment.getProperty(INVITATION_TOKEN_PATH) + invitationToken;
+        return new Invitation(host + environment.getProperty(INVITATION_TOKEN_PATH) + invitationToken);
     }
 
     public void sendInvitationLinkByMail(String invitationLink, List<InternetAddress> students) throws AddressException {

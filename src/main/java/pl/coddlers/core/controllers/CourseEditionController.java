@@ -11,6 +11,7 @@ import pl.coddlers.core.models.dto.CourseWithCourseEditionDto;
 import pl.coddlers.core.models.dto.InvitationDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.User;
+import pl.coddlers.core.models.other.Invitation;
 import pl.coddlers.core.services.CourseEditionService;
 import pl.coddlers.core.services.UserDetailsServiceImpl;
 
@@ -23,7 +24,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("api/editions")
@@ -104,7 +104,7 @@ public class CourseEditionController {
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/invitations", params = "courseEditionId")
-    public ResponseEntity<String> getInvitationLinkForCourseEdition(HttpServletRequest request, @RequestParam(value = "courseEditionId") Long courseEditionId) {
+    public ResponseEntity<Invitation> getInvitationLinkForCourseEdition(HttpServletRequest request, @RequestParam(value = "courseEditionId") Long courseEditionId) {
         try {
             return ResponseEntity.ok(courseEditionService.getInvitationLink(request.getHeader("host"), courseEditionId));
         } catch (Exception e) {
@@ -118,6 +118,5 @@ public class CourseEditionController {
     public ResponseEntity<List<CourseWithCourseEditionDto>> getCourses() {
         User currentUser = userDetailsService.getCurrentUserEntity();
         return ResponseEntity.ok(courseEditionService.getAllEditionsWithEnrolledStudent(currentUser));
-
     }
 }
