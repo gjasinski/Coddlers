@@ -9,7 +9,7 @@ import {Email} from "../../../../models/email";
 import {InvitationModalValidation} from "../../../../validators/invitation-modal-validation";
 import {ValidationMessagesConstants} from "../../../../constants/validation-messages.constants";
 import {InvitationLink} from "../../../../models/invitationLink";
-import {Invitation} from "../../../../models/invitation";
+import {InvitationRequest} from "../../../../models/invitationRequest";
 import {CourseService} from "../../../../services/course.service";
 
 @Component({
@@ -63,6 +63,6 @@ export class InviteTeachersModalComponent implements OnInit, OnDestroy {
   }
 
   sendInvitation(): void {
-    const invitation: Invitation = new Invitation(this.invitation.link, this.emails.map(email => email.raw));
+    const invitationRequest: InvitationRequest = new InvitationRequest(this.invitation.link, this.emails.map(email => email.raw));
   }
 }

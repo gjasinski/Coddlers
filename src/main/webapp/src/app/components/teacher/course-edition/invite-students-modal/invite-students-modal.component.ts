@@ -10,7 +10,7 @@ import {InvitationModalValidation} from "../../../../validators/invitation-modal
 import {ValidationMessagesConstants} from "../../../../constants/validation-messages.constants";
 import {CourseEditionService} from "../../../../services/course-edition.service";
 import {InvitationLink} from "../../../../models/invitationLink";
-import {Invitation} from "../../../../models/invitation";
+import {InvitationRequest} from "../../../../models/invitationRequest";
 
 @Component({
   selector: 'cod-invite-students-modal',
@@ -66,8 +66,8 @@ export class InviteStudentsModalComponent implements OnInit, OnDestroy {
   }
 
   sendInvitation(): void {
-    const invitation: Invitation = new Invitation(this.invitation.link, this.emails.map(email => email.raw));
-    this.courseEditionService.sendInvitation(invitation).subscribe(() => {
+    const invitationRequest: InvitationRequest = new InvitationRequest(this.invitation.link, this.emails.map(email => email.raw));
+    this.courseEditionService.sendInvitation(invitationRequest).subscribe(() => {
       this.cancel();
     });
   }

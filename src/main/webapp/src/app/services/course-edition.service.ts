@@ -8,7 +8,7 @@ import {Subject} from "rxjs/internal/Subject";
 import {CourseWithCourseEdition} from "../models/courseWithCourseEdition";
 import {CourseEditionLesson} from "../models/courseEditionLesson";
 import {InvitationLink} from "../models/invitationLink";
-import {Invitation} from "../models/invitation";
+import {InvitationRequest} from "../models/invitationRequest";
 
 @Injectable()
 export class CourseEditionService {
@@ -89,7 +89,7 @@ export class CourseEditionService {
       )
   }
 
-  public sendInvitation(invitation: Invitation): Observable<any> {
-    return this.http.post(`api/editions/invitations/emails`, invitation.toJSON(), this.httpOptions);
+  public sendInvitation(invitationRequest: InvitationRequest): Observable<any> {
+    return this.http.post(`api/editions/invitations/emails`, invitationRequest.toJSON(), this.httpOptions);
   }
 }
