@@ -4,14 +4,16 @@ export class Submission {
   private _id: number;
   private _taskId: number;
   private _userId: number;
+  private _userFullName: string;
   private _submissionTime: Date;
   private _submissionStatusType: SubmissionStatusType;
   private _points: number;
 
-  constructor(id: number, taskId: number, userId: number, submissionTime: Date, submissionStatusType: string, points: number) {
+  constructor(id: number, taskId: number, userId: number, userFullName: string, submissionTime: Date, submissionStatusType: string, points: number) {
     this._id = id;
     this._taskId = taskId;
     this._userId = userId;
+    this._userFullName = userFullName;
     this._submissionTime = submissionTime;
     this._submissionStatusType = new SubmissionStatusType(submissionStatusType);
     this._points = points;
@@ -29,6 +31,10 @@ export class Submission {
     return this._userId;
   }
 
+  get userFullName(): string {
+    return this._userFullName;
+  }
+
   get submissionTime(): Date {
     return this._submissionTime;
   }
@@ -42,7 +48,7 @@ export class Submission {
   }
 
   public static fromJSON(jsonObj: any): Submission {
-    return new Submission(+jsonObj.id, jsonObj.taskId, jsonObj.userId,
+    return new Submission(+jsonObj.id, jsonObj.taskId, jsonObj.userId, jsonObj.userFullName,
       new Date(jsonObj.submissionTime), jsonObj.submissionStatusTypeEnum, +jsonObj.points);
   }
 

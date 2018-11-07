@@ -55,7 +55,7 @@
                   <tr *ngFor="let submission of submissionsMap.get(task); let submissionIndex = index"
                       [attr.data-index]="submissionIndex">
                     <td>{{submissionIndex+1}}</td>
-                    <td>{{submission.userId}}</td>
+                    <td>{{submission.userFullName}}</td>
                     <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
                     <td>{{submission.submissionStatusType.nameWithSpaces}}</td>
                     <td>
@@ -91,3 +91,4 @@
 <router-outlet></router-outlet>
 <cod-edit-lesson-due-date-modal></cod-edit-lesson-due-date-modal>
 <cod-invite-students-modal></cod-invite-students-modal>
+<cod-submission-menu-modal></cod-submission-menu-modal>
