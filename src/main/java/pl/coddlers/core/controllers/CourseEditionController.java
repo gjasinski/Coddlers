@@ -11,7 +11,7 @@ import pl.coddlers.core.models.dto.CourseWithCourseEditionDto;
 import pl.coddlers.core.models.dto.InvitationDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.User;
-import pl.coddlers.core.models.other.Invitation;
+import pl.coddlers.core.models.dto.InvitationLinkDto;
 import pl.coddlers.core.services.CourseEditionService;
 import pl.coddlers.core.services.UserDetailsServiceImpl;
 
@@ -83,7 +83,7 @@ public class CourseEditionController {
             for (String studentEmail : invitationDto.getStudentEmails()) {
                 studentEmails.add(new InternetAddress(studentEmail));
             }
-            courseEditionService.sendInvitationLinkByMail(invitationDto.getInvitationLink(), studentEmails);
+            courseEditionService.sendInvitationLinkByMail(invitationDto.getInvitationLink().getLink(), studentEmails);
         } catch (AddressException e) {
             e.printStackTrace();
         }
@@ -103,8 +103,8 @@ public class CourseEditionController {
     }
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
-    @GetMapping(value = "/invitations", params = "courseEditionId")
-    public ResponseEntity<Invitation> getInvitationLinkForCourseEdition(HttpServletRequest request, @RequestParam(value = "courseEditionId") Long courseEditionId) {
+    @GetMapping(value = "/invitation-link", params = "courseEditionId")
+    public ResponseEntity<InvitationLinkDto> getInvitationLinkForCourseEdition(HttpServletRequest request, @RequestParam(value = "courseEditionId") Long courseEditionId) {
         try {
             return ResponseEntity.ok(courseEditionService.getInvitationLink(request.getHeader("host"), courseEditionId));
         } catch (Exception e) {

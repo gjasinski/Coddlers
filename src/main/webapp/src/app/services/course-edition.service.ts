@@ -83,7 +83,7 @@ export class CourseEditionService {
   }
 
   public getInvitationLink(courseEditionId: number): Observable<InvitationLink> {
-    return this.http.get<InvitationLink>(`api/editions/invitations?courseEditionId=${courseEditionId}`)
+    return this.http.get<InvitationLink>(`api/editions/invitation-link?courseEditionId=${courseEditionId}`)
       .pipe(
         map(obj => InvitationLink.fromJSON(obj))
       )
