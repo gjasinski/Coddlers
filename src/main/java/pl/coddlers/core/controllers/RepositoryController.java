@@ -20,7 +20,6 @@ public class RepositoryController {
         this.studentLessonRepositoryService = studentLessonRepositoryService;
     }
 
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping(path = "/students", params = {"courseEditionId", "lessonId"})
     public ResponseEntity<String> updateLesson(@RequestParam("courseEditionId") Long courseEditionId, @RequestParam("lessonId") Long lessonId) {
         return ResponseEntity.ok(studentLessonRepositoryService.getRepositoryUrl(courseEditionId, lessonId));
