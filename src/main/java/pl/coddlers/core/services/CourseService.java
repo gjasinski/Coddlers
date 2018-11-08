@@ -55,7 +55,7 @@ public class CourseService {
     }
 
 	public Optional<CourseDto> getCourseByCourseVersionId(Long courseVersionId){
-		return courseRepository.getByCourseVersionId(courseVersionId).map(courseConverter::convertFromEntity);
+		return courseRepository.findByCourseVersion_Id(courseVersionId).map(courseConverter::convertFromEntity);
 	}
 
 	public Collection<CourseDto> getCourses() throws WrongDateException {
