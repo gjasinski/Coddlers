@@ -63,7 +63,6 @@ public class CourseController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PreAuthorize("hasRole('ROLE_STUDENT')")
 	@GetMapping(value = "/editions", params = {"editionId"})
 	public ResponseEntity<CourseDto> getCourseByCourseEdition(@RequestParam("editionId") Long id) {
 		return ResponseEntity.ok(courseService.getCourseByCourseEditionId(id));
