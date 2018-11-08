@@ -51,7 +51,7 @@
                     <button class="btn btn-secondary">Notes</button>
                   </div>
                 </div>
-                <div *ngIf="submissions[i].submissionStatusType.toString() !== 'GRADED'">
+                <div *ngIf="submissions[i].submissionStatusType.toString() !== 'GRADED' && tasks[i].isCodeTask">
                   <h4>Master branch - you should push your work to this branch</h4>
                   <div class="repo-url">
                     <code>git push origin {{task.branchNamePrefix}}-master</code>
@@ -60,6 +60,9 @@
                   <div class="repo-url">
                     <code>git push origin {{task.branchNamePrefix}}-develop</code>
                   </div>
+                </div>
+                <div *ngIf="!tasks[i].isCodeTask">
+                  <h5>This is not code task, you don't have to push anything to repository</h5>
                 </div>
 
                 <h5>Max points for task: {{task.maxPoints}}</h5>
@@ -75,7 +78,7 @@
                 <div *ngIf="submissions[i].submissionStatusType.toString() !== 'GRADED'">
                   <h4><b>{{descriptionStatus(submissions[i].submissionStatusType)}}</b></h4>
                 </div>
-                <div *ngIf="submissions[i].submissionStatusType.toString() == 'GRADED'">
+                <div *ngIf="submissions[i].submissionStatusType.toString() === 'GRADED'">
                   <h4><b>Points: {{submissions[i].points}}/{{tasks[i].maxPoints}}</b></h4>
                 </div>
                 <br>
