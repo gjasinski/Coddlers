@@ -121,20 +121,8 @@ export class StudentLessonPageComponent implements OnInit {
 
 
   descriptionStatus(submissionStatusType: SubmissionStatusType): String {
-    if (submissionStatusType.toString() === "NOT_SUBMITTED") {
-      return "Not submitted";
-    }
-    else if (submissionStatusType.toString() == "CHANGES_REQUESTED") {
-      return "Changes requested";
-    }
-    else if (submissionStatusType.toString() == "GRADED") {
-      return "Graded";
-    }
-    else if (submissionStatusType.toString() == "WAITING_FOR_REVIEW") {
-      return "Waiting for review";
-    }
-    else {
-      return "";
-    }
+    let a = ['NOT_SUBMITTED', "CHANGES_REQUESTED", "GRADED", "WAITING_FOR_REVIEW"];
+    let s = submissionStatusType;
+    return a.indexOf(s.toString()) === -1 ? '' : s.toString().toUpperCase().replace(/[_]/g, " ");
   }
 }
