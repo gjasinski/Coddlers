@@ -173,6 +173,10 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
     }));
   }
 
+  openSubmissionMenuModal(submission: Submission) {
+    this.eventService.emit(new Event('open-submission-menu-modal', submission));
+  }
+
   ngOnDestroy(): void {
     this.subscriptionManager.unsubscribeAll();
   }

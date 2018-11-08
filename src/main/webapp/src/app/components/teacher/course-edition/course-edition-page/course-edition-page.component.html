@@ -64,7 +64,7 @@
                     <td *ngIf="submission.submissionStatusType.nameWithSpaces == 'graded'">{{submission.points}}</td>
                     <td *ngIf="submission.submissionStatusType.nameWithSpaces != 'graded'">-</td>
                     <td>
-                      <div class="dots"></div>
+                      <div class="dots" (click)="openSubmissionMenuModal(submission)"></div>
                     </td>
                   </tr>
                   </tbody>
