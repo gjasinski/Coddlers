@@ -110,9 +110,7 @@ export class StudentLessonPageComponent implements OnInit {
   }
 
   countPointsForLesson(): number {
-    let sum = 0;
-    this.tasks.forEach(task => sum += task.maxPoints);
-    return sum;
+    return this.tasks.reduce((sum, t) => sum + t.maxPoints, 0);
   }
 
   changeVisibilityForSubmissions(index: number) {
