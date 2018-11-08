@@ -29,7 +29,7 @@ export class CourseService {
   }
 
   public getCourseByCourseEditionId(courseEditionId: number): Observable<Course> {
-    return this.http.get<Course>(`api/courses/editions/${courseEditionId}`)
+    return this.http.get<Course>(`api/courses/editions?editionId=${courseEditionId}`)
       .pipe(
         map(obj => Course.fromJSON(obj))
       )

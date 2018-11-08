@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.core.models.dto.CourseDto;
@@ -63,8 +64,8 @@ public class CourseController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_STUDENT')")
-	@GetMapping(value = "/editions/{id}")
-	public ResponseEntity<CourseDto> getCourseByCourseEdition(@PathVariable Long id) {
+	@GetMapping(value = "/editions", params = {"editionId"})
+	public ResponseEntity<CourseDto> getCourseByCourseEdition(@RequestParam("editionId") Long id) {
 		return ResponseEntity.ok(courseService.getCourseByCourseEditionId(id));
 
 	}
