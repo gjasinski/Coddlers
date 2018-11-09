@@ -63,7 +63,7 @@ public class CourseController {
 		return ResponseEntity.ok().build();
 	}
 
-	@GetMapping(value = "/editions", params = {"editionId"})
+	@GetMapping(params = {"editionId"})
 	public ResponseEntity<CourseDto> getCourseByCourseEdition(@RequestParam("editionId") Long id) {
 		return ResponseEntity.ok(courseService.getCourseByCourseEditionId(id));
 
