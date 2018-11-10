@@ -1,17 +1,13 @@
 <ng-template #content let-c="close" let-d="dismiss">
-  <!--<div class="modal-dialog">-->
-    <!--<div class="modal-content" style="width:auto;height:auto">-->
-      <div class="modal-body">
-        <div class="buttons-group" *ngIf="!isGraded()">
-          <button class="btn btn-secondary">Review</button>
-          <button class="btn btn-secondary">Grade</button>
-        </div>
-        <div class="buttons-group" *ngIf="isGraded()">
-          <button class="btn btn-secondary">Reopen</button>
-          <button class="btn btn-secondary">Show</button>
-          <button class="btn btn-secondary">Edit grade</button>
-        </div>
-      </div>
-    <!--</div>-->
-  <!--</div>-->
+  <div class="modal-body">
+    <div class="buttons-group" *ngIf="!isGraded()">
+      <button class="btn btn-secondary">Review</button>
+      <button class="btn btn-secondary">Grade</button>
+    </div>
+    <div class="buttons-group" *ngIf="isGraded()">
+      <button class="btn btn-secondary">Reopen</button>
+      <button class="btn btn-secondary">Show</button>
+      <button class="btn btn-secondary">Edit grade</button>
+    </div>
+  </div>
 </ng-template>

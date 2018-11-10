@@ -40,7 +40,7 @@ public class SubmissionConverter implements BaseConverter<Submission, Submission
 		submissionDto.setId(entity.getId());
 		submissionDto.setTaskId(entity.getTask().getId());
 		submissionDto.setUserId(entity.getUser().getId());
-		submissionDto.setUserFullName(entity.getUser().getFirstname() + " " + entity.getUser().getLastname());
+		submissionDto.setUserFullName(String.format("%s %s", entity.getUser().getFirstname(), entity.getUser().getLastname()));
 		submissionDto.setCourseEditionId(entity.getCourseEdition().getId());
 		submissionDto.setSubmissionTime(entity.getSubmissionTime());
 		submissionDto.setSubmissionStatusTypeEnum(

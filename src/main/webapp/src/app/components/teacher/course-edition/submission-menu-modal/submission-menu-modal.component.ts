@@ -40,16 +40,10 @@ export class SubmissionMenuModalComponent implements OnInit {
   }
 
   open() {
-    this.modalRefNgb = this.modalService.open(this.modalRef, {windowClass: 'my-modal', backdropClass: 'my-backdrop'});
-
-    this.modalRefNgb.result.then((result) => {
-      console.log(`closed ${result}`);
-    }, (reason) => {
-      console.log(`dismissed ${reason}`);
-    });
+    this.modalRefNgb = this.modalService.open(this.modalRef, {windowClass: 'submission-menu-modal', backdropClass: 'submission-menu-backdrop'});
   }
 
   isGraded(): boolean{
-    return this.submission.submissionStatusType.nameWithUnderscores == "graded";
+    return this.submission.submissionStatusType.nameWithUnderscores === "graded";
   }
 }

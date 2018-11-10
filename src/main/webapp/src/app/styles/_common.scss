@@ -17,3 +17,12 @@ body {
 .back-btn {
   margin-left: 5px;
 }
+
+.submission-menu-backdrop {
+  opacity: 0 !important;
+}
+
+.submission-menu-modal .modal-dialog {
+  width: 160px;
+  position: relative;
+}
