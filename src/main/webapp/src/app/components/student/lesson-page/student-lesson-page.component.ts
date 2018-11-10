@@ -50,25 +50,20 @@ export class StudentLessonPageComponent implements OnInit {
 
   ngOnInit() {
     let paramMapSubscription = this.route.paramMap
-      .subscribe(params => this.initializeCourseEditionDetails(params));
-    this.subscriptionManager.add(paramMapSubscription);
-  }
-
-  private initializeCourseEditionDetails(params) {
-    let subscription = forkJoin(
-      this.getLessonAndTasksAndReturnSubmissions(params),
-      this.courseService.getCourseByCourseEditionId(+params.get('courseEditionId')),
-      this.courseEditionService.getCourseEdition(+params.get('courseEditionId')),
-      this.courseEditionService.getCourseEditionLesson(+params.get('courseEditionId'), +params.get('lessonId')),
-      this.studentLessonRepositoryService.getLessonRepositoryUrl(+params.get('courseEditionId'), +params.get('lessonId'))
-    )
+      .pipe(switchMap((params) => forkJoin(
+        this.getLessonAndTasksAndReturnSubmissions(params),
+        this.courseService.getCourseByCourseEditionId(+params.get('courseEditionId')),
+        this.courseEditionService.getCourseEdition(+params.get('courseEditionId')),
+        this.courseEditionService.getCourseEditionLesson(+params.get('courseEditionId'), +params.get('lessonId')),
+        this.studentLessonRepositoryService.getLessonRepositoryUrl(+params.get('courseEditionId'), +params.get('lessonId'))
+      )))
       .subscribe(([submissions, course, courseEdition, courseEditionLesson, lessonRepositoryUrl]) => {
         this.course = course;
         this.courseEdition = courseEdition;
         this.courseEditionLesson = courseEditionLesson;
         this.createRepositoryUrl(lessonRepositoryUrl);
       });
-    this.subscriptionManager.add(subscription);
+    this.subscriptionManager.add(paramMapSubscription);
   }
 
   private getLessonAndTasksAndReturnSubmissions(params): Observable<Submission[]> {
