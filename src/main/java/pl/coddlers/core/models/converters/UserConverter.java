@@ -8,8 +8,8 @@ import pl.coddlers.core.models.entity.AccountType;
 import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.AccountTypeRepository;
 import pl.coddlers.core.security.AccountTypeEnum;
-import pl.coddlers.exceptions.DbNotPopulatedWithDataException;
-import pl.coddlers.exceptions.WrongAccountTypeProvided;
+import pl.coddlers.core.exceptions.DbNotPopulatedWithDataException;
+import pl.coddlers.core.exceptions.WrongAccountTypeProvided;
 
 import java.util.Arrays;
 import java.util.HashSet;

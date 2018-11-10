@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.coddlers.core.models.dto.UserDto;
 import pl.coddlers.core.repositories.UserDataRepository;
 import pl.coddlers.core.services.UserDetailsServiceImpl;
-import pl.coddlers.exceptions.EmailAlreadyUsedException;
+import pl.coddlers.core.exceptions.EmailAlreadyUsedException;
 
 import javax.validation.Valid;
 

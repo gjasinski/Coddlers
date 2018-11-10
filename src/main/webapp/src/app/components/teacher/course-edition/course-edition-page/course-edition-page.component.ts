@@ -182,6 +182,6 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   }
 
   inviteStudents(): void {
-    this.eventService.emit(new Event('open-invite-students-modal'));
+    this.eventService.emit(new Event('open-invite-students-modal', this.courseEdition.id));
   }
 }
