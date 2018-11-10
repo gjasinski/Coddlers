@@ -1,6 +1,7 @@
 package pl.coddlers.core.models.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"user"})
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
