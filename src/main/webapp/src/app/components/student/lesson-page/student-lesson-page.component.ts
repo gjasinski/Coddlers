@@ -19,6 +19,7 @@ import {SubmissionStatusType} from "../../../models/submissionStatusType";
 import {StudentLessonRepositoryService} from "../../../services/student-lesson-repository.service";
 import {SubscriptionManager} from "../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs/index";
+import {SubmissionStatus} from "../../../models/submissionStatusEnum";
 
 @Component({
   selector: 'cod-student-lesson-page',
@@ -119,8 +120,6 @@ export class StudentLessonPageComponent implements OnInit {
 
 
   descriptionStatus(submissionStatusType: SubmissionStatusType): String {
-    let a = ['NOT_SUBMITTED', "CHANGES_REQUESTED", "GRADED", "WAITING_FOR_REVIEW"];
-    let s = submissionStatusType;
-    return a.indexOf(s.toString()) === -1 ? '' : s.toString().toUpperCase().replace(/[_]/g, " ");
+    return SubmissionStatus.getEnumFromString(submissionStatusType.toString()).toDescription();
   }
 }
