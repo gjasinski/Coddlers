@@ -2,13 +2,15 @@ import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/cor
 import {Subscription} from "rxjs";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {TaskService} from "../../../../services/task.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {EventService} from "../../../../services/event.service";
 import {Event} from "../../../../models/event";
 import {Email} from "../../../../models/email";
 import {InvitationModalValidation} from "../../../../validators/invitation-modal-validation";
 import {ValidationMessagesConstants} from "../../../../constants/validation-messages.constants";
+import {InvitationLink} from "../../../../models/invitationLink";
+import {InvitationRequest} from "../../../../models/invitationRequest";
+import {CourseService} from "../../../../services/course.service";
 
 @Component({
   selector: 'cod-invite-teachers-modal',
@@ -16,28 +18,31 @@ import {ValidationMessagesConstants} from "../../../../constants/validation-mess
   styleUrls: ['./invite-teachers-modal.component.scss']
 })
 export class InviteTeachersModalComponent implements OnInit, OnDestroy {
-  private eventSubscription: Subscription;
+  public formGroup: FormGroup;
+  public emails: Email[] = [];
+  public autocompleteEmails = ['teacher@coddlers.pl'];
+  public emailValidatorsMessages = ValidationMessagesConstants.asyncErrorMessages;
+  public emailValidators = InvitationModalValidation.validators;
+  public invitation: InvitationLink = new InvitationLink('');
 
   @ViewChild('content')
   private modalRef: TemplateRef<any>;
   private modalRefNgb: NgbModalRef;
-  formGroup: FormGroup;
-
-  emails: Email[] = [];
-  autocompleteEmails = ['teacher@coddlers.pl'];
-  emailValidatorsMessages = ValidationMessagesConstants.asyncErrorMessages;
-  emailValidators = InvitationModalValidation.validators;
+  private courseId: number;
+  private eventSubscription: Subscription;
 
   constructor(private formBuilder: FormBuilder,
-              private taskService: TaskService,
               private modalService: NgbModal,
               private route: ActivatedRoute,
-              private eventService: EventService,
-              private router: Router) {}
+              private router: Router,
+              private courseService: CourseService,
+              private eventService: EventService) {
+  }
 
   ngOnInit() {
     this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
       if (event.eventType === 'open-invite-teachers-modal') {
+        this.courseId = event.eventData;
         this.open();
       }
     });
@@ -58,12 +63,6 @@ export class InviteTeachersModalComponent implements OnInit, OnDestroy {
   }
 
   sendInvitation(): void {
-    if (this.emails.length == 0) return;
-
-    this.emails.forEach(email => {
-      console.log(`Sending email to ${email.raw}`);
-    });
-
-    this.modalRefNgb.dismiss();
+    const invitationRequest: InvitationRequest = new InvitationRequest(this.invitation.link, this.emails.map(email => email.raw));
   }
 }
