@@ -20,7 +20,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 			"where t.user.id = :userId")
 	List<Course> getByUserId(@Param("userId") Long userId);
 
-	Optional<Course> findByCourseVersion_Id(Long courseVersionId);
+	Optional<Course> findByCourseVersionId(Long courseVersionId);
 
 	@Query("select c from Course c " +
 	"join c.courseVersion v " +

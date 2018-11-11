@@ -40,7 +40,7 @@ public class LessonConverter implements BaseConverter<Lesson, LessonDto> {
 		lessonDto.setCourseVersionNumber(entity.getCourseVersion().getVersionNumber());
 
 		Long courseVersionId = entity.getCourseVersion().getId();
-		Course course = courseRepository.findByCourseVersion_Id(courseVersionId).orElseThrow(
+		Course course = courseRepository.findByCourseVersionId(courseVersionId).orElseThrow(
 				() -> {
 					log.error("Error occurs while attempt to get course entity by CourseVersionId = "+courseVersionId);
 					return new InternalServerErrorException("Something went wrong while retrieving lessons from db. " +
