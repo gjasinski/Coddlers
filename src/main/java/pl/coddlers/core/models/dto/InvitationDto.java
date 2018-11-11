@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class InvitationDto {
-    private String invitationLink;
+
+    private InvitationLinkDto invitationLink;
 
     private String[] studentEmails;
 }

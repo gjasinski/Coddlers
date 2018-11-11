@@ -1,4 +1,4 @@
-export class Invitation {
+export class InvitationRequest {
   private _invitationLink: string;
   private _studentEmails: string[];
 
@@ -15,8 +15,8 @@ export class Invitation {
     return this._studentEmails;
   }
 
-  public static fromJSON(jsonObj: any): Invitation {
-    return new Invitation(jsonObj.invitationLink, jsonObj.studentEmails);
+  public static fromJSON(jsonObj: any): InvitationRequest {
+    return new InvitationRequest(jsonObj.invitationLink, jsonObj.studentEmails);
   }
 
   public toJSON() {

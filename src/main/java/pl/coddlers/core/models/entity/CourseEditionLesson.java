@@ -1,6 +1,7 @@
 package pl.coddlers.core.models.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @ToString(exclude={"courseEdition", "lesson"})
+@EqualsAndHashCode(exclude = {"lesson"})
 public class CourseEditionLesson {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
