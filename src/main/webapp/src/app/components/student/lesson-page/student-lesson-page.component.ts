@@ -15,11 +15,10 @@ import {CourseEditionService} from "../../../services/course-edition.service";
 import {CourseEditionLesson} from "../../../models/courseEditionLesson";
 import {SubmissionService} from "../../../services/submission.service";
 import {Submission} from "../../../models/submission";
-import {SubmissionStatusType} from "../../../models/submissionStatusType";
 import {StudentLessonRepositoryService} from "../../../services/student-lesson-repository.service";
 import {SubscriptionManager} from "../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs/index";
-import {SubmissionStatus, SubmissionStatusEnum} from "../../../models/submissionStatusEnum";
+import {SubmissionStatus} from "../../../models/submissionStatusEnum";
 
 @Component({
   selector: 'cod-student-lesson-page',
@@ -114,11 +113,11 @@ export class StudentLessonPageComponent implements OnInit {
   }
 
 
-  descriptionStatus(submissionStatusType: SubmissionStatusType): String {
-    return SubmissionStatus.getEnumFromString(submissionStatusType.toString()).toDescription();
+  descriptionStatus(submissionStatus: SubmissionStatus): String {
+    return SubmissionStatus.getEnumFromString(submissionStatus.toString()).toDescription();
   }
 
   isGraded(submission: number): boolean {
-    return this.submissions[submission].submissionStatusType.toString() === SubmissionStatusEnum.GRADED.toDescription();
+    return this.submissions[submission].submissionStatus.toString() === "GRADED";
   }
 }

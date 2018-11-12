@@ -59,7 +59,7 @@ export class SubmissionMenuModalComponent implements OnInit {
   }
 
   isGraded(): boolean {
-    return this.submission.submissionStatusType.nameWithUnderscores === "graded";
+    return this.submission.submissionStatus.toString() === "GRADED";
   }
 
   gradeSubmission() {

@@ -1,4 +1,3 @@
-
 import {Enum, EnumValue} from 'ts-enums';
 
 export class Status extends EnumValue {
@@ -6,8 +5,8 @@ export class Status extends EnumValue {
     super(name);
   }
 
-  public toDescription(){
-    return this.description.toString().toUpperCase().replace(/[_]/g, " ");
+  public toDescription(): string{
+    return this.description.toString().toLowerCase().replace(/[_]/g, " ");
   }
 
 }
@@ -32,8 +31,6 @@ export class SubmissionStatus extends Enum<Status> {
     }
     return null;
   }
-
-
 }
 
 export const SubmissionStatusEnum: SubmissionStatus = new SubmissionStatus();

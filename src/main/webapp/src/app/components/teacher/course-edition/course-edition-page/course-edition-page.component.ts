@@ -16,6 +16,7 @@ import {EventService} from "../../../../services/event.service";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs";
 import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
+import {SubmissionStatus} from "../../../../models/submissionStatusEnum";
 
 @Component({
   selector: 'app-edition-page',
@@ -183,5 +184,13 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
 
   inviteStudents(): void {
     this.eventService.emit(new Event('open-invite-students-modal', this.courseEdition.id));
+  }
+
+  isGraded(submission: Submission): boolean {
+    return submission.submissionStatus.toString() == 'GRADED';
+  }
+
+  descriptionStatus(submission: Submission): string {
+    return SubmissionStatus.getEnumFromString(submission.submissionStatus.toString()).toDescription();
   }
 }

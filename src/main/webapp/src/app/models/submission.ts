@@ -1,4 +1,4 @@
-import {SubmissionStatusType} from "./submissionStatusType";
+import {SubmissionStatus} from "./submissionStatusEnum";
 
 export class Submission {
   private _id: number;
@@ -7,17 +7,17 @@ export class Submission {
   private _courseEditionId: number;
   private _userFullName: string;
   private _submissionTime: Date;
-  private _submissionStatusType: SubmissionStatusType;
+  private _submissionStatus: SubmissionStatus;
   private _points: number;
 
-  constructor(id: number, taskId: number, userId: number, userFullName: string, courseEditionId: number, submissionTime: Date, submissionStatusType: SubmissionStatusType, points: number) {
+  constructor(id: number, taskId: number, userId: number, userFullName: string, courseEditionId: number, submissionTime: Date, submissionStatus: SubmissionStatus, points: number) {
     this._id = id;
     this._taskId = taskId;
     this._userId = userId;
     this._userFullName = userFullName;
     this._courseEditionId = courseEditionId;
     this._submissionTime = submissionTime;
-    this._submissionStatusType = submissionStatusType;
+    this._submissionStatus = submissionStatus;
     this._points = points;
   }
 
@@ -49,8 +49,8 @@ export class Submission {
     return this._points;
   }
 
-  get submissionStatusType(): SubmissionStatusType {
-    return this._submissionStatusType;
+  get submissionStatus(): SubmissionStatus {
+    return this._submissionStatus;
   }
 
   public static fromJSON(jsonObj: any): Submission {
@@ -66,7 +66,7 @@ export class Submission {
       courseEditionId: this.courseEditionId,
       submissionTime: this.submissionTime,
       points: this.points,
-      submissionStatusType: this.submissionStatusType
+      submissionStatus: this.submissionStatus
     }
   }
 }
