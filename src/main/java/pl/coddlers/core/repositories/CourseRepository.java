@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.coddlers.core.models.entity.Course;
-import pl.coddlers.core.models.entity.Teacher;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +20,11 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 			"where t.user.id = :userId")
 	List<Course> getByUserId(@Param("userId") Long userId);
 
+	Optional<Course> findByCourseVersionId(Long courseVersionId);
+
 	@Query("select c from Course c " +
-			"join c.courseVersion v " +
-			"where v.id = :courseVersionId")
-	Optional<Course> getByCourseVersionId(@Param("courseVersionId") Long courseVersionId);
+	"join c.courseVersion v " +
+	"join v.courseEditions e "+
+	"where e.id = :courseEditionId ")
+	Optional<Course> getByCourseEditionId(@Param("courseEditionId") Long courseEditionId);
 }

@@ -16,6 +16,7 @@ import {AccountTypesConstants} from "./constants/account-types.constants";
 import {CourseEditionPageComponent} from "./components/teacher/course-edition/course-edition-page/course-edition-page.component";
 import {InvitePageComponent} from "./components/common/invite-page/invite-page.component";
 import {StudentMyCoursesComponent} from "./components/student/student-my-courses/student-my-courses.component";
+import {StudentLessonPageComponent} from "./components/student/lesson-page/student-lesson-page.component";
 
 
 export const ROUTES: Routes = [
@@ -38,8 +39,11 @@ export const ROUTES: Routes = [
         component: StudentDashboardComponent
       },
       {
-        path: 'courses',
-        component: StudentMyCoursesComponent
+        path: 'course-editions',
+        component: StudentMyCoursesComponent,
+        children: [
+          {path: ':courseEditionId/lessons/:lessonId', component: StudentLessonPageComponent}
+        ]
       }
     ]
   },

@@ -98,7 +98,7 @@ public class LessonService {
     }
 
     private Course getLessonCourse(Lesson lesson) {
-        Optional<Course> byCourseVersionId = courseRepository.getByCourseVersionId(lesson.getCourseVersion().getId());
+        Optional<Course> byCourseVersionId = courseRepository.findByCourseVersionId(lesson.getCourseVersion().getId());
         if (!byCourseVersionId.isPresent()) {
             throw new IllegalArgumentException("Course not found");
         }

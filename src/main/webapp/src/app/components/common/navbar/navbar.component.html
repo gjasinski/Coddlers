@@ -14,7 +14,7 @@
           <a *codHasAnyAuthority="['ROLE_TEACHER']" class="nav-link" routerLink="/teacher/dashboard">Dashboard</a>
         </li>
         <li class="nav-item" routerLinkActive="active" *codHasAnyAuthority="['ROLE_STUDENT', 'ROLE_TEACHER']">
-          <a *codHasAnyAuthority="['ROLE_STUDENT']" class="nav-link" routerLink="/student/courses">My courses</a>
+          <a *codHasAnyAuthority="['ROLE_STUDENT']" class="nav-link" routerLink="/student/course-editions">My courses</a>
           <a *codHasAnyAuthority="['ROLE_TEACHER']" class="nav-link" routerLink="/teacher/courses">My courses</a>
         </li>
       </ul>

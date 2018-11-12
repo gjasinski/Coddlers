@@ -76,7 +76,6 @@ export class CourseEditionService {
     return this.http.get<CourseWithCourseEdition[]>('api/editions')
       .pipe(
         map((objArray: any[]) => {
-          console.error(objArray);
           return objArray.map(obj => CourseWithCourseEdition.fromJSON(obj))
         })
       );

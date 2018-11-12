@@ -6,6 +6,7 @@ import pl.coddlers.core.exceptions.SubmissionNotFoundException;
 import pl.coddlers.core.models.converters.SubmissionConverter;
 import pl.coddlers.core.models.dto.SubmissionDto;
 import pl.coddlers.core.models.entity.*;
+import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.SubmissionRepository;
 
 import java.util.Collection;
@@ -13,14 +14,18 @@ import java.util.Collection;
 @Service
 public class SubmissionService {
 
-    private final SubmissionRepository submissionRepository;
-    private final SubmissionConverter submissionConverter;
+	private final SubmissionRepository submissionRepository;
+	private final SubmissionConverter submissionConverter;
+	private final CourseEditionRepository courseEditionRepository;
+	private final UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    public SubmissionService(SubmissionRepository submissionRepository, SubmissionConverter submissionConverter) {
-        this.submissionRepository = submissionRepository;
-        this.submissionConverter = submissionConverter;
-    }
+	@Autowired
+	public SubmissionService(SubmissionRepository submissionRepository, SubmissionConverter submissionConverter, CourseEditionRepository courseEditionRepository, UserDetailsServiceImpl userDetailsService) {
+		this.submissionRepository = submissionRepository;
+		this.submissionConverter = submissionConverter;
+		this.courseEditionRepository = courseEditionRepository;
+		this.userDetailsService = userDetailsService;
+	}
 
     public Collection<SubmissionDto> getAllTaskSubmissions(long taskId) {
         return submissionConverter.convertFromEntities(submissionRepository.findByTaskId(taskId));
@@ -84,5 +89,11 @@ public class SubmissionService {
 
     public Submission getSubmissionById(Long id) {
         return submissionRepository.findById(id).orElseThrow(() -> new SubmissionNotFoundException(id));
+    }
+
+    public Collection<SubmissionDto> getTaskSubmission(Long lessonId, Long courseEditionId) {
+        User currentUser = userDetailsService.getCurrentUserEntity();
+        CourseEdition courseEdition = courseEditionRepository.getOne(courseEditionId);
+        return submissionConverter.convertFromEntities(submissionRepository.findSubmissionForTaskAndUser(lessonId, currentUser.getId(), courseEdition));
     }
 }

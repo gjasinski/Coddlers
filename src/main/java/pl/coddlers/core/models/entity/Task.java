@@ -3,6 +3,7 @@ package pl.coddlers.core.models.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@ToString(exclude={"lesson", "submissions", "notes"})
 public class Task {
     @Id
     @GeneratedValue
