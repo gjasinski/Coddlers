@@ -2,19 +2,27 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs/internal/Subscription";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {EventService} from "../../../../services/event.service";
-import {FormBuilder} from "@angular/forms";
 import {Event} from "../../../../models/event";
 import {Submission} from "../../../../models/submission";
+import {SubmissionService} from "../../../../services/submission.service";
 
 @Component({
   selector: 'cod-submission-menu-modal',
   templateUrl: './submission-menu-modal.component.html',
   styleUrls: ['./submission-menu-modal.component.scss']
 })
+
 export class SubmissionMenuModalComponent implements OnInit {
   private eventSubscription: Subscription;
   private submission: Submission;
-  public xCoordinate: string;
+  private showReopenReason: boolean;
+  private showInputGrade: boolean;
+  private showEditGrade: boolean;
+  readonly defaultModalWidth: number = 160;
+  readonly biggerModalWidth: number = 220;
+  private grade: number;
+  private gradeReason: string;
+  private reopenReason: string;
 
   @ViewChild('content')
   private modalRef: TemplateRef<any>;
@@ -22,8 +30,8 @@ export class SubmissionMenuModalComponent implements OnInit {
   private modalRefNgb: NgbModalRef;
 
   constructor(private modalService: NgbModal,
-              private formBuilder: FormBuilder,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private submissionService: SubmissionService) {
   }
 
   ngOnInit() {
@@ -31,6 +39,10 @@ export class SubmissionMenuModalComponent implements OnInit {
       if (event.eventType === 'open-submission-menu-modal') {
         this.submission = event.eventData;
         this.open();
+        this.showReopenReason = false;
+        this.showEditGrade = false;
+        this.showInputGrade = false;
+        this.grade = this.submission.points;
       }
     });
   }
@@ -40,10 +52,51 @@ export class SubmissionMenuModalComponent implements OnInit {
   }
 
   open() {
-    this.modalRefNgb = this.modalService.open(this.modalRef, {windowClass: 'submission-menu-modal', backdropClass: 'submission-menu-backdrop'});
+    this.modalRefNgb = this.modalService.open(this.modalRef, {
+      windowClass: 'submission-menu-modal',
+      backdropClass: 'submission-menu-backdrop'
+    });
   }
 
-  isGraded(): boolean{
+  isGraded(): boolean {
     return this.submission.submissionStatusType.nameWithUnderscores === "graded";
+  }
+
+  gradeSubmission() {
+    this.submissionService.gradeSubmission(this.submission.id, this.gradeReason, this.grade)
+      .subscribe(() => {
+        this.modalRefNgb.close('graded');
+        location.reload();
+      });
+  }
+
+  reopenSubmission() {
+    this.submissionService.reopenSubmission(this.submission.id, this.reopenReason)
+      .subscribe(() => {
+        this.modalRefNgb.close('reopened');
+        location.reload();
+      })
+  }
+
+  changeReopen(): void {
+    this.showReopenReason = !this.showReopenReason;
+    this.changeModalDialogWidth();
+  }
+
+  changeShowInputGrade(): void {
+    this.showInputGrade = !this.showInputGrade;
+    this.changeModalDialogWidth();
+  }
+
+  changeShowEditGrade(): void {
+    this.showEditGrade = !this.showEditGrade;
+    this.changeModalDialogWidth();
+  }
+
+  changeModalDialogWidth(): void {
+    if (this.showEditGrade || this.showInputGrade || this.showReopenReason)
+      document.getElementsByClassName("modal-dialog").item(0).setAttribute("style", "width: " + this.biggerModalWidth + "px;")
+    else
+      document.getElementsByClassName("modal-dialog").item(0).setAttribute("style", "width: " + this.defaultModalWidth + "px;")
   }
 }
