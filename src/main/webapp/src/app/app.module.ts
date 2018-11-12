@@ -36,6 +36,7 @@ import {TeacherDashboardComponent} from './components/teacher/dashboard/teacher-
 import {CourseEditionPageComponent} from './components/teacher/course-edition/course-edition-page/course-edition-page.component';
 import {CourseEditionService} from "./services/course-edition.service";
 import {SubmissionService} from "./services/submission.service";
+import {StudentLessonRepositoryService} from "./services/student-lesson-repository.service";
 import {EditLessonDueDateModalComponent} from "./components/teacher/course-edition/edit-lesson-due-date-modal/edit-lesson-due-date-modal.component";
 import {AddTaskModalComponent} from "./components/teacher/task/add-task-modal/add-task-modal.component";
 import {EditTaskModalComponent} from "./components/teacher/task/edit-task-modal/edit-task-modal.component";
@@ -112,6 +113,7 @@ import { SubmissionMenuModalComponent } from './components/teacher/course-editio
     DatePipe,
     AuthenticationService,
     AccountService,
+    StudentLessonRepositoryService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

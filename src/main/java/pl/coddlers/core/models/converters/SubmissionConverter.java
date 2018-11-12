@@ -43,7 +43,7 @@ public class SubmissionConverter implements BaseConverter<Submission, Submission
 		submissionDto.setUserFullName(String.format("%s %s", entity.getUser().getFirstname(), entity.getUser().getLastname()));
 		submissionDto.setCourseEditionId(entity.getCourseEdition().getId());
 		submissionDto.setSubmissionTime(entity.getSubmissionTime());
-		submissionDto.setSubmissionStatusTypeEnum(
+		submissionDto.setSubmissionStatusType(
 				SubmissionStatusTypeEnum.getEnumByStatusName(
 						entity.getSubmissionStatusType().getName()
 				));
@@ -68,7 +68,7 @@ public class SubmissionConverter implements BaseConverter<Submission, Submission
 				.orElseThrow(() -> new CourseEditionNotFoundException(dto.getCourseEditionId())));
 		submission.setSubmissionTime(dto.getSubmissionTime());
 		SubmissionStatusType submissionStatusType = new SubmissionStatusType();
-		submissionStatusType.setName(dto.getSubmissionStatusTypeEnum().getStatus());
+		submissionStatusType.setName(dto.getSubmissionStatusType().getStatus());
 		submission.setSubmissionStatusType(submissionStatusType);
 		submission.setPoints(dto.getPoints());
 

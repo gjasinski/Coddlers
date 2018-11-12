@@ -4,18 +4,20 @@ export class Submission {
   private _id: number;
   private _taskId: number;
   private _userId: number;
+  private _courseEditionId: number;
   private _userFullName: string;
   private _submissionTime: Date;
   private _submissionStatusType: SubmissionStatusType;
   private _points: number;
 
-  constructor(id: number, taskId: number, userId: number, userFullName: string, submissionTime: Date, submissionStatusType: string, points: number) {
+  constructor(id: number, taskId: number, userId: number, userFullName: string, courseEditionId: number, submissionTime: Date, submissionStatusType: SubmissionStatusType, points: number) {
     this._id = id;
     this._taskId = taskId;
     this._userId = userId;
     this._userFullName = userFullName;
+    this._courseEditionId = courseEditionId;
     this._submissionTime = submissionTime;
-    this._submissionStatusType = new SubmissionStatusType(submissionStatusType);
+    this._submissionStatusType = submissionStatusType;
     this._points = points;
   }
 
@@ -35,6 +37,10 @@ export class Submission {
     return this._userFullName;
   }
 
+  get courseEditionId(): number {
+    return this._courseEditionId;
+  }
+
   get submissionTime(): Date {
     return this._submissionTime;
   }
@@ -48,8 +54,8 @@ export class Submission {
   }
 
   public static fromJSON(jsonObj: any): Submission {
-    return new Submission(+jsonObj.id, jsonObj.taskId, jsonObj.userId, jsonObj.userFullName,
-      new Date(jsonObj.submissionTime), jsonObj.submissionStatusTypeEnum, +jsonObj.points);
+    return new Submission(+jsonObj.id, +jsonObj.taskId, +jsonObj.userId, jsonObj.userFullName, +jsonObj.courseEditionId,
+      new Date(jsonObj.submissionTime), jsonObj.submissionStatusType, +jsonObj.points);
   }
 
   public toJSON() {
@@ -57,6 +63,7 @@ export class Submission {
       id: this.id,
       taskId: this.taskId,
       userId: this.userId,
+      courseEditionId: this.courseEditionId,
       submissionTime: this.submissionTime,
       points: this.points,
       submissionStatusType: this.submissionStatusType

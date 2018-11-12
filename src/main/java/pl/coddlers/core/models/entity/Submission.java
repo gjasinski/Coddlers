@@ -3,6 +3,7 @@ package pl.coddlers.core.models.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@ToString(exclude={"studentLessonRepository", "comments", "user", "courseEdition"})
 @EqualsAndHashCode(exclude = {"user"})
 public class Submission {
     @Id

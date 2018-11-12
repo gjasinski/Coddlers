@@ -55,7 +55,7 @@ public class CourseService {
     }
 
 	public Optional<CourseDto> getCourseByCourseVersionId(Long courseVersionId){
-		return courseRepository.getByCourseVersionId(courseVersionId).map(courseConverter::convertFromEntity);
+		return courseRepository.findByCourseVersionId(courseVersionId).map(courseConverter::convertFromEntity);
 	}
 
 	public Collection<CourseDto> getCourses() throws WrongDateException {
@@ -106,4 +106,10 @@ public class CourseService {
         );
     }
 
+    public CourseDto getCourseByCourseEditionId(Long id) {
+        Course course = courseRepository.getByCourseEditionId(id)
+                .orElseThrow(() -> new CourseNotFoundException(String.format("Course for courseEditionId %s not found", id)));
+
+        return courseConverter.convertFromEntity(course);
+    }
 }

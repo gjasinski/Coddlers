@@ -23,4 +23,6 @@ public class TaskDto {
     private Integer maxPoints;
 
     private Boolean isCodeTask;
+
+    private String branchNamePrefix;
 }
