@@ -5,6 +5,7 @@ import {EventService} from "../../../../services/event.service";
 import {Event} from "../../../../models/event";
 import {Submission} from "../../../../models/submission";
 import {SubmissionService} from "../../../../services/submission.service";
+import {SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
 
 @Component({
   selector: 'cod-submission-menu-modal',
@@ -59,7 +60,7 @@ export class SubmissionMenuModalComponent implements OnInit {
   }
 
   isGraded(): boolean {
-    return this.submission.submissionStatus.toString() === "GRADED";
+    return this.submission.submissionStatus.toString() === SubmissionStatusEnum.GRADED.toDescription();
   }
 
   gradeSubmission() {

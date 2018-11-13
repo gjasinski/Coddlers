@@ -16,7 +16,7 @@ import {EventService} from "../../../../services/event.service";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs";
 import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
-import {SubmissionStatus} from "../../../../models/submissionStatusEnum";
+import {SubmissionStatus, SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
 
 @Component({
   selector: 'app-edition-page',
@@ -187,7 +187,7 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   }
 
   isGraded(submission: Submission): boolean {
-    return submission.submissionStatus.toString() == 'GRADED';
+    return submission.submissionStatus.toString() == SubmissionStatusEnum.GRADED.toDescription();
   }
 
   descriptionStatus(submission: Submission): string {

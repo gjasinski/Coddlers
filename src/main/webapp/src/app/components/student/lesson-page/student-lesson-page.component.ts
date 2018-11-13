@@ -18,7 +18,7 @@ import {Submission} from "../../../models/submission";
 import {StudentLessonRepositoryService} from "../../../services/student-lesson-repository.service";
 import {SubscriptionManager} from "../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs/index";
-import {SubmissionStatus} from "../../../models/submissionStatusEnum";
+import {SubmissionStatus, SubmissionStatusEnum} from "../../../models/submissionStatusEnum";
 
 @Component({
   selector: 'cod-student-lesson-page',
@@ -118,6 +118,6 @@ export class StudentLessonPageComponent implements OnInit {
   }
 
   isGraded(submission: number): boolean {
-    return this.submissions[submission].submissionStatus.toString() === "GRADED";
+    return this.submissions[submission].submissionStatus.toString() === SubmissionStatusEnum.GRADED.toDescription();
   }
 }
