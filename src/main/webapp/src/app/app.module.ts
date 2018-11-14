@@ -50,6 +50,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {InviteTeachersModalComponent} from './components/teacher/course/invite-teachers-modal/invite-teachers-modal.component';
 import { StudentMyCoursesComponent } from './components/student/student-my-courses/student-my-courses.component';
 import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal.component';
+import { SubmissionMenuModalComponent } from './components/teacher/course-edition/submission-menu-modal/submission-menu-modal.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal
     AfterAddToCourseModalComponent,
     InviteStudentsModalComponent,
     InviteTeachersModalComponent,
-    StudentMyCoursesComponent
+    StudentMyCoursesComponent,
+    SubmissionMenuModalComponent
   ],
   imports: [
     BrowserModule,

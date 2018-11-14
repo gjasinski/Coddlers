@@ -1,0 +1,32 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-body">
+
+    <div class="buttons-group" *ngIf="!isGraded()">
+      <button class="btn btn-secondary">Review</button>
+
+      <button class="btn btn-secondary" (click)="changeShowInputGrade()">Grade</button>
+      <div class="col-12" *ngIf="showInputGrade">
+        <textarea [(ngModel)]="gradeReason" type="text" class="form-control textarea-height" placeholder="Enter reason"></textarea>
+        <input [(ngModel)]="grade" type="number" class="form-control" min="0">
+        <button class="btn btn-primary" (click)="gradeSubmission()">Send</button>
+      </div>
+    </div>
+
+    <div class="buttons-group" *ngIf="isGraded()">
+      <button class="btn btn-secondary" (click)="changeReopen()">Reopen</button>
+      <div class="col-12" *ngIf="showReopenReason">
+        <textarea [(ngModel)]="reopenReason" type="text" class="form-control textarea-height" placeholder="Enter reason"></textarea>
+        <button class="btn btn-primary" (click)="reopenSubmission()">Send</button>
+      </div>
+
+      <button class="btn btn-secondary">Show</button>
+
+      <button class="btn btn-secondary" (click)="changeShowEditGrade()">Edit grade</button>
+      <div class="col-12" *ngIf="showEditGrade">
+        <textarea [(ngModel)]="gradeReason" type="text" class="form-control textarea-height" placeholder="Enter reason"></textarea>
+        <input [(ngModel)]="grade" type="number" class="form-control" min="0">
+        <button class="btn btn-primary" (click)="gradeSubmission()">Send</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

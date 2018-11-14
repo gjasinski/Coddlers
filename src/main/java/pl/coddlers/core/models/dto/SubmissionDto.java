@@ -17,6 +17,9 @@ public class SubmissionDto {
     private Long userId;
 
     @NotNull
+    private String userFullName;
+
+    @NotNull
     private Long courseEditionId;
 
     private Timestamp submissionTime;
