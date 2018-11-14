@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coddlers.core.exceptions.WrongParametersException;
 import pl.coddlers.core.models.dto.LessonDto;
+import pl.coddlers.core.models.entity.StudentLessonRepository;
 import pl.coddlers.core.services.LessonService;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/lessons")
@@ -64,5 +66,13 @@ public class LessonController {
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<LessonDto> updateLesson(@PathVariable Long id, @Valid @RequestBody LessonDto lessonDto) {
         return ResponseEntity.ok(lessonService.updateLesson(id, lessonDto));
+    }
+
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    @GetMapping(params = {"courseEditionId", "lessonId"})
+    public ResponseEntity<List<StudentLessonRepository>> forkLessons(@RequestParam(value = "courseEditionId", required = true) Long courseEditionId,
+                                                                     @RequestParam(value = "lessonId", required = true) Long lessonId) {
+
+        return ResponseEntity.ok(lessonService.forkLessons(courseEditionId, lessonId));
     }
 }

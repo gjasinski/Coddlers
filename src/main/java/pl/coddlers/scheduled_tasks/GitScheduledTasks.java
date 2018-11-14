@@ -57,7 +57,7 @@ public class GitScheduledTasks {
                 CourseEdition courseEdition = courseEditionRepository.findById(courseEditionLesson.getCourseEdition().getId()).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionLesson.getCourseEdition().getId()));
                 lessonService.forkModelLesson(courseEdition, lesson)
                         .whenComplete(((studentLessonRepositories, throwable) -> {
-                            studentLessonRepositoryRepository.saveAll(studentLessonRepositories);
+//                            studentLessonRepositoryRepository.saveAll(studentLessonRepositories);
                             log.info(String.format("Created %d repositories", studentLessonRepositories.size()));
                         }))
                         .exceptionally(ex -> {

@@ -60,7 +60,12 @@ export class StudentLessonPageComponent implements OnInit {
         this.course = course;
         this.courseEdition = courseEdition;
         this.courseEditionLesson = courseEditionLesson;
-        this.createRepositoryUrl(lessonRepositoryUrl);
+        if(lessonRepositoryUrl.length > 1) {
+          this.createRepositoryUrl(lessonRepositoryUrl);
+        }
+        else {
+          this.repoUrl = "Your repository is not forked yet"
+        }
       });
     this.subscriptionManager.add(paramMapSubscription);
   }

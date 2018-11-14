@@ -174,6 +174,10 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
     }));
   }
 
+  forkLesson(lesson: Lesson) {
+    this.lessonService.forkLessons(this.courseEdition.id, lesson.id).subscribe();
+  }
+
   openSubmissionMenuModal(submission: Submission) {
     this.eventService.emit(new Event('open-submission-menu-modal', submission));
   }

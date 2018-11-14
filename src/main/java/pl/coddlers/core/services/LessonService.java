@@ -3,21 +3,27 @@ package pl.coddlers.core.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
 import pl.coddlers.core.exceptions.CourseVersionNotFound;
 import pl.coddlers.core.exceptions.LessonAlreadyExists;
 import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.converters.LessonConverter;
 import pl.coddlers.core.models.dto.LessonDto;
 import pl.coddlers.core.models.entity.*;
+import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.CourseRepository;
 import pl.coddlers.core.repositories.CourseVersionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
+import pl.coddlers.core.repositories.StudentLessonRepositoryRepository;
+import pl.coddlers.core.repositories.TaskRepository;
 import pl.coddlers.core.repositories.UserDataRepository;
 import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.services.GitLessonService;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,13 +41,16 @@ public class LessonService {
     private final UserDataRepository userDataRepository;
     private final CourseRepository courseRepository;
     private final SubmissionService submissionService;
+    private final CourseEditionRepository courseEditionRepository;
+    private final StudentLessonRepositoryRepository studentLessonRepositoryRepository;
+    private final TaskRepository taskRepository;
 
 
     @Autowired
     public LessonService(UserDetailsServiceImpl userDetailsService, LessonRepository lessonRepository,
                          LessonConverter lessonConverter, CourseVersionRepository courseVersionRepository,
                          GitLessonService gitLessonService, UserDataRepository userDataRepository,
-                         CourseRepository courseRepository, SubmissionService submissionService) {
+                         CourseRepository courseRepository, SubmissionService submissionService, CourseEditionRepository courseEditionRepository, StudentLessonRepositoryRepository studentLessonRepositoryRepository, TaskRepository taskRepository) {
         this.userDetailsService = userDetailsService;
         this.lessonRepository = lessonRepository;
         this.lessonConverter = lessonConverter;
@@ -50,6 +59,9 @@ public class LessonService {
         this.userDataRepository = userDataRepository;
         this.courseRepository = courseRepository;
         this.submissionService = submissionService;
+        this.courseEditionRepository = courseEditionRepository;
+        this.studentLessonRepositoryRepository = studentLessonRepositoryRepository;
+        this.taskRepository = taskRepository;
     }
 
     public Collection<LessonDto> getAllCourseVersionLessons(Long courseId, Integer courseVersionNumber) {
@@ -158,7 +170,9 @@ public class LessonService {
                 .thenCompose(projectDto -> gitLessonService.transferRepositoryToGroup(projectDto.getId(), courseEdition.getGitGroupId()))
                 .thenApply(projectDto -> gitLessonService.createStudentLessonRepository(courseEdition, user, lesson, projectDto))
                 .thenApply(studentLessonRepository -> {
-                    lesson.getTasks().forEach(task -> submissionService.createSubmission(courseEdition, task, user, studentLessonRepository));
+                    studentLessonRepositoryRepository.save(studentLessonRepository);
+                    taskRepository.findByLessonId(lesson.getId()).
+                            forEach(task -> submissionService.createSubmission(courseEdition, task, user, studentLessonRepository));
                     return studentLessonRepository;
                 });
     }
@@ -199,5 +213,25 @@ public class LessonService {
     private Lesson validateLesson(Long id) throws LessonNotFoundException {
         return lessonRepository.findById(id)
                 .orElseThrow(() -> new LessonNotFoundException(id));
+    }
+
+    public List<StudentLessonRepository> forkLessons(Long courseEditionId, Long lessonId){
+        // TODO: 14.11.18 remove me
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonNotFoundException(lessonId));
+        CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
+        try {
+            return forkModelLesson(courseEdition, lesson)
+                    .whenComplete(((studentLessonRepositories, throwable) -> {
+//                        studentLessonRepositoryRepository.saveAll(studentLessonRepositories);
+                        log.info(String.format("Created %d repositories", studentLessonRepositories.size()));
+                    }))
+                    .exceptionally(ex -> {
+                        log.error(String.format("Error while forking lesson with id %d for courseEdition with id %d", lesson.getId(), courseEdition.getId()), ex);
+                        return Collections.emptyList();
+                    }).get();
+        } catch (Exception e) {
+          log.error("Cannot fork: " + courseEditionId + " " +lessonId, e);
+        }
+        return new LinkedList<>();
     }
 }

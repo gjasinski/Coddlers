@@ -67,7 +67,7 @@ public class SubmissionService {
         submission.setStudentLessonRepository(studentLessonRepository);
         submission.setTask(task);
         submission.setBranchName(task.getBranchNamePrefix());
-        submissionRepository.saveAndFlush(submission);
+        submissionRepository.save(submission);
     }
 
     public int countAllSubmittedTasks(User user, CourseEdition courseEdition) {
