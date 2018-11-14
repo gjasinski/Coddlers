@@ -70,9 +70,10 @@ public class LessonController {
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @GetMapping(params = {"courseEditionId", "lessonId"})
-    public ResponseEntity<List<StudentLessonRepository>> forkLessons(@RequestParam(value = "courseEditionId", required = true) Long courseEditionId,
+    public ResponseEntity<String> forkLessons(@RequestParam(value = "courseEditionId", required = true) Long courseEditionId,
                                                                      @RequestParam(value = "lessonId", required = true) Long lessonId) {
 
-        return ResponseEntity.ok(lessonService.forkLessons(courseEditionId, lessonId));
+        lessonService.forkLessons(courseEditionId, lessonId);
+        return ResponseEntity.ok("ok");
     }
 }
