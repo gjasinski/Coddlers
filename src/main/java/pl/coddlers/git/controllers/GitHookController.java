@@ -31,7 +31,7 @@ public class GitHookController {
 		log.debug("Received event hook: " + event.toString());
 		if (isPushEvent(event) && event.getRef().contains("master")) {
 			String branchName = extractBranchName(event);
-			String repoUrl = event.getRepositoryDto().getGitHttpUrl();
+			String repoUrl = extractRepoName(event.getRepositoryDto().getGitHttpUrl());
 			log.debug(String.format("Received push event. Pushed to %s in %s", branchName, repoUrl));
 
 			SubmissionDto submissionDto = submissionService.getSubmissionByBranchNameAndRepoName(branchName, repoUrl);
@@ -41,6 +41,12 @@ public class GitHookController {
 				submissionService.updateSubmission(submissionDto);
 			}
 		}
+	}
+
+	private String extractRepoName(String repoUrl) {
+		repoUrl = repoUrl.replace("http://", "")
+				.replace("https://", "");
+		return repoUrl.substring(repoUrl.indexOf("/")+1, repoUrl.indexOf("."));
 	}
 
 	private String extractBranchName(EventDto eventDto) {
