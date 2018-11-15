@@ -6,7 +6,7 @@ export class Status extends EnumValue {
   }
 
   public toDescription(): string{
-    return this.description.toString().toLowerCase().replace(/[_]/g, " ");
+    return this.description.toString().toUpperCase().replace(/[_]/g, " ");
   }
 
 }
