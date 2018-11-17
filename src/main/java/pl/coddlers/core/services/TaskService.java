@@ -4,12 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CouldNotCreateGitTaskException;
+import pl.coddlers.core.exceptions.GitAsynchronousOperationException;
 import pl.coddlers.core.exceptions.InternalServerErrorException;
 import pl.coddlers.core.exceptions.TaskNotFoundException;
 import pl.coddlers.core.models.converters.TaskConverter;
 import pl.coddlers.core.models.dto.TaskDto;
+import pl.coddlers.core.models.entity.Course;
 import pl.coddlers.core.models.entity.Task;
+import pl.coddlers.core.models.entity.User;
 import pl.coddlers.core.repositories.TaskRepository;
+import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.services.GitTaskService;
 
 import java.util.Collection;
@@ -44,6 +48,7 @@ public class TaskService {
 
 		try {
 			Boolean isCreated = gitTaskService.createTask(task.getLesson().getGitProjectId(), taskBranchName)
+					.exceptionally(e -> logAndWrapException(taskDto, e))
 					.get();
 			if (!isCreated) {
 				throw new CouldNotCreateGitTaskException(taskBranchName);
@@ -55,6 +60,13 @@ public class TaskService {
 			log.error(e.getMessage());
 			throw new InternalServerErrorException("There was some error while creating a task. Please contact with administrator.");
 		}
+	}
+
+
+	private Boolean logAndWrapException(TaskDto task, Throwable v) {
+		String exceptionMsg = String.format("Cannot create task for: %s", task);
+		log.error(exceptionMsg, v);
+		throw new GitAsynchronousOperationException(exceptionMsg, v);
 	}
 
 	private String getCurrentTimestamp() {

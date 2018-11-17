@@ -173,7 +173,6 @@ public class CourseEditionService {
                 .filter(courseEditionLesson -> courseEditionLesson.getStartDate().before(new Timestamp(System.currentTimeMillis())))
                 .forEach(courseEditionLesson ->
                         lessonService.forkModelLessonForUser(courseEdition, courseEditionLesson.getLesson(), currentUser)
-//                                .thenAccept(studentLessonRepositoryRepository::save)
                                 .exceptionally(ex -> {
                                     log.error(String.format("Cannot fork lesson: %s from course edition %s for user: %s", courseEditionLesson.getLesson().toString(), courseEdition.toString(), currentUser.toString()), ex);
                                     return null;

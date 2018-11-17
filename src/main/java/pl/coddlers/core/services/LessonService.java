@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
 import pl.coddlers.core.exceptions.CourseVersionNotFound;
+import pl.coddlers.core.exceptions.GitAsynchronousOperationException;
 import pl.coddlers.core.exceptions.LessonAlreadyExists;
 import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.converters.LessonConverter;
@@ -96,9 +97,10 @@ public class LessonService {
             lessonRepository.save(lesson);
             User currentUser = userDetailsService.getCurrentUserEntity();
             Course byCourseVersionId = getLessonCourse(lesson);
-            CompletableFuture<ProjectDto> gitLessonIdFuture = gitLessonService.createLesson(currentUser.getGitUserId(), createRepositoryName(lesson))
-                    .thenCompose(projectDto -> gitLessonService.transferRepositoryToGroup(projectDto.getId(), byCourseVersionId.getGitGroupId()));
-            ProjectDto projectDto = gitLessonIdFuture.get();
+            ProjectDto projectDto = gitLessonService.createLesson(currentUser.getGitUserId(), createRepositoryName(lesson))
+                    .thenCompose(project -> gitLessonService.transferRepositoryToGroup(project.getId(), byCourseVersionId.getGitGroupId()))
+                    .exceptionally(e -> logAndWrapException(lessonDto, currentUser, e))
+                    .get();
             lesson.setGitProjectId(projectDto.getId());
             lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
             lessonRepository.save(lesson);
@@ -107,6 +109,12 @@ public class LessonService {
             log.error("Exception while creating lesson for: " + lessonDto.toString(), ex);
             throw new LessonAlreadyExists(ex.getMessage());
         }
+    }
+
+    private ProjectDto logAndWrapException(LessonDto lessonDto, User user, Throwable v) {
+        String exceptionMsg = String.format("Cannot create lesson for LessonDto: %s, user: %s", lessonDto, user);
+        log.error(exceptionMsg, v);
+        throw new GitAsynchronousOperationException(exceptionMsg, v);
     }
 
     private Course getLessonCourse(Lesson lesson) {
@@ -222,7 +230,6 @@ public class LessonService {
         try {
             return forkModelLesson(courseEdition, lesson)
                     .whenComplete(((studentLessonRepositories, throwable) -> {
-//                        studentLessonRepositoryRepository.saveAll(studentLessonRepositories);
                         log.info(String.format("Created %d repositories", studentLessonRepositories.size()));
                     }))
                     .exceptionally(ex -> {
