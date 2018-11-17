@@ -107,10 +107,11 @@ public class CourseEditionService {
 
     public CourseEdition createCourseEdition(CourseEditionDto courseEditionDto) {
         try {
+            User currentUser = userDetailsService.getCurrentUserEntity();
             CourseEdition courseEdition = courseEditionRepository.save(courseEditionConverter.convertFromDto(courseEditionDto));
-            CompletableFuture<ProjectDto> group = gitGroupService.createGroup(createGroupName(courseEditionDto, courseEdition.getId()));
-            Long gitGroupId = group.thenCompose(this::addTeachersToGroup)
-                    .thenCompose((s1) -> group)
+            CompletableFuture<ProjectDto> groupFuture = gitGroupService.createGroup(createGroupName(courseEditionDto, courseEdition.getId()));
+            Long gitGroupId = groupFuture.thenCompose(group -> addTeachersToGroup(group, currentUser))
+                    .thenCompose((s1) -> groupFuture)
                     .exceptionally(v -> logAndWrapException(courseEditionDto, v))
                     .get()
                     .getId();
@@ -129,9 +130,8 @@ public class CourseEditionService {
         throw new GitAsynchronousOperationException(exceptionMsg, v);
     }
 
-    private CompletableFuture<Void> addTeachersToGroup(ProjectDto group) {
-        User currentUser = userDetailsService.getCurrentUserEntity();
-        return gitGroupService.addUserToGroupAsMaintainer(currentUser.getGitUserId(), group.getId());
+    private CompletableFuture<Void> addTeachersToGroup(ProjectDto group, User user) {
+        return gitGroupService.addUserToGroupAsMaintainer(user.getGitUserId(), group.getId());
         // TODO: 20.10.18 add all teacher to group from database
     }
 
