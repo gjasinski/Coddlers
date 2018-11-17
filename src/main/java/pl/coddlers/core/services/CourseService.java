@@ -83,11 +83,16 @@ public class CourseService {
     }
 
     private CompletableFuture<ProjectDto> createGitGroup(Course course, User currentUser) {
-        return gitGroupService.createGroup(createGroupName(course))
-                .thenApplyAsync(gitGroupDto -> {
-                    gitGroupService.addUserToGroupAsMaintainer(currentUser.getGitUserId(), gitGroupDto.getId()).join();
-                    return gitGroupDto;
-                });
+        CompletableFuture<ProjectDto> group = gitGroupService.createGroup(createGroupName(course));
+        return group.thenCompose(gitGroupDto -> gitGroupService.addUserToGroupAsMaintainer(currentUser.getGitUserId(), gitGroupDto.getId()))
+                .thenCompose((s1) -> group)
+                .exceptionally(e -> logAndWrapException(course, currentUser, e));
+    }
+
+    private ProjectDto logAndWrapException(Course course, User user, Throwable v) {
+        String exceptionMsg = String.format("Cannot create git group for course: %s, user: %s", course, user);
+        log.error(exceptionMsg, v);
+        throw new GitAsynchronousOperationException(exceptionMsg, v);
     }
 
     private String createGroupName(Course course) {
