@@ -12,6 +12,8 @@ import {TaskService} from "../../../../services/task.service";
 import {Event} from "../../../../models/event";
 import {EventService} from "../../../../services/event.service";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
+import {forkJoin} from "rxjs/index";
+import {StudentLessonRepositoryService} from "../../../../services/student-lesson-repository.service";
 
 @Component({
   selector: 'cod-teacher-lesson-page',
@@ -24,6 +26,7 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
   private tasks: Task[] = [];
   private tasksVisibility: boolean[] = new Array(this.tasks.length);
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
+  private repoUrl: string;
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -31,7 +34,8 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
               private router: Router,
               private _location: Location,
               private taskService: TaskService,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private studentLessonRepositoryService: StudentLessonRepositoryService) {
   }
 
   ngOnInit() {
@@ -55,22 +59,21 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
   }
 
   private getLessonsAndTasks(): Observable<any> {
-    return this.getLesson()
-      .pipe(
-        switchMap((lesson: Lesson) => this.getTasks(lesson.id))
-      );
+    return this.route.paramMap
+      .pipe(switchMap((params) => forkJoin(
+        this.lessonService.getLesson(+params.get('lessonId')),
+        this.studentLessonRepositoryService.getTeacherLessonRepositoryUrl(+params.get('lessonId'))
+      )))
+      .pipe(switchMap(([lesson, repositoryUrl]) => {
+        this.lesson = lesson;
+        this.createRepositoryUrl(repositoryUrl);
+        return this.getTasks(lesson.id);
+      }))
   }
 
-  private getLesson(): Observable<Lesson> {
-    return this.route.paramMap
-      .pipe(
-        switchMap((params) => this.lessonService.getLesson(+params.get('lessonId'))),
-        map((lesson: Lesson) => {
-          this.lesson = lesson;
-
-          return this.lesson;
-        })
-      );
+  private createRepositoryUrl(lessonRepositoryUrl: String): void {
+    let repoDirectory: string = this.lesson.title.toLowerCase().replace(new RegExp(' ', 'g'), '-');
+    this.repoUrl = "git clone http://coddlers.pl:10080/" + lessonRepositoryUrl + " " + repoDirectory;
   }
 
   private getTasks(lessonId: number): Observable<any> {

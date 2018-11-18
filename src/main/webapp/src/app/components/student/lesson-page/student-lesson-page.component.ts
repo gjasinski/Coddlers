@@ -54,7 +54,7 @@ export class StudentLessonPageComponent implements OnInit {
         this.courseService.getCourseByCourseEditionId(+params.get('courseEditionId')),
         this.courseEditionService.getCourseEdition(+params.get('courseEditionId')),
         this.courseEditionService.getCourseEditionLesson(+params.get('courseEditionId'), +params.get('lessonId')),
-        this.studentLessonRepositoryService.getLessonRepositoryUrl(+params.get('courseEditionId'), +params.get('lessonId'))
+        this.studentLessonRepositoryService.getStudentLessonRepositoryUrl(+params.get('courseEditionId'), +params.get('lessonId'))
       )))
       .subscribe(([submissions, course, courseEdition, courseEditionLesson, lessonRepositoryUrl]) => {
         this.course = course;

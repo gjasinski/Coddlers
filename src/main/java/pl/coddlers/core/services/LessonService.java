@@ -234,4 +234,10 @@ public class LessonService {
         }
         return new LinkedList<>();
     }
+
+    public String getLessonRepositoryUrl(Long lessonId){
+        return lessonRepository.findById(lessonId)
+                .map(Lesson::getRepositoryUrl)
+                .orElseThrow(() -> new LessonNotFoundException(lessonId));
+    }
 }
