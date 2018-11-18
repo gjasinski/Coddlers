@@ -45,8 +45,13 @@ public class SubmissionController {
 
     @GetMapping(params = {"lessonId", "courseEditionId"})
     public ResponseEntity<Collection<SubmissionDto>> getStudentSubmission(@RequestParam(value = "courseEditionId") Long courseEditionId,
-                                                              @RequestParam(value = "lessonId") Long lessonId) {
+                                                                          @RequestParam(value = "lessonId") Long lessonId) {
         return ResponseEntity.ok(submissionService.getTaskSubmission(lessonId, courseEditionId));
+    }
+
+    @GetMapping(params = {"submissionId"})
+    public ResponseEntity<Collection<GitFileContent>> getSubmissionContent(@RequestParam(value = "submissionId") Long submissionId) {
+        return ResponseEntity.ok(submissionService.getSubmissionContent(submissionId));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
