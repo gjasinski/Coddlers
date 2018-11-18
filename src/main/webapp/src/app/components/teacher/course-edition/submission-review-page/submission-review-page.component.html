@@ -6,35 +6,69 @@
   <div class="row">
     <div class="col-12">
       <h2>{{fullName}}'s Submission</h2>
-      <td>Submission time: {{submission?.submissionTime | date: 'dd MMMM yyyy'}}</td>
+      Submission time: {{submission?.submissionTime | date: 'dd MMMM yyyy'}}
 
       <div class="line"></div>
       <br>
-      Submission files:
-      <div class="code-margin" *ngFor="let file of filesContent">
-        <div class="float-left">{{file.path}}</div>
-        <br/>
-      </div>
+      <ngb-tabset class="tabset-course">
+        <ngb-tab>
+          <ng-template ngbTabTitle>Files</ng-template>
+          <ng-template ngbTabContent>
+            <div class="content-container tab-border">
+              <div class="row">
+                <div class="col-md-12">
+                  <div ngbDropdown class="d-inline-block">
+                    <button class="btn btn-secondary" id="jumpto-dropdown" ngbDropdownToggle>
+                      Jump to:
+                    </button>
+                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1" id="version-dropdown-menu">
+                      <div *ngFor="let file of filesContent; let i = index">
+                        <a pageScroll [href]="'#file' + i">
+                          <button class="dropdown-item" >{{file.path}}</button>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="btn btn-secondary" style="float: right">Grade</button>
+                </div>
+              </div>
+              <div class="head-line"></div>
+              <b>Submission files: countFIles</b>
+              <div class="code-margin" *ngFor="let file of filesContent">
+                <div class="float-left">{{file.path}}</div>
+                <br/>
+              </div>
 
-      <div *ngFor="let file of filesContent; let i = index">
-        <button class="btn file-button" (click)="changeVisibilityForFile(i)">
-          <div class="float-left">{{file.path}}</div>
-          <div *ngIf="filesVisibility[i]">
-            <img src='assets/img/downArrow.png' class="arrow-image"/>
-          </div>
-          <div *ngIf="!filesVisibility[i]">
-            <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
-          </div>
-        </button>
-        <div *ngIf="filesVisibility[i]">
-          <div class="col-12">
-            <div class="row code-margin">
-              <pre><code>{{file.content}}</code></pre>
+              <div *ngFor="let file of filesContent; let i = index">
+                <button class="btn file-button" (click)="changeVisibilityForFile(i)">
+                  <div class="float-left" [id]="'file' + i" >{{file.path}}</div>
+                  <div *ngIf="filesVisibility[i]">
+                    <img src='assets/img/downArrow.png' class="arrow-image"/>
+                  </div>
+                  <div *ngIf="!filesVisibility[i]">
+                    <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+                  </div>
+                </button>
+                <div *ngIf="filesVisibility[i]">
+                  <div class="col-12">
+                    <div class="row code-margin">
+                      <pre><code>{{file.content}}</code></pre>
+                    </div>
+                    <br>
+                  </div>
+                </div>
+              </div>
             </div>
-            <br>
-          </div>
-        </div>
-      </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab>
+          <ng-template ngbTabTitle>Conversation</ng-template>
+          <ng-template ngbTabContent>
+            <div class="content-container tab-border">
+            </div>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
 
 
     </div>

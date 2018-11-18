@@ -13,8 +13,6 @@ import {Location} from "@angular/common";
 import {SubmissionService} from "../../../../services/submission.service";
 import {GitFileContent} from "../../../../models/gitFileContent";
 import {Submission} from "../../../../models/submission";
-import hljs from 'highlight.js/lib/highlight';
-import 'highlight.js/styles/github.css'
 
 @Component({
   selector: 'app-edition-page',
