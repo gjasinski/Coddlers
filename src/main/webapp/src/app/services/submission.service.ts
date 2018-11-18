@@ -54,18 +54,9 @@ export class SubmissionService {
         map((objArray: any[]) => objArray.map(obj => Submission.fromJSON(obj)))
       );
   }
-/*
-
-  public getSubmission(submissionId: number): Observable<Submission> {
-    return this.http.get<Submission>(`/api/submissions?submissionId=${submissionId}`);
-  }
-*/
 
   public getSubmission(submissionId: number): Observable<SubmissionData> {
     return this.http.get<SubmissionData>(`/api/submissions?submissionId=${submissionId}`);
   }
 
-  /*public getSubmissionStudentFullName(submissionId: number) {
-    return this.http.get(`/api/submissions/fullName?submissionId=${submissionId}`);
-  }*/
 }
