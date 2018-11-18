@@ -5,20 +5,37 @@
 <div *ngIf="route.children.length === 0" class="content-container">
   <div class="row">
     <div class="col-12">
-      <h2>{{lesson?.title}}'s Submission</h2>
-      <h4>Submission time: {{lesson?.title}}</h4>
+      <h2>{{fullName}}'s Submission</h2>
+      <td>Submission time: {{submission?.submissionTime | date: 'dd MMMM yyyy'}}</td>
 
       <div class="line"></div>
       <br>
-
-      <p>Due date: {{courseEditionLesson?.endDate | date: 'dd-MM-yyyy'}} </p>
-
-      <div *ngFor="let file of filesContent" >
-        {{file.path}}
-        <br>
-        {{file.content}}
-        <br>
+      Submission files:
+      <div class="code-margin" *ngFor="let file of filesContent">
+        <div class="float-left">{{file.path}}</div>
+        <br/>
       </div>
+
+      <div *ngFor="let file of filesContent; let i = index">
+        <button class="btn file-button" (click)="changeVisibilityForFile(i)">
+          <div class="float-left">{{file.path}}</div>
+          <div *ngIf="filesVisibility[i]">
+            <img src='assets/img/downArrow.png' class="arrow-image"/>
+          </div>
+          <div *ngIf="!filesVisibility[i]">
+            <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+          </div>
+        </button>
+        <div *ngIf="filesVisibility[i]">
+          <div class="col-12">
+            <div class="row code-margin">
+              <pre><code>{{file.content}}</code></pre>
+            </div>
+            <br>
+          </div>
+        </div>
+      </div>
+
 
     </div>
   </div>

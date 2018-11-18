@@ -11,7 +11,10 @@ import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs";
 import {Location} from "@angular/common";
 import {SubmissionService} from "../../../../services/submission.service";
-import {GitFileContent} from "../../../../models/GitFileContent";
+import {GitFileContent} from "../../../../models/gitFileContent";
+import {Submission} from "../../../../models/submission";
+import hljs from 'highlight.js/lib/highlight';
+import 'highlight.js/styles/github.css'
 
 @Component({
   selector: 'app-edition-page',
@@ -23,7 +26,10 @@ export class SubmissionReviewPageComponent implements OnInit {
   private courseEdition: CourseEdition;
   private course: Course;
   private submissionId: number;
-  private filesContent: GitFileContent[];
+  private filesContent: GitFileContent[] = [];
+  private filesVisibility: boolean[] = new Array(this.filesContent.length);
+  private submission: Submission;
+  private fullName: string;
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -46,10 +52,12 @@ export class SubmissionReviewPageComponent implements OnInit {
         this.courseEdition = courseEdition;
       });
     let paramsMapSubscription = this.route.paramMap
-      .pipe(switchMap((params) => this.submissionService.getSubmissionContent(+params.get("submissionId"))))
-      .subscribe(content =>{
-        console.error(content);
-        this.filesContent = content});
+      .pipe(switchMap((params) => this.submissionService.getSubmission(+params.get("submissionId"))))
+      .subscribe((submission) =>{
+        this.filesContent = submission.gitFileContents;
+        this.submission = submission.submission;
+        this.fullName = submission.fullName;
+      });
     this.subscriptionManager.add(paramMapSubscription);
   }
 
@@ -62,8 +70,9 @@ export class SubmissionReviewPageComponent implements OnInit {
     this.router.navigate(["teacher", "courses", this.course.id, "editions", this.courseEdition.id]);
   }
 
-  getRepositoryContent(){
-    this.submissionService.getSubmissionContent(this.submissionId)
-      .subscribe(v => console.error(v))
+  changeVisibilityForFile(file: number){
+    this.filesVisibility[file] = !this.filesVisibility[file];
   }
+
+
 }

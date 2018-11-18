@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.GitAsynchronousOperationException;
 import pl.coddlers.core.exceptions.SubmissionNotFoundException;
 import pl.coddlers.core.exceptions.TaskNotFoundException;
+import pl.coddlers.core.exceptions.UserNotFoundException;
 import pl.coddlers.core.models.Tuple;
 import pl.coddlers.core.models.converters.SubmissionConverter;
 import pl.coddlers.core.models.dto.GitFileContent;
@@ -21,6 +22,7 @@ import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.StudentLessonRepositoryRepository;
 import pl.coddlers.core.repositories.SubmissionRepository;
 import pl.coddlers.core.repositories.TaskRepository;
+import pl.coddlers.core.repositories.UserDataRepository;
 import pl.coddlers.git.models.GitFile;
 import pl.coddlers.git.services.GitFileService;
 
@@ -44,9 +46,10 @@ public class SubmissionService {
     private final TaskRepository taskRepository;
     private final GitFileService gitFileService;
     private final StudentLessonRepositoryRepository studentLessonRepositoryRepository;
+    private final UserDataRepository userDataRepository;
 
     @Autowired
-    public SubmissionService(SubmissionRepository submissionRepository, SubmissionConverter submissionConverter, CourseEditionRepository courseEditionRepository, UserDetailsServiceImpl userDetailsService, TaskRepository taskRepository, GitFileService gitFileService, StudentLessonRepositoryRepository studentLessonRepositoryRepository) {
+    public SubmissionService(SubmissionRepository submissionRepository, SubmissionConverter submissionConverter, CourseEditionRepository courseEditionRepository, UserDetailsServiceImpl userDetailsService, TaskRepository taskRepository, GitFileService gitFileService, StudentLessonRepositoryRepository studentLessonRepositoryRepository, UserDataRepository userDataRepository) {
         this.submissionRepository = submissionRepository;
         this.submissionConverter = submissionConverter;
         this.courseEditionRepository = courseEditionRepository;
@@ -54,6 +57,7 @@ public class SubmissionService {
         this.taskRepository = taskRepository;
         this.gitFileService = gitFileService;
         this.studentLessonRepositoryRepository = studentLessonRepositoryRepository;
+        this.userDataRepository = userDataRepository;
     }
 
     public Collection<SubmissionDto> getAllTaskSubmissions(long taskId) {
@@ -162,7 +166,6 @@ public class SubmissionService {
                         GitFileContent fileContent = new GitFileContent();
                         fileContent.setPath(f.getKey().getPath());
                         fileContent.setContent(f.getValue().get());
-                        log.debug(fileContent.getContent());
                         return fileContent;
                     } catch (InterruptedException | ExecutionException e) {
                         String message = String.format("Cannot download content of file. SubmissionId: %s, taskId: %s, gitRepositoryId: %s, branchName: %s.", submissionId, taskId, studentLessonRepository.getGitRepositoryId(), branchName);
@@ -180,6 +183,16 @@ public class SubmissionService {
             log.error(message, e);
             throw new GitAsynchronousOperationException(message, e);
         }
+    }
+
+    public String getStudentFullName(Long submissionId) {
+        Submission submission = this.submissionRepository.findById(submissionId)
+                .orElseThrow(() -> new SubmissionNotFoundException(submissionId));
+        Long id = submission.getUser().getId();
+        User user = userDataRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        return user.getFullName();
     }
 }
 
