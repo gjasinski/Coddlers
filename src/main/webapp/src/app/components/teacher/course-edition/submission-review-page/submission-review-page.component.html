@@ -24,7 +24,7 @@
                     <div ngbDropdownMenu aria-labelledby="dropdownBasic1" id="version-dropdown-menu">
                       <div *ngFor="let file of filesContent; let i = index">
                         <a pageScroll [href]="'#file' + i">
-                          <button class="dropdown-item" >{{file.path}}</button>
+                          <button class="dropdown-item">{{file.path}}</button>
                         </a>
                       </div>
                     </div>
@@ -33,7 +33,7 @@
                 </div>
               </div>
               <div class="head-line"></div>
-              <b>Submission files: countFIles</b>
+              <b>Submission files: {{numberOfFiles}}</b>
               <div class="code-margin" *ngFor="let file of filesContent">
                 <div class="float-left">{{file.path}}</div>
                 <br/>
@@ -41,7 +41,7 @@
 
               <div *ngFor="let file of filesContent; let i = index">
                 <button class="btn file-button" (click)="changeVisibilityForFile(i)">
-                  <div class="float-left" [id]="'file' + i" >{{file.path}}</div>
+                  <div class="float-left" [id]="'file' + i">{{file.path}}</div>
                   <div *ngIf="filesVisibility[i]">
                     <img src='assets/img/downArrow.png' class="arrow-image"/>
                   </div>
@@ -69,8 +69,6 @@
           </ng-template>
         </ngb-tab>
       </ngb-tabset>
-
-
     </div>
   </div>
 </div>

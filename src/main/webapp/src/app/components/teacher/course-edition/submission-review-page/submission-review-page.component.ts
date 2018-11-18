@@ -28,6 +28,7 @@ export class SubmissionReviewPageComponent implements OnInit {
   private filesVisibility: boolean[] = new Array(this.filesContent.length);
   private submission: Submission;
   private fullName: string;
+  private numberOfFiles :number;
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -40,7 +41,7 @@ export class SubmissionReviewPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    let paramMapSubscription = this.route.parent.paramMap
+    let paramParentMapSubscription = this.route.parent.paramMap
       .pipe(switchMap((params) => forkJoin(
         this.courseService.getCourseByCourseEditionId(+params.get('editionId')),
         this.courseEditionService.getCourseEdition(+params.get('editionId')),
@@ -49,14 +50,16 @@ export class SubmissionReviewPageComponent implements OnInit {
         this.course = course;
         this.courseEdition = courseEdition;
       });
-    let paramsMapSubscription = this.route.paramMap
+    let paramMapSubscription = this.route.paramMap
       .pipe(switchMap((params) => this.submissionService.getSubmission(+params.get("submissionId"))))
       .subscribe((submission) =>{
         this.filesContent = submission.gitFileContents;
         this.submission = submission.submission;
         this.fullName = submission.fullName;
+        this.numberOfFiles = this.filesContent.length
       });
     this.subscriptionManager.add(paramMapSubscription);
+    this.subscriptionManager.add(paramParentMapSubscription);
   }
 
   back(e) {
