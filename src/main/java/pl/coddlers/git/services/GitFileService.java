@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.coddlers.git.models.GitFile;
 
+import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,6 +27,8 @@ public class GitFileService {
     private static final String PER_PAGE = "per_page";
     private static final String SEARCH_FILE_RECURSIVELY = "true";
     private static final int NUMBER_OF_FILES_PER_PAGE = 1000;
+    private static final String REPOSITORY_FILES = "/repository/files/";
+    private static final String RAW = "/raw";
 
     private final RestTemplate restTemplate = new RestTemplate();
     @Value("${gitlab.api.host}:${gitlab.api.http.port}${gitlab.api.prefix}")
@@ -59,6 +62,21 @@ public class GitFileService {
         }, executor);
     }
 
+    public CompletableFuture<String> getFileContent(Long gitRepositoryId, String branch, String filePath) {
+        return CompletableFuture.supplyAsync(() -> {
+            String urlEncodedFilePath = filePath.replaceAll("/", "%2F");
+            String resourceUrl = gitlabApi + PROJECTS + gitRepositoryId + REPOSITORY_FILES + urlEncodedFilePath + RAW;
+
+            UriComponentsBuilder builder = createComponentBuilder(resourceUrl)
+                    .queryParam(REF, branch);
+
+            URI uri = builder.build(true).toUri();
+
+            RestTemplate rr = new RestTemplate();
+            return rr.getForObject(uri, String.class);
+        }, executor);
+    }
+
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -66,7 +84,7 @@ public class GitFileService {
     }
 
     private UriComponentsBuilder createComponentBuilder(String resourceUrl) {
-        return UriComponentsBuilder.fromHttpUrl(resourceUrl)
+        return UriComponentsBuilder.fromUriString(resourceUrl)
                 .queryParam(PRIVATE_TOKEN, privateToken);
     }
 
