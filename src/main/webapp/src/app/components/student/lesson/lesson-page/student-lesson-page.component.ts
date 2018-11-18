@@ -1,25 +1,25 @@
-///<reference path="../../../../../node_modules/rxjs/internal/Observable.d.ts"/>
+///<reference path="../../../../../../node_modules/rxjs/internal/Observable.d.ts"/>
 import {Component, OnInit} from '@angular/core';
-import {Lesson} from "../../../models/lesson";
-import {Task} from "../../../models/task";
-import {Course} from "../../../models/course";
+import {Lesson} from "../../../../models/lesson";
+import {Task} from "../../../../models/task";
+import {Course} from "../../../../models/course";
 import {Observable} from "rxjs/internal/Observable";
 import {map, switchMap} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
-import {LessonService} from "../../../services/lesson.service";
-import {CourseService} from "../../../services/course.service";
-import {TaskService} from "../../../services/task.service";
-import {CourseEdition} from "../../../models/courseEdition";
-import {CourseEditionService} from "../../../services/course-edition.service";
-import {CourseEditionLesson} from "../../../models/courseEditionLesson";
-import {SubmissionService} from "../../../services/submission.service";
-import {Submission} from "../../../models/submission";
-import {SubmissionStatusType} from "../../../models/submissionStatusType";
-import {StudentLessonRepositoryService} from "../../../services/student-lesson-repository.service";
-import {SubscriptionManager} from "../../../utils/SubscriptionManager";
+import {LessonService} from "../../../../services/lesson.service";
+import {CourseService} from "../../../../services/course.service";
+import {TaskService} from "../../../../services/task.service";
+import {CourseEdition} from "../../../../models/courseEdition";
+import {CourseEditionService} from "../../../../services/course-edition.service";
+import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
+import {SubmissionService} from "../../../../services/submission.service";
+import {Submission} from "../../../../models/submission";
+import {SubmissionStatusType} from "../../../../models/submissionStatusType";
+import {StudentLessonRepositoryService} from "../../../../services/student-lesson-repository.service";
+import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs/index";
-import {SubmissionStatus, SubmissionStatusEnum} from "../../../models/submissionStatusEnum";
+import {SubmissionStatus, SubmissionStatusEnum} from "../../../../models/enums/submissionStatusEnum";
 
 @Component({
   selector: 'cod-student-lesson-page',
@@ -49,21 +49,28 @@ export class StudentLessonPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    let paramMapSubscription = this.route.paramMap
-      .pipe(switchMap((params) => forkJoin(
-        this.getLessonAndTasksAndReturnSubmissions(params),
+    let paramParentMapSubscription = this.route.parent.paramMap.pipe(
+      switchMap((params) => forkJoin(
         this.courseService.getCourseByCourseEditionId(+params.get('courseEditionId')),
         this.courseEditionService.getCourseEdition(+params.get('courseEditionId')),
-        this.courseEditionService.getCourseEditionLesson(+params.get('courseEditionId'), +params.get('lessonId')),
-        this.studentLessonRepositoryService.getLessonRepositoryUrl(+params.get('courseEditionId'), +params.get('lessonId'))
-      )))
-      .subscribe(([submissions, course, courseEdition, courseEditionLesson, lessonRepositoryUrl]) => {
+      ))).subscribe(([course, courseEdition]) => {
         this.course = course;
         this.courseEdition = courseEdition;
+
+      let paramMapSubscription = this.route.paramMap
+      .pipe(switchMap((params) => forkJoin(
+        this.getLessonAndTasksAndReturnSubmissions(params),
+        this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, +params.get('lessonId')),
+        this.studentLessonRepositoryService.getLessonRepositoryUrl(this.courseEdition.id, +params.get('lessonId'))
+      )))
+      .subscribe(([submissions, courseEditionLesson, lessonRepositoryUrl]) => {
         this.courseEditionLesson = courseEditionLesson;
         this.createRepositoryUrl(lessonRepositoryUrl);
       });
-    this.subscriptionManager.add(paramMapSubscription);
+      this.subscriptionManager.add(paramMapSubscription);
+    });
+
+    this.subscriptionManager.add(paramParentMapSubscription);
   }
 
   private getLessonAndTasksAndReturnSubmissions(params): Observable<Submission[]> {
@@ -115,10 +122,10 @@ export class StudentLessonPageComponent implements OnInit {
 
 
   descriptionStatus(submissionStatusType: SubmissionStatusType): String {
-    return SubmissionStatus.getEnumFromString(submissionStatusType.toString()).toDescription();
+    return SubmissionStatus.getEnumFromString(submissionStatusType.toString()).toString();
   }
 
   isGraded(submission: number): boolean {
-    return this.submissions[submission].submissionStatusType.toString() === SubmissionStatusEnum.GRADED.toDescription();
+    return this.submissions[submission].submissionStatusType.toString() === SubmissionStatusEnum.GRADED.toString();
   }
 }

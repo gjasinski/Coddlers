@@ -15,9 +15,9 @@ import {UserRouteAccessService} from "./auth/user-route-access.service";
 import {AccountTypesConstants} from "./constants/account-types.constants";
 import {CourseEditionPageComponent} from "./components/teacher/course-edition/course-edition-page/course-edition-page.component";
 import {InvitePageComponent} from "./components/common/invite-page/invite-page.component";
-import {StudentMyCoursesComponent} from "./components/student/student-my-courses/student-my-courses.component";
-import {StudentLessonPageComponent} from "./components/student/lesson-page/student-lesson-page.component";
-
+import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
+import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
+import {StudentLessonPageComponent} from "./components/student/lesson/lesson-page/student-lesson-page.component";
 
 export const ROUTES: Routes = [
   {
@@ -40,9 +40,18 @@ export const ROUTES: Routes = [
       },
       {
         path: 'course-editions',
-        component: StudentMyCoursesComponent,
+        component: StudentCoursePageComponent,
         children: [
-          {path: ':courseEditionId/lessons/:lessonId', component: StudentLessonPageComponent}
+          {
+            path: ':courseEditionId',
+            component: StudentCourseEditionPageComponent,
+            children: [
+              {
+                path: 'lessons/:lessonId',
+                component: StudentLessonPageComponent
+              }
+            ]
+          }
         ]
       }
     ]

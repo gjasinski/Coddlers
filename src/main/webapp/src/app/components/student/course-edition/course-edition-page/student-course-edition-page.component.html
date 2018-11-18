@@ -1,0 +1,130 @@
+<div *ngIf="route.children.length === 0" class="content-container">
+
+  <h2> {{course?.title}} </h2>
+
+  <ngb-tabset class="tabset-course">
+    <ngb-tab>
+      <ng-template ngbTabTitle>Course</ng-template>
+      <ng-template ngbTabContent>
+        <div class="content-container course-container">
+          <div class="row col-md-12 mt-5>">
+            <div class="col-md-10">
+              <div class="row">
+                <div class="col-md-9">
+                  <h6><b>{{courseEdition?.startDate | date: 'dd MMMM yyyy'}}</b></h6>
+                </div>
+                <div class="col-md-3 pull-right">
+                  <button class="btn btn-secondary">My course results</button>
+                </div>
+              </div>
+
+              <div>
+                <h5>Description</h5>
+                <p>{{course?.description}}</p>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="lesson-container card">
+                    <div class="lesson-header card-header">
+                      <h4>Lessons</h4>
+                    </div>
+                    <div>
+                      <div class="col-md-6 text-right mt-4">
+                        <div class="row">
+                          <div class="col-md-5">
+                            <h6>Submitted: {{submitted}}/{{submissionsStatus.size}}</h6>
+                          </div>
+                          <div class="col-md-7">
+                            <ngb-progressbar *ngIf="submissionsStatus.size != 0" type="success"
+                                             [value]="submitted * 100 / submissionsStatus.size" [showValue]="true">
+                            </ngb-progressbar>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-5">
+                            <h6>Graded: {{ graded}}/{{submissionsGrade.size}}</h6>
+                          </div>
+                          <div class="col-md-7">
+                            <ngb-progressbar *ngIf="submissionsGrade.size != 0" type="success"
+                                             [value]="graded * 100 / submissionsGrade.size" [showValue]="true">
+                            </ngb-progressbar>
+                          </div>
+                        </div>
+                      </div>
+
+                      <ul class="course-list">
+                        <li class="course-item card" *ngFor="let lesson of lessons; let i = index">
+                          <a class="card-body" [routerLink]="['lessons/', lesson.id]">
+
+                            <div class="row col-md-12 mt-1">
+                              <div class="col-md-8">
+                                <div class="row">
+                                  <h5>Lesson {{ i + 1 }}: {{ lesson.title }}</h5>
+                                </div>
+                                <div class="row lesson-details mt-2">
+                                  <div class="col-md-6"><strong>Status:</strong>
+                                    {{ submissionsStatus.get(lesson) }}
+                                  </div>
+                                  <div class="col-md-6"><strong>Result:</strong>
+                                    {{ submissionsGrade.get(lesson) }}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-4 lesson-details pull-right">
+                                <div class="row mt-4">
+                                  <strong>Due date:</strong>
+                                  {{ editionLessons.get(lesson)?.endDate | date: 'dd MMMM yyyy' }}
+                                </div>
+                                <div class="row mt-2">
+                                  <strong>Weight:</strong>
+                                  {{ lesson.weight }}
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 mt-5">
+              <div class="row">
+                <h4>People</h4>
+              </div>
+              <div class="row">
+                <button id="students-list" class="btn btn-secondary people-button float-md-right">
+                  Students
+                </button>
+                <button id="teacher-list" class="btn btn-secondary people-button float-md-right">
+                  Teachers
+                </button>
+              </div>
+              <div class="row notes">
+                <h4>Notes</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab>
+      <ng-template ngbTabTitle>Discussion</ng-template>
+      <ng-template ngbTabContent>
+        <div class="row mt-3">
+          <div class="col-md-3">
+            <button id="add-new-thread" class="btn btn-secondary">
+              Add new thread
+            </button>
+          </div>
+        </div>
+
+      </ng-template>
+    </ngb-tab>
+
+  </ngb-tabset>
+</div>
+
+<router-outlet></router-outlet>

@@ -22,7 +22,6 @@ import {TeacherLessonPageComponent} from './components/teacher/lesson/lesson-pag
 import {EditLessonPageComponent} from './components/teacher/lesson/edit-lesson-page/edit-lesson-page.component';
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
-import {StudentLessonPageComponent} from './components/student/lesson-page/student-lesson-page.component';
 import {LandingPageComponent} from './components/common/landing-page/landing-page.component';
 import {HasAnyAuthorityDirective} from './auth/has-any-authority.directive';
 import {AuthenticationService} from "./auth/authentication.service";
@@ -48,8 +47,10 @@ import {TagInputModule} from "ngx-chips";
 import {ClipboardModule} from 'ngx-clipboard';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {InviteTeachersModalComponent} from './components/teacher/course/invite-teachers-modal/invite-teachers-modal.component';
-import { StudentMyCoursesComponent } from './components/student/student-my-courses/student-my-courses.component';
 import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal.component';
+import {StudentLessonPageComponent} from "./components/student/lesson/lesson-page/student-lesson-page.component";
+import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
+import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal
     AfterAddToCourseModalComponent,
     InviteStudentsModalComponent,
     InviteTeachersModalComponent,
-    StudentMyCoursesComponent
+    StudentCourseEditionPageComponent,
+    StudentCoursePageComponent
   ],
   imports: [
     BrowserModule,
