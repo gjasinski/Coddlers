@@ -51,7 +51,6 @@ public class GitFileService {
 
 
             HttpEntity<?> entity = new HttpEntity<>(headers);
-            log.error(builder.build().toUriString());
 
             return restTemplate.exchange(
                     builder.build().toUriString(),
