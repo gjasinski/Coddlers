@@ -1,0 +1,21 @@
+<div class="col-md-12">
+  <h4 (click)="navigateToCourseEdition()" class="navigation-header">{{courseEdition?.title}}</h4>
+</div>
+
+<div *ngIf="route.children.length === 0" class="content-container">
+  <div class="row">
+    <div class="col-12">
+      <h2>{{lesson?.title}}'s Submission</h2>
+      <h4>Submission time: {{lesson?.title}}</h4>
+
+      <div class="line"></div>
+      <br>
+
+      <p>Due date: {{courseEditionLesson?.endDate | date: 'dd-MM-yyyy'}} </p>
+
+    </div>
+  </div>
+</div>
+
+
+<router-outlet></router-outlet>

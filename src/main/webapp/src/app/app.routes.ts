@@ -17,6 +17,7 @@ import {CourseEditionPageComponent} from "./components/teacher/course-edition/co
 import {InvitePageComponent} from "./components/common/invite-page/invite-page.component";
 import {StudentMyCoursesComponent} from "./components/student/student-my-courses/student-my-courses.component";
 import {StudentLessonPageComponent} from "./components/student/lesson-page/student-lesson-page.component";
+import {SubmissionReviewPageComponent} from "./components/teacher/course-edition/submission-review-page/submission-review-page.component";
 
 
 export const ROUTES: Routes = [
@@ -75,7 +76,13 @@ export const ROUTES: Routes = [
                   {path: 'edit-lesson', component: EditLessonPageComponent}
                 ]
               },
-              {path: 'editions/:editionId', component: CourseEditionPageComponent}
+              {
+                path: 'editions/:editionId',
+                component: CourseEditionPageComponent,
+                children: [
+                  {path: 'submission/:submissionId', component: SubmissionReviewPageComponent}
+                ]
+              }
             ]
           }
         ]
