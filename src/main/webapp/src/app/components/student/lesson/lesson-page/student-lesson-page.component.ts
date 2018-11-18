@@ -7,16 +7,6 @@ import {Observable} from "rxjs/internal/Observable";
 import {map, switchMap} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
-import {LessonService} from "../../../services/lesson.service";
-import {CourseService} from "../../../services/course.service";
-import {TaskService} from "../../../services/task.service";
-import {CourseEdition} from "../../../models/courseEdition";
-import {CourseEditionService} from "../../../services/course-edition.service";
-import {CourseEditionLesson} from "../../../models/courseEditionLesson";
-import {SubmissionService} from "../../../services/submission.service";
-import {Submission} from "../../../models/submission";
-import {StudentLessonRepositoryService} from "../../../services/student-lesson-repository.service";
-import {SubscriptionManager} from "../../../utils/SubscriptionManager";
 import {LessonService} from "../../../../services/lesson.service";
 import {CourseService} from "../../../../services/course.service";
 import {TaskService} from "../../../../services/task.service";
@@ -25,11 +15,10 @@ import {CourseEditionService} from "../../../../services/course-edition.service"
 import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
 import {SubmissionService} from "../../../../services/submission.service";
 import {Submission} from "../../../../models/submission";
-import {SubmissionStatusType} from "../../../../models/submissionStatusType";
 import {StudentLessonRepositoryService} from "../../../../services/student-lesson-repository.service";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs/index";
-import {SubmissionStatus, SubmissionStatusEnum} from "../../../../models/enums/submissionStatusEnum";
+import {SubmissionStatus, SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
 
 @Component({
   selector: 'cod-student-lesson-page',
@@ -137,10 +126,10 @@ export class StudentLessonPageComponent implements OnInit {
 
 
   descriptionStatus(submissionStatus: SubmissionStatus): String {
-    return SubmissionStatus.getEnumFromString(submissionStatus.toString()).toDescription();
+    return SubmissionStatus.getEnumFromString(submissionStatus.toString()).toString();
   }
 
   isGraded(submission: number): boolean {
-    return this.submissions[submission].submissionStatus.toString() === SubmissionStatusEnum.GRADED.toDescription();
+    return this.submissions[submission].submissionStatus.toString() === SubmissionStatusEnum.GRADED.toString();
   }
 }

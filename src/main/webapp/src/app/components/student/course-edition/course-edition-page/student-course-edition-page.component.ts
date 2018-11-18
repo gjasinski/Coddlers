@@ -14,9 +14,8 @@ import {CourseEdition} from "../../../../models/courseEdition";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {SubmissionService} from "../../../../services/submission.service";
 import {Submission} from "../../../../models/submission";
-import {SubmissionStatusEnum} from "../../../../models/enums/submissionStatusEnum";
-import {GradeStatusEnum} from "../../../../models/enums/gradeStatusEnum";
 import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
+import {SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
 import * as _ from "lodash";
 
 @Component({
@@ -30,7 +29,7 @@ export class StudentCourseEditionPageComponent implements OnInit {
   lessons: Lesson[] = [];
   editionLessons: Map<Lesson, CourseEditionLesson> = new Map<Lesson, CourseEditionLesson>();
   submissionsStatus: Map<Lesson, string> = new Map<Lesson, string>();
-  submissionsGrade: Map<Lesson, any> = new Map<Lesson, any>();
+  submissionsGrade: Map<Lesson, number> = new Map<Lesson, any>();
 
   submitted: number = 0;
   graded: number = 0;
@@ -41,11 +40,11 @@ export class StudentCourseEditionPageComponent implements OnInit {
               private route: ActivatedRoute,
               private _location: Location,
               private lessonService: LessonService,
-              private router: Router,
               private courseVersionService: CourseVersionService,
               private courseEditionService: CourseEditionService,
               private submissionService: SubmissionService,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -64,11 +63,10 @@ export class StudentCourseEditionPageComponent implements OnInit {
         .subscribe((submissions: Submission[]) => {
           if (submissions.length === 0) {
             this.submissionsStatus.set(lesson, SubmissionStatusEnum.NOT_SUBMITTED.toString());
-            this.submissionsGrade.set(lesson, GradeStatusEnum.NOT_GRADED.toString());
           } else {
-            this.submissionsStatus.set(lesson, submissions[submissions.length - 1].submissionStatusType.name);
-            this.submissionsGrade.set(lesson, submissions[submissions.length - 1].points);
+            this.submissionsStatus.set(lesson, submissions[submissions.length - 1].submissionStatus.toString());
           }
+          this.submissionsGrade.set(lesson, submissions[submissions.length - 1].points);
         });
 
         let editionLessonSub = this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, lesson.id)
@@ -84,10 +82,11 @@ export class StudentCourseEditionPageComponent implements OnInit {
     this.subscriptionManager.add(paramsSub);
 
     this.submitted = _.filter(this.submissionsStatus.values(), !SubmissionStatusEnum.NOT_SUBMITTED.toString()).length;
-    this.graded = _.filter(this.submissionsGrade.values(), !GradeStatusEnum.NOT_GRADED.toString()).length;
+    this.graded = _.filter(this.submissionsGrade.values(), SubmissionStatusEnum.GRADED.toString()).length;
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy():
+    void {
     this.subscriptionManager.unsubscribeAll();
   }
 }

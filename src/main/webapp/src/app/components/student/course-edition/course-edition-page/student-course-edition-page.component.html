@@ -33,7 +33,7 @@
                       <div class="col-md-6 text-right mt-4">
                         <div class="row">
                           <div class="col-md-5">
-                            <h6>Submitted: {{submitted}}/{{submissionsStatus.size}}</h6>
+                            <h6>Submitted: {{ submitted }}/{{ submissionsStatus.size }}</h6>
                           </div>
                           <div class="col-md-7">
                             <ngb-progressbar *ngIf="submissionsStatus.size != 0" type="success"
@@ -43,7 +43,7 @@
                         </div>
                         <div class="row">
                           <div class="col-md-5">
-                            <h6>Graded: {{ graded}}/{{submissionsGrade.size}}</h6>
+                            <h6>Graded: {{ graded }}/{{ submissionsGrade.size }}</h6>
                           </div>
                           <div class="col-md-7">
                             <ngb-progressbar *ngIf="submissionsGrade.size != 0" type="success"
@@ -67,7 +67,8 @@
                                     {{ submissionsStatus.get(lesson) }}
                                   </div>
                                   <div class="col-md-6"><strong>Result:</strong>
-                                    {{ submissionsGrade.get(lesson) }}
+                                    {{ submissionsStatus.get(lesson) === 'NOT_GRADED'
+                                    ? submissionsGrade.get(lesson) : 'NOT GRADED' }}
                                   </div>
                                 </div>
                               </div>
