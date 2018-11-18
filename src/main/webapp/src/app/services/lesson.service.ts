@@ -42,6 +42,11 @@ export class LessonService {
       );
   }
 
+  public forkLessons(courseEditionId: number, lessonId: number): Observable<Object[]> {
+    return this.http.get<Lesson[]>(`api/lessons?courseEditionId=${courseEditionId}&lessonId=${lessonId}`);
+  }
+
+
   public createLesson(assignment: Lesson): Observable<any> {
     return this.http.post('api/lessons', assignment.toJSON(), this.httpOptions);
   }

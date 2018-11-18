@@ -32,7 +32,13 @@ public class StudentLessonRepositoryService {
 		CourseEdition courseEdition = courseEditionRepository.getOne(courseEditionId);
 		Lesson lesson = lessonRepository.getOne(lessonId);
 		StudentLessonRepository repository = this.studentLessonRepositoryRepository.findByCourseEditionAndLessonAndUser(courseEdition, lesson, currentUser);
-		return repository.getRepositoryUrl();
+		if(repository == null){
+			// TODO: 14.11.18 do it better
+			return "";
+		}
+		else {
+			return repository.getRepositoryUrl();
+		}
 	}
 
 }

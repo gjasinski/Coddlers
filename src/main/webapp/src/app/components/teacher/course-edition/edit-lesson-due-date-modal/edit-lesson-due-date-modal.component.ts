@@ -44,8 +44,8 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
     this.eventSubscription = this.eventService.events.pipe(
       filter((event: Event) => event.eventType === 'open-edit-lesson-due-date-modal'),
       switchMap((event: Event) => forkJoin([
-        this.lessonService.getLesson(event.eventData.lessonId),
-        this.courseEditionService.getCourseEditionLesson(event.eventData.editionId, event.eventData.lessonId)
+          this.lessonService.getLesson(event.eventData.lessonId),
+          this.courseEditionService.getCourseEditionLesson(event.eventData.editionId, event.eventData.lessonId)
         ])
       ),
       tap(([lesson, courseEditionLesson]: [Lesson, CourseEditionLesson]) => {
@@ -64,8 +64,8 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
   private getDateObj(date: Date): any {
     return {
       year: date.getFullYear(),
-      month: date.getUTCMonth() + 1,
-      day: date.getUTCDate()
+      month: date.getMonth() + 1,
+      day: date.getDate()
     }
   }
 
@@ -84,13 +84,13 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
 
   saveLesson(lesson) {
     let sub = this.courseEditionService.updateCourseEditionLesson(this.courseEditionLesson.id,
-        new CourseEditionLesson(
-          this.courseEditionLesson.id,
-          this.convertToDate(lesson.startDate),
-          this.convertToDate(lesson.endDate),
-          this.courseEditionLesson.courseEditionId,
-          this.courseEditionLesson.lessonId
-        ))
+      new CourseEditionLesson(
+        this.courseEditionLesson.id,
+        this.convertToDate(lesson.startDate),
+        this.convertToDate(lesson.endDate),
+        this.courseEditionLesson.courseEditionId,
+        this.courseEditionLesson.lessonId
+      ))
       .subscribe(() => {
         this.modalRefNgb.close('updated');
         this.eventService.emit(new Event('edit-lesson-due-date-updated'));
@@ -99,6 +99,6 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
   }
 
   private convertToDate(dateObj: any): Date {
-    return new Date(`${dateObj.year}-${dateObj.month}-${dateObj.day}`);
+    return new Date(dateObj.year, dateObj.month - 1, dateObj.day);
   }
 }

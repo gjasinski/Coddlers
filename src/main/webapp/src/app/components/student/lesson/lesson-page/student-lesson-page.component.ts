@@ -7,6 +7,16 @@ import {Observable} from "rxjs/internal/Observable";
 import {map, switchMap} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
+import {LessonService} from "../../../services/lesson.service";
+import {CourseService} from "../../../services/course.service";
+import {TaskService} from "../../../services/task.service";
+import {CourseEdition} from "../../../models/courseEdition";
+import {CourseEditionService} from "../../../services/course-edition.service";
+import {CourseEditionLesson} from "../../../models/courseEditionLesson";
+import {SubmissionService} from "../../../services/submission.service";
+import {Submission} from "../../../models/submission";
+import {StudentLessonRepositoryService} from "../../../services/student-lesson-repository.service";
+import {SubscriptionManager} from "../../../utils/SubscriptionManager";
 import {LessonService} from "../../../../services/lesson.service";
 import {CourseService} from "../../../../services/course.service";
 import {TaskService} from "../../../../services/task.service";
@@ -65,7 +75,12 @@ export class StudentLessonPageComponent implements OnInit {
       )))
       .subscribe(([submissions, courseEditionLesson, lessonRepositoryUrl]) => {
         this.courseEditionLesson = courseEditionLesson;
-        this.createRepositoryUrl(lessonRepositoryUrl);
+        if(lessonRepositoryUrl.length > 1) {
+          this.createRepositoryUrl(lessonRepositoryUrl);
+        }
+        else {
+          this.repoUrl = "Your repository is not forked yet"
+        }
       });
       this.subscriptionManager.add(paramMapSubscription);
     });
@@ -121,11 +136,11 @@ export class StudentLessonPageComponent implements OnInit {
   }
 
 
-  descriptionStatus(submissionStatusType: SubmissionStatusType): String {
-    return SubmissionStatus.getEnumFromString(submissionStatusType.toString()).toString();
+  descriptionStatus(submissionStatus: SubmissionStatus): String {
+    return SubmissionStatus.getEnumFromString(submissionStatus.toString()).toDescription();
   }
 
   isGraded(submission: number): boolean {
-    return this.submissions[submission].submissionStatusType.toString() === SubmissionStatusEnum.GRADED.toString();
+    return this.submissions[submission].submissionStatus.toString() === SubmissionStatusEnum.GRADED.toDescription();
   }
 }

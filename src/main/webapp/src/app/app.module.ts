@@ -51,6 +51,7 @@ import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal
 import {StudentLessonPageComponent} from "./components/student/lesson/lesson-page/student-lesson-page.component";
 import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
 import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
+import { SubmissionMenuModalComponent } from './components/teacher/course-edition/submission-menu-modal/submission-menu-modal.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,8 @@ import {StudentCourseEditionPageComponent} from "./components/student/course-edi
     InviteTeachersModalComponent,
     StudentCourseEditionPageComponent,
     StudentCoursePageComponent
+    StudentMyCoursesComponent,
+    SubmissionMenuModalComponent
   ],
   imports: [
     BrowserModule,

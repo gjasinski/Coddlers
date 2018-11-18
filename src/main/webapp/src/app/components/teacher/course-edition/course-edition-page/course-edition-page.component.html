@@ -34,12 +34,13 @@
             <div *ngIf="showLesson[lessonIndex]">
               <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
               <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due date</button>
+              <button class="btn" (click)="forkLesson(lesson)">Fork</button>
 
-              <div *ngFor="let task of courseMap.get(lesson); let taskIndex = index">
+              <div *ngFor="let task of courseMap.get(lesson)">
                 <br>
-                <h5 (click)="changeVisibilityForSubmissions(taskIndex)">{{task.title}}</h5>
+                <h5 (click)="changeVisibilityForSubmissions(task)">{{task.title}}</h5>
 
-                <table *ngIf="showTask[taskIndex]" class="table tasks-table">
+                <table *ngIf="showTask.get(task)" class="table tasks-table">
                   <thead>
                   <tr>
                     <th scope="col">No</th>
@@ -55,15 +56,16 @@
                   <tr *ngFor="let submission of submissionsMap.get(task); let submissionIndex = index"
                       [attr.data-index]="submissionIndex">
                     <td>{{submissionIndex+1}}</td>
-                    <td>{{submission.user.firstname}} {{submission.user.lastname}}</td>
+                    <td>{{submission.userFullName}}</td>
                     <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
-                    <td>{{submission.submissionStatusType.name}}</td>
+                    <td>{{descriptionStatus(submission)}}</td>
                     <td>
-                      <img src='assets/img/{{submission.submissionStatusType.name}}.png' class="submission-status-img"/>
+                      <img src="assets/img/{{submission.submissionStatus.toString().toLowerCase()}}.png" class="submission-status-img"/>
                     </td>
-                    <td>{{submission.points}}</td>
+                    <td *ngIf="isGraded(submission)">{{submission.points}}</td>
+                    <td *ngIf="!isGraded(submission)">-</td>
                     <td>
-                      <div class="dots"></div>
+                      <div class="dots" (click)="openSubmissionMenuModal(submission)"></div>
                     </td>
                   </tr>
                   </tbody>
@@ -90,3 +92,4 @@
 <router-outlet></router-outlet>
 <cod-edit-lesson-due-date-modal></cod-edit-lesson-due-date-modal>
 <cod-invite-students-modal></cod-invite-students-modal>
+<cod-submission-menu-modal></cod-submission-menu-modal>
