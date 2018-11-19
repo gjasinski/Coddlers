@@ -18,6 +18,7 @@ import {InvitePageComponent} from "./components/common/invite-page/invite-page.c
 import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
 import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
 import {StudentLessonPageComponent} from "./components/student/lesson/lesson-page/student-lesson-page.component";
+import {StudentResultsPageComponent} from "./components/student/results/results-page/student-results-page.component";
 
 export const ROUTES: Routes = [
   {
@@ -53,6 +54,10 @@ export const ROUTES: Routes = [
             ]
           }
         ]
+      },
+      {
+        path: 'results',
+        component: StudentResultsPageComponent
       }
     ]
   },

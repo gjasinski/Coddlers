@@ -52,6 +52,8 @@ import {StudentLessonPageComponent} from "./components/student/lesson/lesson-pag
 import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
 import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
 import {SubmissionMenuModalComponent} from './components/teacher/course-edition/submission-menu-modal/submission-menu-modal.component';
+import {StudentResultsPageComponent} from './components/student/results/results-page/student-results-page.component';
+import {StudentDetailedResultsPageComponent} from './components/student/results/detailed-results-page/student-detailed-results-page.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import {SubmissionMenuModalComponent} from './components/teacher/course-edition/
     InviteTeachersModalComponent,
     StudentCourseEditionPageComponent,
     StudentCoursePageComponent,
-    SubmissionMenuModalComponent
+    SubmissionMenuModalComponent,
+    StudentResultsPageComponent,
+    StudentDetailedResultsPageComponent
   ],
   imports: [
     BrowserModule,
