@@ -62,12 +62,21 @@ export class StudentCourseEditionPageComponent implements OnInit {
         let submissionSub = this.submissionService.getSubmissionsForLesson(this.courseEdition.id, lesson.id)
         .subscribe((submissions: Submission[]) => {
           if (submissions.length === 0) {
-            this.submissionsStatus.set(lesson, SubmissionStatusEnum.NOT_SUBMITTED.toString());
-            this.submissionsGrade.set(lesson, 0);
+            this.submissionsStatus.set(lesson, SubmissionStatusEnum.NOT_SUBMITTED.description);
+            this.submissionsGrade.set(lesson, -1);
           } else {
-            this.submissionsStatus.set(lesson, submissions[submissions.length - 1].submissionStatus.toString());
-            this.submissionsGrade.set(lesson, submissions[submissions.length - 1].points);
+            this.submissionsStatus.set(lesson, _.last(submissions).submissionStatus);
+            if (this.submissionsStatus.get(lesson) === SubmissionStatusEnum.NOT_SUBMITTED.description) {
+              this.submissionsGrade.set(lesson, -1);
+            } else {
+              this.submissionsGrade.set(lesson, _.last(submissions).points);
+            }
           }
+
+          this.submitted = _.size(_.filter(Array.from(this.submissionsStatus.values(),
+            status => status !== SubmissionStatusEnum.NOT_SUBMITTED.description)));
+          this.graded = _.size(_.filter(Array.from(this.submissionsGrade.values()),
+            grade => grade >= 0));
         });
 
         let editionLessonSub = this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, lesson.id)
@@ -81,9 +90,6 @@ export class StudentCourseEditionPageComponent implements OnInit {
     });
 
     this.subscriptionManager.add(paramsSub);
-
-    this.submitted = _.filter(this.submissionsStatus.values(), !SubmissionStatusEnum.NOT_SUBMITTED.toString()).length;
-    this.graded = _.filter(this.submissionsGrade.values(), SubmissionStatusEnum.GRADED.toString()).length;
   }
 
   ngOnDestroy():
