@@ -63,10 +63,11 @@ export class StudentCourseEditionPageComponent implements OnInit {
         .subscribe((submissions: Submission[]) => {
           if (submissions.length === 0) {
             this.submissionsStatus.set(lesson, SubmissionStatusEnum.NOT_SUBMITTED.toString());
+            this.submissionsGrade.set(lesson, 0);
           } else {
             this.submissionsStatus.set(lesson, submissions[submissions.length - 1].submissionStatus.toString());
+            this.submissionsGrade.set(lesson, submissions[submissions.length - 1].points);
           }
-          this.submissionsGrade.set(lesson, submissions[submissions.length - 1].points);
         });
 
         let editionLessonSub = this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, lesson.id)
