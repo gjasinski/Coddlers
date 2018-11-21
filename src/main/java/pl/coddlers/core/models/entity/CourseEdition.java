@@ -17,7 +17,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @ToString(exclude = {"courseVersion", "courseEditionLesson", "users", "studentLessonRepositories"})
-@EqualsAndHashCode(exclude = "users")
+@EqualsAndHashCode(exclude = {"users", "studentLessonRepositories"})
 public class CourseEdition {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

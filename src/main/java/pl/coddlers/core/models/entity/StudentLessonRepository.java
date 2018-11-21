@@ -2,6 +2,7 @@ package pl.coddlers.core.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"lesson", "courseEdition"})
 public class StudentLessonRepository {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
