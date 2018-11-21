@@ -51,6 +51,9 @@ import {InviteTeachersModalComponent} from './components/teacher/course/invite-t
 import { StudentMyCoursesComponent } from './components/student/student-my-courses/student-my-courses.component';
 import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal.component';
 import { SubmissionMenuModalComponent } from './components/teacher/course-edition/submission-menu-modal/submission-menu-modal.component';
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 
 @NgModule({
   declarations: [
@@ -102,7 +105,8 @@ import { SubmissionMenuModalComponent } from './components/teacher/course-editio
     NgbModule.forRoot(),
     TagInputModule,
     ClipboardModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FontAwesomeModule
   ],
   providers: [
     CourseService,
@@ -131,4 +135,8 @@ import { SubmissionMenuModalComponent } from './components/teacher/course-editio
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  constructor() {
+    // Add an icon to the library for convenient access in other components
+    library.add(faCoffee);
+  }
 }

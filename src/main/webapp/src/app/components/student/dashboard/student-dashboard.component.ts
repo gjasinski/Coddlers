@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'cod-student-dashboard',
@@ -7,7 +10,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StudentDashboardComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    library.add(faCoffee);
+  }
 
   ngOnInit() {
   }
