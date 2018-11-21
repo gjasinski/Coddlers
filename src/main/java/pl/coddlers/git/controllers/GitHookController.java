@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.coddlers.core.models.dto.SubmissionDto;
 import pl.coddlers.core.services.SubmissionService;
+import pl.coddlers.git.exceptions.GitBadRequestException;
 import pl.coddlers.git.models.event.EventDto;
 
 import static pl.coddlers.core.models.entity.SubmissionStatusTypeEnum.CHANGES_REQUESTED;
@@ -30,9 +31,12 @@ public class GitHookController {
 	public void receiveEvent(@RequestBody EventDto event) {
 		log.debug("Received event hook: " + event.toString());
 		if (isPushEvent(event) && event.getRef().contains("master")) {
+			if (event.getRepositoryDto() == null) {
+				throw new GitBadRequestException("There is no repository info");
+			}
 			String branchName = extractBranchName(event);
 			String repoUrl = extractRepoName(event.getRepositoryDto().getGitHttpUrl());
-			log.debug(String.format("Received push event. Pushed to %s in %s", branchName, repoUrl));
+			log.info(String.format("Received push event. Pushed to %s in %s", branchName, repoUrl));
 
 			SubmissionDto submissionDto = submissionService.getSubmissionByBranchNameAndRepoName(branchName, repoUrl);
 			if (submissionDto.getSubmissionStatusType() == NOT_SUBMITTED ||
