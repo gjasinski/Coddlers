@@ -64,11 +64,11 @@
                                 </div>
                                 <div class="row lesson-details mt-2">
                                   <div class="col-md-6"><strong>Status:</strong>
-                                    {{ submissionsStatus.get(lesson) }}
+                                    {{ submissionsStatus.get(lesson.id) }}
                                   </div>
                                   <div class="col-md-6"><strong>Result:</strong>
-                                    {{ submissionsStatus.get(lesson) === 'GRADED'
-                                    ? submissionsGrade.get(lesson) : 'NOT GRADED' }}
+                                    {{ submissionsStatus.get(lesson.id) === 'GRADED'
+                                    ? submissionsGrade.get(lesson.id) : 'NOT GRADED' }}
                                   </div>
                                 </div>
                               </div>

@@ -1,3 +1,5 @@
+@import "../styles/variables";
+
 h1 {
   color: white;
   margin-bottom: 8px;
@@ -23,70 +25,9 @@ h1 {
   text-align: right;
 }
 
-.note-image {
-  width: 80%;
-  height: 80%;
-}
-
 .people-button {
   margin-top: 10px;
   width: 130px;
-}
-
-.lesson-header {
-  h3 {
-    display: inline-block;
-  }
-}
-
-.lesson-list {
-  padding: 30px 15px 0 15px;
-  margin: 0;
-}
-
-.lesson-item {
-  background-color: #f8f8f8;
-  margin-bottom: 15px;
-
-  &:hover {
-    background-color: #fff;
-  }
-
-  a {
-    color: #303030;
-    &:hover {
-      text-decoration: none;
-      color: #000;
-    }
-  }
-
-  h4 {
-    margin-bottom: 0;
-  }
-}
-
-.edition-item {
-  background-color: #f8f8f8;
-  margin-bottom: 15px;
-
-  &:hover {
-    background-color: #fff;
-  }
-
-  a {
-    color: #303030;
-    &:hover {
-      text-decoration: none;
-      color: #000;
-    }
-  }
-
-  h5 {
-    margin-bottom: 0;
-  }
-  h6 {
-    margin-bottom: 0;
-  }
 }
 
 .div.modal-content {
@@ -105,11 +46,11 @@ h1 {
 }
 
 .course-item {
-  background-color: #f8f8f8;
+  background-color: $course-item-bg-color;
   margin-bottom: 15px;
 
   &:hover {
-    background-color: #fff;
+    background-color: $course-item-hover-color;
   }
 
   a {
