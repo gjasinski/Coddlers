@@ -142,7 +142,7 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   getSubmissions(tasks: Task[]): void {
     tasks.forEach(task => {
       this.showTask.set(task, false);
-      let submissionSub = this.submissionService.getSubmissions(task.id)
+      let submissionSub = this.submissionService.getSubmissions(task.id, this.courseEdition.id)
         .subscribe((submissions: Submission[]) => {
           this.submissionsMap.set(task, submissions);
         });

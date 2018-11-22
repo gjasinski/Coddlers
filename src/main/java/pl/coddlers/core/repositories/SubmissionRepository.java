@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     Collection<Submission> findByTaskId(Long taskId);
 
+    Collection<Submission> findByTaskIdAndCourseEditionId(Long taskId, Long CourseEditionId);
+
     Optional<Submission> findByBranchNameAndStudentLessonRepository_RepositoryUrl(String branchName, String repositoryUtl);
 
 

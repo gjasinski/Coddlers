@@ -15,8 +15,8 @@ export class SubmissionService {
   constructor(private http: HttpClient) {
   }
 
-  public getSubmissions(taskId: number): Observable<Submission[]> {
-    return this.http.get<Submission[]>(`/api/submissions?taskId=${taskId}`)
+  public getSubmissions(taskId: number, courseEditionId: number): Observable<Submission[]> {
+    return this.http.get<Submission[]>(`/api/submissions?taskId=${taskId}&courseEditionId=${courseEditionId}`)
       .pipe(
         map((objArray: any[]) => objArray.map(obj => Submission.fromJSON(obj)))
       );

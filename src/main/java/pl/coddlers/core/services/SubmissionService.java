@@ -31,6 +31,10 @@ public class SubmissionService {
         return submissionConverter.convertFromEntities(submissionRepository.findByTaskId(taskId));
     }
 
+    public Collection<SubmissionDto> getAllTaskSubmissionsForCourseEdition(long taskId, long courseEditionId) {
+        return submissionConverter.convertFromEntities(submissionRepository.findByTaskIdAndCourseEditionId(taskId, courseEditionId));
+    }
+
     public SubmissionDto getSubmissionByBranchNameAndRepoName(String branchName, String repoName) {
         return submissionConverter.convertFromEntity(
                 submissionRepository.findByBranchNameAndStudentLessonRepository_RepositoryUrl(branchName, repoName)
