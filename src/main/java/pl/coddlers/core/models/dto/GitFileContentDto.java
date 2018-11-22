@@ -3,7 +3,7 @@ package pl.coddlers.core.models.dto;
 import lombok.Data;
 
 @Data
-public class GitFileContent {
+public class GitFileContentDto {
 
     private String path;
 

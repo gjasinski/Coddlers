@@ -1,4 +1,4 @@
-package pl.coddlers.core.models;
+package pl.coddlers.commons;
 
 import lombok.Data;
 

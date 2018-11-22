@@ -52,7 +52,7 @@ public class SubmissionController {
         return ResponseEntity.ok(submissionService.getTaskSubmission(lessonId, courseEditionId));
     }
 
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @GetMapping(params = {"submissionId"})
     public ResponseEntity<SubmissionDataDto> getSubmission(@RequestParam(value = "submissionId") Long submissionId) {
         SubmissionDataDto submissionData = new SubmissionDataDto();

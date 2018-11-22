@@ -6,7 +6,6 @@ export class SubmissionData {
   private _submission: Submission;
   private _gitFileContents: GitFileContent[];
 
-
   constructor(fullName: string, submission: Submission, filesContent: GitFileContent[]) {
     this._fullName = fullName;
     this._submission = submission;

@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.coddlers.git.models.GitFile;
+import pl.coddlers.git.models.GitFileDto;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
@@ -39,7 +39,7 @@ public class GitFileService {
 
     private ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
 
-    public CompletableFuture<GitFile[]> getRepositoryFiles(Long gitRepositoryId, String branch) {
+    public CompletableFuture<GitFileDto[]> getRepositoryFiles(Long gitRepositoryId, String branch) {
         return CompletableFuture.supplyAsync(() -> {
             String resourceUrl = gitlabApi + PROJECTS + gitRepositoryId + REPOSITORY_TREE;
 
@@ -56,7 +56,7 @@ public class GitFileService {
                     builder.build().toUriString(),
                     HttpMethod.GET,
                     entity,
-                    GitFile[].class)
+                    GitFileDto[].class)
                     .getBody();
         }, executor);
     }

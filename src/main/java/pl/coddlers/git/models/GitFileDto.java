@@ -3,7 +3,7 @@ package pl.coddlers.git.models;
 import lombok.Data;
 
 @Data
-public class GitFile {
+public class GitFileDto {
 
     private String id;
     private String name;

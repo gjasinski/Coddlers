@@ -8,9 +8,9 @@ import pl.coddlers.core.exceptions.StudentLessonRepositoryNotFoundException;
 import pl.coddlers.core.exceptions.SubmissionNotFoundException;
 import pl.coddlers.core.exceptions.TaskNotFoundException;
 import pl.coddlers.core.exceptions.UserNotFoundException;
-import pl.coddlers.core.models.Tuple;
+import pl.coddlers.commons.Tuple;
 import pl.coddlers.core.models.converters.SubmissionConverter;
-import pl.coddlers.core.models.dto.GitFileContent;
+import pl.coddlers.core.models.dto.GitFileContentDto;
 import pl.coddlers.core.models.dto.SubmissionDto;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.StudentLessonRepository;
@@ -24,7 +24,7 @@ import pl.coddlers.core.repositories.StudentLessonRepositoryRepository;
 import pl.coddlers.core.repositories.SubmissionRepository;
 import pl.coddlers.core.repositories.TaskRepository;
 import pl.coddlers.core.repositories.UserDataRepository;
-import pl.coddlers.git.models.GitFile;
+import pl.coddlers.git.models.GitFileDto;
 import pl.coddlers.git.services.GitFileService;
 
 import java.util.Arrays;
@@ -134,7 +134,7 @@ public class SubmissionService {
         return submissionConverter.convertFromEntities(submissionRepository.findSubmissionForTaskAndUser(lessonId, currentUser.getId(), courseEdition));
     }
 
-    public Collection<GitFileContent> getSubmissionContent(Long submissionId) {
+    public Collection<GitFileContentDto> getSubmissionContent(Long submissionId) {
         Submission submission = this.submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new SubmissionNotFoundException(submissionId));
         long taskId = submission.getTask().getId();
@@ -146,54 +146,29 @@ public class SubmissionService {
                 .orElseThrow(() -> new StudentLessonRepositoryNotFoundException(studentLessonRepositoryId));
         String branchName = task.getBranchNamePrefix() + MASTER_BRANCH_SUFFIX;
 
-        CompletableFuture<List<GitFileContent>> listCompletableFuture = this.gitFileService
+        CompletableFuture<List<GitFileContentDto>> listCompletableFuture = this.gitFileService
                 .getRepositoryFiles(studentLessonRepository.getGitRepositoryId(), branchName)
-                .exceptionally(logAndWrapExceptionInListingGitFiles(submissionId, taskId, studentLessonRepository, branchName))
-                .thenApply((GitFile[] repoFileArray) -> new LinkedList<>(Arrays.asList(repoFileArray)))
+                .thenApply((GitFileDto[] repoFileArray) -> new LinkedList<>(Arrays.asList(repoFileArray)))
                 .thenApply(downloadAllFiles(submissionId, taskId, studentLessonRepository, branchName)
                 );
         try {
             return listCompletableFuture.get();
         } catch (InterruptedException | ExecutionException e) {
-            String message = String.format("Cannot download content of file. " +
-                            "SubmissionId: %s," +
-                            " taskId: %s," +
-                            " gitRepositoryId: %s, " +
-                            "branchName: %s.",
-                    submissionId,
-                    taskId,
-                    studentLessonRepository.getGitRepositoryId(),
-                    branchName);
+            String message = String.format("Cannot download content of file. SubmissionId: %s, taskId: %s," +
+                            " gitRepositoryId: %s, branchName: %s.", submissionId, taskId,
+                    studentLessonRepository.getGitRepositoryId(), branchName);
             log.error(message, e);
-            throw new GitAsynchronousOperationException(message, e);
+            throw new GitAsynchronousOperationException(message);
         }
     }
 
-    private Function<Throwable, GitFile[]> logAndWrapExceptionInListingGitFiles(Long submissionId, long taskId,
-                                                                                StudentLessonRepository studentLessonRepository,
-                                                                                String branchName) {
-        return (Throwable e) -> {
-            String message = String.format("Cannot download list of repository files. " +
-                            "SubmissionId: %s, " +
-                            "taskId: %s, " +
-                            "gitRepositoryId: %s, " +
-                            "branchName: %s.",
-                    submissionId,
-                    taskId,
-                    studentLessonRepository.getGitRepositoryId(),
-                    branchName);
-            log.error(message, e);
-            throw new GitAsynchronousOperationException(message, e);
-        };
-    }
-
-    private Function<LinkedList<GitFile>, List<GitFileContent>> downloadAllFiles(Long submissionId,
-                                                                                 long taskId,
-                                                                                 StudentLessonRepository studentLessonRepository,
-                                                                                 String branchName) {
-        return (LinkedList<GitFile> listOfGitFiles) -> listOfGitFiles.stream()
+    private Function<LinkedList<GitFileDto>, List<GitFileContentDto>> downloadAllFiles(Long submissionId,
+                                                                                       long taskId,
+                                                                                       StudentLessonRepository studentLessonRepository,
+                                                                                       String branchName) {
+        return (LinkedList<GitFileDto> listOfGitFiles) -> listOfGitFiles.stream()
                 .filter(filterOnlyFiles())
-                .map((GitFile gitFile) -> {
+                .map((GitFileDto gitFile) -> {
                     CompletableFuture<String> contentFuture = downloadFile(submissionId, taskId, studentLessonRepository, branchName, gitFile);
                     return new Tuple<>(gitFile, contentFuture);
                 })
@@ -201,15 +176,15 @@ public class SubmissionService {
                 .collect(Collectors.toList());
     }
 
-    private Predicate<GitFile> filterOnlyFiles() {
-        return (GitFile gitFile) -> gitFile.getType().equals(BLOB);
+    private Predicate<GitFileDto> filterOnlyFiles() {
+        return (GitFileDto gitFile) -> gitFile.getType().equals(BLOB);
     }
 
     private CompletableFuture<String> downloadFile(Long submissionId,
                                                    long taskId,
                                                    StudentLessonRepository studentLessonRepository,
                                                    String branchName,
-                                                   GitFile gitFile) {
+                                                   GitFileDto gitFile) {
         return this.gitFileService
                 .getFileContent(studentLessonRepository.getGitRepositoryId(), branchName, gitFile.getPath())
                 .handle((String s, Throwable t) -> {
@@ -232,13 +207,13 @@ public class SubmissionService {
                 });
     }
 
-    private Function<Tuple<GitFile, CompletableFuture<String>>, GitFileContent> getContentFromFutureAndCreateGitFileContent(Long submissionId,
-                                                                                                                            long taskId,
-                                                                                                                            StudentLessonRepository studentLessonRepository,
-                                                                                                                            String branchName) {
-        return (Tuple<GitFile, CompletableFuture<String>> tuple) -> {
+    private Function<Tuple<GitFileDto, CompletableFuture<String>>, GitFileContentDto> getContentFromFutureAndCreateGitFileContent(Long submissionId,
+                                                                                                                                  long taskId,
+                                                                                                                                  StudentLessonRepository studentLessonRepository,
+                                                                                                                                  String branchName) {
+        return (Tuple<GitFileDto, CompletableFuture<String>> tuple) -> {
             try {
-                GitFileContent fileContent = new GitFileContent();
+                GitFileContentDto fileContent = new GitFileContentDto();
                 fileContent.setPath(tuple.getKey().getPath());
                 fileContent.setContent(tuple.getValue().get());
                 return fileContent;
