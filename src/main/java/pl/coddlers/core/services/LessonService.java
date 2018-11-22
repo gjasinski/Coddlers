@@ -2,6 +2,7 @@ package pl.coddlers.core.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
 import pl.coddlers.core.exceptions.CourseVersionNotFound;
@@ -44,6 +45,9 @@ public class LessonService {
     private final CourseEditionRepository courseEditionRepository;
     private final StudentLessonRepositoryRepository studentLessonRepositoryRepository;
     private final TaskRepository taskRepository;
+
+    @Value("${gitlab.api.host}:${gitlab.api.http.port}/")
+    private String gitlabUrl;
 
 
     @Autowired
@@ -238,6 +242,7 @@ public class LessonService {
     public String getLessonRepositoryUrl(Long lessonId){
         return lessonRepository.findById(lessonId)
                 .map(Lesson::getRepositoryUrl)
+                .map(repositoryPath -> this.gitlabUrl + repositoryPath)
                 .orElseThrow(() -> new LessonNotFoundException(lessonId));
     }
 }

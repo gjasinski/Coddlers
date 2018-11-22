@@ -63,17 +63,12 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
       .pipe(switchMap((params) => forkJoin(
         this.lessonService.getLesson(+params.get('lessonId')),
         this.studentLessonRepositoryService.getTeacherLessonRepositoryUrl(+params.get('lessonId'))
-      )))
-      .pipe(switchMap(([lesson, repositoryUrl]) => {
-        this.lesson = lesson;
-        this.createRepositoryUrl(repositoryUrl);
-        return this.getTasks(lesson.id);
-      }))
-  }
-
-  private createRepositoryUrl(lessonRepositoryUrl: String): void {
-    let repoDirectory: string = this.lesson.title.toLowerCase().replace(new RegExp(' ', 'g'), '-');
-    this.repoUrl = "git clone http://coddlers.pl:10080/" + lessonRepositoryUrl + " " + repoDirectory;
+      )),
+        switchMap(([lesson, repositoryUrl]) => {
+          this.lesson = lesson;
+          this.repoUrl = "git clone " + repositoryUrl + " \"" + this.lesson.title + "\"";
+          return this.getTasks(lesson.id);
+        }));
   }
 
   private getTasks(lessonId: number): Observable<any> {
