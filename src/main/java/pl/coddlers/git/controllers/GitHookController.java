@@ -50,7 +50,7 @@ public class GitHookController {
 	private String extractRepoName(String repoUrl) {
 		repoUrl = repoUrl.replace("http://", "")
 				.replace("https://", "");
-		return repoUrl.substring(repoUrl.indexOf("/")+1, repoUrl.indexOf("."));
+		return repoUrl.substring(repoUrl.indexOf("/")+1, repoUrl.length()-4);
 	}
 
 	private String extractBranchName(EventDto eventDto) {
