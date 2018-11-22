@@ -104,7 +104,7 @@ public class LessonService {
                     .thenCompose(projectDto -> gitLessonService.transferRepositoryToGroup(projectDto.getId(), byCourseVersionId.getGitGroupId()));
             ProjectDto projectDto = gitLessonIdFuture.get();
             lesson.setGitProjectId(projectDto.getId());
-            lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
+            lesson.setRepositoryName(projectDto.getPathWithNamespace());
             lessonRepository.save(lesson);
             return lesson.getId();
         } catch (Exception ex) {
@@ -131,7 +131,7 @@ public class LessonService {
                     .thenCompose(projectDto -> gitLessonService.transferRepositoryToGroup(projectDto.getId(), lessonCourse.getGitGroupId()))
                     .thenApply(projectDto -> {
                         lesson.setGitProjectId(projectDto.getId());
-                        lesson.setRepositoryUrl(projectDto.getPathWithNamespace());
+                        lesson.setRepositoryName(projectDto.getPathWithNamespace());
                         return lessonRepository.save(lesson);
                     });
         } catch (Exception ex) {
@@ -241,7 +241,7 @@ public class LessonService {
 
     public String getLessonRepositoryUrl(Long lessonId){
         return lessonRepository.findById(lessonId)
-                .map(Lesson::getRepositoryUrl)
+                .map(Lesson::getRepositoryName)
                 .map(repositoryPath -> this.gitlabUrl + repositoryPath)
                 .orElseThrow(() -> new LessonNotFoundException(lessonId));
     }
