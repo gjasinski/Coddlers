@@ -10,12 +10,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.coddlers.core.exceptions.GitAsynchronousOperationException;
 import pl.coddlers.core.exceptions.InternalServerErrorException;
 import pl.coddlers.core.exceptions.UserNotFoundException;
 import pl.coddlers.core.models.converters.UserConverter;
 import pl.coddlers.core.models.dto.UserDto;
 import pl.coddlers.core.models.entity.AccountType;
+import pl.coddlers.core.models.entity.Course;
 import pl.coddlers.core.repositories.UserDataRepository;
+import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.services.GitUserService;
 
 import java.util.List;
@@ -81,7 +84,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Long gitUserId;
         try {
             gitUserId = gitUserService.createUser(userEntity.getUserMail(), userEntity.getFullName(), makeUserName(userEntity),
-                    userDto.getPassword()).get();
+                    userDto.getPassword())
+                    .exceptionally(e -> logAndWrapException(userDto, e))
+                    .get();
             log.info("Created gitlab account with id "+gitUserId.toString());
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -92,6 +97,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         log.debug("Created Information for User: {}", userEntity);
 
         return userEntity;
+    }
+
+    private Long logAndWrapException(UserDto user, Throwable v) {
+        String exceptionMsg = String.format("Cannot create user: %s", user);
+        log.error(exceptionMsg, v);
+        throw new GitAsynchronousOperationException(exceptionMsg, v);
     }
 
     private String makeUserName(pl.coddlers.core.models.entity.User userEntity) {

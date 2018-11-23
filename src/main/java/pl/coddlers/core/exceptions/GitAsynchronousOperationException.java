@@ -12,4 +12,8 @@ public class GitAsynchronousOperationException extends RuntimeException {
     public GitAsynchronousOperationException(String message) {
         super(message);
     }
+
+    public GitAsynchronousOperationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

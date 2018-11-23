@@ -25,6 +25,7 @@ import pl.coddlers.core.repositories.CourseEditionLessonRepository;
 import pl.coddlers.core.repositories.CourseEditionRepository;
 import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.StudentLessonRepositoryRepository;
+import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.services.GitGroupService;
 import pl.coddlers.mail.Mail;
 import pl.coddlers.mail.MailInitializer;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -105,11 +107,16 @@ public class CourseEditionService {
 
     public CourseEdition createCourseEdition(CourseEditionDto courseEditionDto) {
         try {
+            User currentUser = userDetailsService.getCurrentUserEntity();
             CourseEdition courseEdition = courseEditionRepository.save(courseEditionConverter.convertFromDto(courseEditionDto));
-            Long gitGroupId = gitGroupService.createGroup(createGroupName(courseEditionDto, courseEdition.getId())).get().getId();
+            CompletableFuture<ProjectDto> groupFuture = gitGroupService.createGroup(createGroupName(courseEditionDto, courseEdition.getId()));
+            Long gitGroupId = groupFuture.thenCompose(group -> addTeachersToGroup(group, currentUser))
+                    .thenCompose((s1) -> groupFuture)
+                    .exceptionally(v -> logAndWrapException(courseEditionDto, v))
+                    .get()
+                    .getId();
             courseEdition.setGitGroupId(gitGroupId);
             courseEditionRepository.save(courseEdition);
-            addTeachersToGroup(gitGroupId);
             return courseEdition;
         } catch (InterruptedException | ExecutionException e) {
             log.error(String.format("Cannot create new course edition for %s", courseEditionDto.toString()), e);
@@ -117,9 +124,14 @@ public class CourseEditionService {
         }
     }
 
-    private void addTeachersToGroup(Long gitGroupId) {
-        User currentUser = userDetailsService.getCurrentUserEntity();
-        gitGroupService.addUserToGroupAsMaintainer(currentUser.getGitUserId(), gitGroupId);
+    private ProjectDto logAndWrapException(CourseEditionDto courseEditionDto, Throwable v) {
+        String exceptionMsg = String.format("Cannot create new course edition for %s", courseEditionDto.toString());
+        log.error(exceptionMsg, v);
+        throw new GitAsynchronousOperationException(exceptionMsg, v);
+    }
+
+    private CompletableFuture<Void> addTeachersToGroup(ProjectDto group, User user) {
+        return gitGroupService.addUserToGroupAsMaintainer(user.getGitUserId(), group.getId());
         // TODO: 20.10.18 add all teacher to group from database
     }
 
@@ -161,7 +173,6 @@ public class CourseEditionService {
                 .filter(courseEditionLesson -> courseEditionLesson.getStartDate().before(new Timestamp(System.currentTimeMillis())))
                 .forEach(courseEditionLesson ->
                         lessonService.forkModelLessonForUser(courseEdition, courseEditionLesson.getLesson(), currentUser)
-//                                .thenAccept(studentLessonRepositoryRepository::save)
                                 .exceptionally(ex -> {
                                     log.error(String.format("Cannot fork lesson: %s from course edition %s for user: %s", courseEditionLesson.getLesson().toString(), courseEdition.toString(), currentUser.toString()), ex);
                                     return null;
