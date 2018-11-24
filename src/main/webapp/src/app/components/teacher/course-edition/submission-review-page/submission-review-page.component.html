@@ -36,7 +36,8 @@
                     <div ngbDropdownMenu class="dropdown-menu">
                       <form class="px-4" (click)="$event.stopPropagation();">
                         Review summary
-                        <textarea #commentTextArea type="text" id="summaryReview" placeholder="Leave a comment" cols="30"
+                        <textarea #commentTextArea type="text" id="summaryReview" placeholder="Leave a comment"
+                                  cols="30"
                                   rows="5"></textarea>
                         <br>
                         <div *ngIf="radioGrade.checked">
@@ -59,15 +60,20 @@
                           <div class="text-muted">Grade submission and give feedback</div>
                           <br>
                         </div>
-                        <div class="radio" >
+                        <div class="radio">
                           <label>
-                            <input #radioRequestChanges type="radio" name="radioOp" id="radioRequestChanges" [disabled]="disableRequestChanges">Request changes
+                            <input #radioRequestChanges type="radio" name="radioOp" id="radioRequestChanges"
+                                   [disabled]="disableRequestChanges">Request changes
                           </label>
-                          <div class="text-muted" *ngIf="!disableRequestChanges">Grade submission and give feedback</div>
-                          <div class="text-muted" *ngIf="disableRequestChanges">You can request changes only in waiting for review state</div>
+                          <div class="text-muted" *ngIf="!disableRequestChanges">Grade submission and give feedback
+                          </div>
+                          <div class="text-muted" *ngIf="disableRequestChanges">You can request changes only in waiting
+                            for review state
+                          </div>
                         </div>
                       </form>
-                      <button class="btn btn-secondary w-100 p-3 mb-0" id="submitReview" (click)="this.saveReview(commentTextArea.value, radioComment.checked, radioGrade.checked); commentTextArea.value = '';">
+                      <button class="btn btn-secondary w-100 p-3 mb-0" id="submitReview"
+                              (click)="this.saveReview(commentTextArea.value, radioComment.checked, radioGrade.checked); commentTextArea.value = '';">
                         Submit review
                       </button>
                     </div>

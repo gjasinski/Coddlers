@@ -32,7 +32,7 @@ export class SubmissionReviewPageComponent implements OnInit {
   private fullName: string;
   private numberOfFiles: number;
   private task: Task = null;
-  private gradePoints :number = 0;
+  private gradePoints: number = 0;
   private showWarning: boolean = false;
   private warningMessage: string = "";
   private disableRequestChanges = false;
@@ -59,8 +59,8 @@ export class SubmissionReviewPageComponent implements OnInit {
       });
     let paramMapSubscription = this.route.paramMap
       .pipe(switchMap((params) => {
-        this.submissionId = +params.get("submissionId");
-        return this.submissionService.getSubmission(this.submissionId);
+          this.submissionId = +params.get("submissionId");
+          return this.submissionService.getSubmission(this.submissionId);
         }),
         switchMap((submission) => {
           this.filesContent = submission.gitFileContents;
@@ -96,18 +96,20 @@ export class SubmissionReviewPageComponent implements OnInit {
   saveReview(comment, isComment, isGrade) {
     let subscription;
     if (isComment) {
-      subscription = this.submissionService.createComment(this.submissionId, comment).subscribe();
+      subscription = this.submissionService.createComment(this.submissionId, comment);
     }
     else if (isGrade) {
-      subscription = this.submissionService.gradeSubmission(this.submissionId, comment, this.gradePoints).subscribe();
+      subscription = this.submissionService.gradeSubmission(this.submissionId, comment, this.gradePoints);
     }
     else {
-      subscription = this.submissionService.requestChangesForSubmission(this.submissionId, comment).subscribe();
+      subscription = this.submissionService.requestChangesForSubmission(this.submissionId, comment);
     }
+    subscription = subscription.pipe(switchMap(() => this.submissionService.getSubmission(this.submissionId)))
+      .subscribe(() => this.disableRequestChanges = this.submission.submissionStatusType.toString() !== SubmissionStatusEnum.WAITING_FOR_REVIEW.description);
     this.subscriptionManager.add(subscription);
   }
 
-  validateGradePoints(){
+  validateGradePoints() {
     if (this.gradePoints > this.task.maxPoints) {
       this.warningMessage = "Maximum number of points: " + this.task.maxPoints;
       this.gradePoints = this.task.maxPoints;
@@ -116,13 +118,13 @@ export class SubmissionReviewPageComponent implements OnInit {
     else {
       this.showWarning = false;
     }
-    if(this.gradePoints < 0){
+    if (this.gradePoints < 0) {
       this.warningMessage = "You cannot set negative number of points";
       this.showWarning = true;
       this.gradePoints = 0;
     }
 
-    if(this.gradePoints === null){
+    if (this.gradePoints === null) {
       this.warningMessage = "Number of points must be number";
       this.showWarning = true;
       this.gradePoints = 0;
