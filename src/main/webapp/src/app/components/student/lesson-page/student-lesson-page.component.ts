@@ -54,14 +54,14 @@ export class StudentLessonPageComponent implements OnInit {
         this.courseService.getCourseByCourseEditionId(+params.get('courseEditionId')),
         this.courseEditionService.getCourseEdition(+params.get('courseEditionId')),
         this.courseEditionService.getCourseEditionLesson(+params.get('courseEditionId'), +params.get('lessonId')),
-        this.studentLessonRepositoryService.getLessonRepositoryUrl(+params.get('courseEditionId'), +params.get('lessonId'))
+        this.studentLessonRepositoryService.getStudentLessonRepositoryUrl(+params.get('courseEditionId'), +params.get('lessonId'))
       )))
       .subscribe(([submissions, course, courseEdition, courseEditionLesson, lessonRepositoryUrl]) => {
         this.course = course;
         this.courseEdition = courseEdition;
         this.courseEditionLesson = courseEditionLesson;
         if(lessonRepositoryUrl.length > 1) {
-          this.createRepositoryUrl(lessonRepositoryUrl);
+          this.repoUrl = "git clone " + lessonRepositoryUrl + " \"" + this.lesson.title + "\"";
         }
         else {
           this.repoUrl = "Your repository is not forked yet"
@@ -93,11 +93,6 @@ export class StudentLessonPageComponent implements OnInit {
           return this.submissions;
         })
       );
-  }
-
-  private createRepositoryUrl(lessonRepositoryUrl: String): void {
-    let repoDirectory: string = this.lesson.title.toLowerCase().replace(new RegExp(' ', 'g'), '-');
-    this.repoUrl = "git clone http://coddlers.pl:10080/" + lessonRepositoryUrl + " " + repoDirectory;
   }
 
   back(e) {

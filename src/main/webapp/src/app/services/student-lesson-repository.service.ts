@@ -12,9 +12,12 @@ export class StudentLessonRepositoryService {
   constructor(private http: HttpClient) {
   }
 
-  public getLessonRepositoryUrl(courseEditionId: number, lessonId: number) {
+  public getStudentLessonRepositoryUrl(courseEditionId: number, lessonId: number) {
     return this.http.get(`/api/repositories/students?courseEditionId=${courseEditionId}&lessonId=${lessonId}`, {responseType: 'text'});
   }
 
+  public getTeacherLessonRepositoryUrl(lessonId: number) {
+    return this.http.get(`/api/repositories/teachers?lessonId=${lessonId}`, {responseType: 'text'});
+  }
 
 }
