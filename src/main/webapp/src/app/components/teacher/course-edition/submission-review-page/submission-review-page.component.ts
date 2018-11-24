@@ -13,8 +13,8 @@ import {Location} from "@angular/common";
 import {SubmissionService} from "../../../../services/submission.service";
 import {GitFileContent} from "../../../../models/gitFileContent";
 import {Submission} from "../../../../models/submission";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Task} from '../../../../models/task';
+import {SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
 
 @Component({
   selector: 'app-edition-page',
@@ -35,6 +35,7 @@ export class SubmissionReviewPageComponent implements OnInit {
   private gradePoints :number = 0;
   private showWarning: boolean = false;
   private warningMessage: string = "";
+  private disableRequestChanges = false;
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -57,12 +58,16 @@ export class SubmissionReviewPageComponent implements OnInit {
         this.courseEdition = courseEdition;
       });
     let paramMapSubscription = this.route.paramMap
-      .pipe(switchMap((params) => this.submissionService.getSubmission(+params.get("submissionId"))),
+      .pipe(switchMap((params) => {
+        this.submissionId = +params.get("submissionId");
+        return this.submissionService.getSubmission(this.submissionId);
+        }),
         switchMap((submission) => {
           this.filesContent = submission.gitFileContents;
           this.submission = submission.submission;
           this.fullName = submission.fullName;
           this.numberOfFiles = this.filesContent.length;
+          this.disableRequestChanges = this.submission.submissionStatusType.toString() !== SubmissionStatusEnum.WAITING_FOR_REVIEW.description;
           return this.taskService.getTask(this.submission.taskId);
         })
       )

@@ -60,7 +60,7 @@
                     <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
                     <td>{{descriptionStatus(submission)}}</td>
                     <td>
-                      <img src="assets/img/{{submission.submissionStatus.toString().toLowerCase()}}.png" class="submission-status-img"/>
+                      <img src="assets/img/{{submission.submissionStatusType.toString().toLowerCase()}}.png" class="submission-status-img"/>
                     </td>
                     <td *ngIf="isGraded(submission)">{{submission.points}}</td>
                     <td *ngIf="!isGraded(submission)">-</td>
