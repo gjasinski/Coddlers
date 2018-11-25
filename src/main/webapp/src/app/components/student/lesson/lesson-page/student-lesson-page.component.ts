@@ -84,7 +84,7 @@ export class StudentLessonPageComponent implements OnInit {
     return this.lessonService.getLesson(+params.get('lessonId'))
       .pipe(switchMap((lesson: Lesson) => {
         this.lesson = lesson;
-        return this.getTasksAndReturnSubmissions(+params.get('courseEditionId'), lesson.id);
+        return this.getTasksAndReturnSubmissions(this.courseEditionId, lesson.id);
       }))
   }
 
