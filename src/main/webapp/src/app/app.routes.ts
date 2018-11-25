@@ -18,7 +18,6 @@ import {InvitePageComponent} from "./components/common/invite-page/invite-page.c
 import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
 import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
 import {StudentLessonPageComponent} from "./components/student/lesson/lesson-page/student-lesson-page.component";
-import {StudentMyCoursesComponent} from "./components/student/student-my-courses/student-my-courses.component";
 import {SubmissionReviewPageComponent} from "./components/teacher/course-edition/submission-review-page/submission-review-page.component";
 
 

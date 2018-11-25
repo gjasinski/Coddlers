@@ -88,7 +88,6 @@ import {NgxPageScrollModule} from 'ngx-page-scroll';
     InviteTeachersModalComponent,
     StudentCourseEditionPageComponent,
     StudentCoursePageComponent,
-    StudentMyCoursesComponent,
     SubmissionMenuModalComponent,
     SubmissionReviewPageComponent
   ],
