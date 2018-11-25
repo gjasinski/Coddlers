@@ -128,6 +128,6 @@ export class StudentLessonPageComponent implements OnInit {
   }
 
   isGraded(submission: number): boolean {
-    return this.submissions[submission].submissionStatus.toString() === SubmissionStatusEnum.GRADED.toString();
+    return this.submissions[submission].submissionStatusType.toString() === SubmissionStatusEnum.GRADED.toString();
   }
 }

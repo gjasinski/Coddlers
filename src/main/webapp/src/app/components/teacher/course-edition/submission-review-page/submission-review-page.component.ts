@@ -13,6 +13,8 @@ import {Location} from "@angular/common";
 import {SubmissionService} from "../../../../services/submission.service";
 import {GitFileContent} from "../../../../models/gitFileContent";
 import {Submission} from "../../../../models/submission";
+import {Task} from '../../../../models/task';
+import {SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
 
 @Component({
   selector: 'app-edition-page',
@@ -28,7 +30,12 @@ export class SubmissionReviewPageComponent implements OnInit {
   private filesVisibility: boolean[] = new Array(this.filesContent.length);
   private submission: Submission;
   private fullName: string;
-  private numberOfFiles :number;
+  private numberOfFiles: number;
+  private task: Task = null;
+  private gradePoints: number = 0;
+  private showWarning: boolean = false;
+  private warningMessage: string = "";
+  private disableRequestChanges = false;
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -51,15 +58,26 @@ export class SubmissionReviewPageComponent implements OnInit {
         this.courseEdition = courseEdition;
       });
     let paramMapSubscription = this.route.paramMap
-      .pipe(switchMap((params) => this.submissionService.getSubmission(+params.get("submissionId"))))
-      .subscribe((submission) =>{
-        this.filesContent = submission.gitFileContents;
-        this.submission = submission.submission;
-        this.fullName = submission.fullName;
-        this.numberOfFiles = this.filesContent.length
+      .pipe(switchMap((params) => {
+          this.submissionId = +params.get("submissionId");
+          return this.submissionService.getSubmission(this.submissionId);
+        }),
+        switchMap((submission) => {
+          this.filesContent = submission.gitFileContents;
+          this.submission = submission.submission;
+          this.fullName = submission.fullName;
+          this.numberOfFiles = this.filesContent.length;
+          this.disableRequestChanges = this.submission.submissionStatusType.toString() !== SubmissionStatusEnum.WAITING_FOR_REVIEW.description;
+          return this.taskService.getTask(this.submission.taskId);
+        })
+      )
+      .subscribe((task) => {
+        this.task = task;
       });
     this.subscriptionManager.add(paramMapSubscription);
+
     this.subscriptionManager.add(paramParentMapSubscription);
+
   }
 
   back(e) {
@@ -71,9 +89,46 @@ export class SubmissionReviewPageComponent implements OnInit {
     this.router.navigate(["teacher", "courses", this.course.id, "editions", this.courseEdition.id]);
   }
 
-  changeVisibilityForFile(file: number){
+  changeVisibilityForFile(file: number) {
     this.filesVisibility[file] = !this.filesVisibility[file];
   }
 
+  saveReview(comment, isComment, isGrade) {
+    let subscription;
+    if (isComment) {
+      subscription = this.submissionService.createComment(this.submissionId, comment);
+    }
+    else if (isGrade) {
+      subscription = this.submissionService.gradeSubmission(this.submissionId, comment, this.gradePoints);
+    }
+    else {
+      subscription = this.submissionService.requestChangesForSubmission(this.submissionId, comment);
+    }
+    subscription = subscription.pipe(switchMap(() => this.submissionService.getSubmission(this.submissionId)))
+      .subscribe(() => this.disableRequestChanges = this.submission.submissionStatusType.toString() !== SubmissionStatusEnum.WAITING_FOR_REVIEW.description);
+    this.subscriptionManager.add(subscription);
+  }
+
+  validateGradePoints() {
+    if (this.gradePoints > this.task.maxPoints) {
+      this.warningMessage = "Maximum number of points: " + this.task.maxPoints;
+      this.gradePoints = this.task.maxPoints;
+      this.showWarning = true;
+    }
+    else {
+      this.showWarning = false;
+    }
+    if (this.gradePoints < 0) {
+      this.warningMessage = "You cannot set negative number of points";
+      this.showWarning = true;
+      this.gradePoints = 0;
+    }
+
+    if (this.gradePoints === null) {
+      this.warningMessage = "Number of points must be number";
+      this.showWarning = true;
+      this.gradePoints = 0;
+    }
+  }
 
 }

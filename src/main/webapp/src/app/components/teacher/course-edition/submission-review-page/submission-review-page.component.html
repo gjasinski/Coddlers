@@ -21,7 +21,7 @@
                     <button class="btn btn-secondary" id="jumpto-dropdown" ngbDropdownToggle>
                       Jump to:
                     </button>
-                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1" id="version-dropdown-menu">
+                    <div ngbDropdownMenu aria-labelledby="goto-dropdownBasic" id="goto-dropdown-menu">
                       <div *ngFor="let file of filesContent; let i = index">
                         <a pageScroll [href]="'#file' + i">
                           <button class="dropdown-item">{{file.path}}</button>
@@ -29,7 +29,55 @@
                       </div>
                     </div>
                   </div>
-                  <button class="btn btn-secondary" style="float: right">Grade</button>
+                  <div ngbDropdown class="d-inline-block float-right" placement="bottom-right">
+                    <button class="btn btn-secondary dropleft" id="grade-dropdown" ngbDropdownToggle>
+                      Grade:
+                    </button>
+                    <div ngbDropdownMenu class="dropdown-menu">
+                      <form class="px-4" (click)="$event.stopPropagation();">
+                        Review summary
+                        <textarea #commentTextArea type="text" id="summaryReview" placeholder="Leave a comment"
+                                  cols="30"
+                                  rows="5"></textarea>
+                        <br>
+                        <div *ngIf="radioGrade.checked">
+                          Points for submission
+                          <input type="number" min="0" [max]="task?.maxPoints" on-focusout="validateGradePoints();"
+                                 [(ngModel)]="gradePoints" #gradePointsInput name="gradePointsInput">
+                        </div>
+                        <div class="alert alert-warning" *ngIf="showWarning">{{warningMessage}}</div>
+                        <div class="radio">
+                          <label>
+                            <input #radioComment type="radio" name="radioOp" id="radioComment" checked>Comment
+                          </label>
+                          <div class="text-muted">Submit general comment</div>
+                          <br>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input #radioGrade type="radio" name="radioOp" id="radioGrade">Grade
+                          </label>
+                          <div class="text-muted">Grade submission and give feedback</div>
+                          <br>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input #radioRequestChanges type="radio" name="radioOp" id="radioRequestChanges"
+                                   [disabled]="disableRequestChanges">Request changes
+                          </label>
+                          <div class="text-muted" *ngIf="!disableRequestChanges">Grade submission and give feedback
+                          </div>
+                          <div class="text-muted" *ngIf="disableRequestChanges">You can request changes only in waiting
+                            for review state
+                          </div>
+                        </div>
+                      </form>
+                      <button class="btn btn-secondary w-100 p-3 mb-0" id="submitReview"
+                              (click)="this.saveReview(commentTextArea.value, radioComment.checked, radioGrade.checked); commentTextArea.value = '';">
+                        Submit review
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="head-line"></div>
