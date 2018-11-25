@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {CourseEditionService} from "../../../services/course-edition.service";
-import {CourseWithCourseEdition} from "../../../models/courseWithCourseEdition";
-import {SubscriptionManager} from "../../../utils/SubscriptionManager";
+import {CourseWithCourseEdition} from "../../../../models/courseWithCourseEdition";
+import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
+import {CourseEditionService} from "../../../../services/course-edition.service";
 
 @Component({
-  selector: 'cod-student-my-courses',
-  templateUrl: './student-my-courses.component.html',
-  styleUrls: ['./student-my-courses.component.scss']
+  selector: 'cod-student-course-page',
+  templateUrl: './student-course-page.component.html',
+  styleUrls: ['./student-course-page.component.scss']
 })
-export class StudentMyCoursesComponent implements OnInit {
+export class StudentCoursePageComponent implements OnInit {
   private courses: CourseWithCourseEdition[];
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
 
@@ -26,5 +26,4 @@ export class StudentMyCoursesComponent implements OnInit {
   ngOnDestroy(): void {
     this.subscriptionManager.unsubscribeAll();
   }
-
 }
