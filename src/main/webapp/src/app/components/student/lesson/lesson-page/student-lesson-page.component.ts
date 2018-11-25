@@ -63,7 +63,7 @@ export class StudentLessonPageComponent implements OnInit {
         .pipe(switchMap((params) => forkJoin(
           this.getLessonAndTasksAndReturnSubmissions(params),
           this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, +params.get('lessonId')),
-          this.studentLessonRepositoryService.getStudentLessonRepositoryUrl(+params.get('courseEditionId'), +params.get('lessonId')),
+          this.studentLessonRepositoryService.getStudentLessonRepositoryUrl(this.courseEditionId, +params.get('lessonId')),
         )))
         .subscribe(([submissions, courseEditionLesson, lessonRepositoryUrl]) => {
           this.courseEditionLesson = courseEditionLesson;
