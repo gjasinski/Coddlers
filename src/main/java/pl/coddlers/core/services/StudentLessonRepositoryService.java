@@ -1,6 +1,7 @@
 package pl.coddlers.core.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.models.entity.CourseEdition;
 import pl.coddlers.core.models.entity.Lesson;
@@ -17,6 +18,8 @@ public class StudentLessonRepositoryService {
 	private final LessonRepository lessonRepository;
 	private final CourseEditionRepository courseEditionRepository;
 
+	@Value("${gitlab.api.host}:${gitlab.api.http.port}/")
+	private String gitlabUrl;
 
 	@Autowired
 	public StudentLessonRepositoryService(StudentLessonRepositoryRepository studentLessonRepositoryRepository, UserDetailsServiceImpl userDetailsService, LessonRepository lessonRepository, CourseEditionRepository courseEditionRepository) {
@@ -37,7 +40,7 @@ public class StudentLessonRepositoryService {
 			return "";
 		}
 		else {
-			return repository.getRepositoryUrl();
+			return this.gitlabUrl + repository.getRepositoryUrl();
 		}
 	}
 

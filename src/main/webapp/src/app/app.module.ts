@@ -52,6 +52,8 @@ import {StudentLessonPageComponent} from "./components/student/lesson/lesson-pag
 import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
 import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
 import {SubmissionMenuModalComponent} from './components/teacher/course-edition/submission-menu-modal/submission-menu-modal.component';
+import {SubmissionReviewPageComponent} from "./components/teacher/course-edition/submission-review-page/submission-review-page.component";
+import {NgxPageScrollModule} from 'ngx-page-scroll';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import {SubmissionMenuModalComponent} from './components/teacher/course-edition/
     InviteTeachersModalComponent,
     StudentCourseEditionPageComponent,
     StudentCoursePageComponent,
-    SubmissionMenuModalComponent
+    StudentMyCoursesComponent,
+    SubmissionMenuModalComponent,
+    SubmissionReviewPageComponent
   ],
   imports: [
     BrowserModule,
@@ -104,7 +108,8 @@ import {SubmissionMenuModalComponent} from './components/teacher/course-edition/
     NgbModule.forRoot(),
     TagInputModule,
     ClipboardModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxPageScrollModule
   ],
   providers: [
     CourseService,

@@ -35,6 +35,7 @@ export class StudentLessonPageComponent implements OnInit {
   private tasksVisibility: boolean[] = new Array(this.tasks.length);
   private submissions: Submission[];
   private repoUrl: String;
+  private courseEditionId: number = 0;
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -49,28 +50,30 @@ export class StudentLessonPageComponent implements OnInit {
 
   ngOnInit() {
     let paramParentMapSubscription = this.route.parent.paramMap.pipe(
-      switchMap((params) => forkJoin(
-        this.courseService.getCourseByCourseEditionId(+params.get('courseEditionId')),
-        this.courseEditionService.getCourseEdition(+params.get('courseEditionId')),
-      ))).subscribe(([course, courseEdition]) => {
-        this.course = course;
-        this.courseEdition = courseEdition;
+      switchMap((params) => {
+        this.courseEditionId = +params.get('courseEditionId');
+        return forkJoin(
+          this.courseService.getCourseByCourseEditionId(this.courseEditionId),
+          this.courseEditionService.getCourseEdition(this.courseEditionId));
+      })).subscribe(([course, courseEdition]) => {
+      this.course = course;
+      this.courseEdition = courseEdition;
 
       let paramMapSubscription = this.route.paramMap
-      .pipe(switchMap((params) => forkJoin(
-        this.getLessonAndTasksAndReturnSubmissions(params),
-        this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, +params.get('lessonId')),
-        this.studentLessonRepositoryService.getLessonRepositoryUrl(this.courseEdition.id, +params.get('lessonId'))
-      )))
-      .subscribe(([submissions, courseEditionLesson, lessonRepositoryUrl]) => {
-        this.courseEditionLesson = courseEditionLesson;
-        if(lessonRepositoryUrl.length > 1) {
-          this.createRepositoryUrl(lessonRepositoryUrl);
-        }
-        else {
-          this.repoUrl = "Your repository is not forked yet"
-        }
-      });
+        .pipe(switchMap((params) => forkJoin(
+          this.getLessonAndTasksAndReturnSubmissions(params),
+          this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, +params.get('lessonId')),
+          this.studentLessonRepositoryService.getStudentLessonRepositoryUrl(+params.get('courseEditionId'), +params.get('lessonId')),
+        )))
+        .subscribe(([submissions, courseEditionLesson, lessonRepositoryUrl]) => {
+          this.courseEditionLesson = courseEditionLesson;
+          if (lessonRepositoryUrl.length > 1) {
+            this.repoUrl = "git clone " + lessonRepositoryUrl + " \"" + this.lesson.title + "\"";
+          }
+          else {
+            this.repoUrl = "Your repository is not forked yet"
+          }
+        });
       this.subscriptionManager.add(paramMapSubscription);
     });
 
@@ -100,11 +103,6 @@ export class StudentLessonPageComponent implements OnInit {
           return this.submissions;
         })
       );
-  }
-
-  private createRepositoryUrl(lessonRepositoryUrl: String): void {
-    let repoDirectory: string = this.lesson.title.toLowerCase().replace(new RegExp(' ', 'g'), '-');
-    this.repoUrl = "git clone http://coddlers.pl:10080/" + lessonRepositoryUrl + " " + repoDirectory;
   }
 
   back(e) {

@@ -8,4 +8,5 @@
     <include file="db/liquibase/changelog/20181020195458_changelog.xml"/>
     <include file="db/liquibase/changelog/20181020203106_changelog.xml"/>
     <include file="db/liquibase/changelog/20181103162828_changelog.xml"/>
+    <include file="db/liquibase/changelog/20181122220114_changelog.xml"/>
 </databaseChangeLog>
