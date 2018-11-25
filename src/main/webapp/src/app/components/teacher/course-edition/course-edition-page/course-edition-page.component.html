@@ -34,7 +34,6 @@
             <div *ngIf="showLesson[lessonIndex]">
               <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
               <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due date</button>
-              <button class="btn" (click)="forkLesson(lesson)">Fork</button>
 
               <div *ngFor="let task of courseMap.get(lesson)">
                 <br>

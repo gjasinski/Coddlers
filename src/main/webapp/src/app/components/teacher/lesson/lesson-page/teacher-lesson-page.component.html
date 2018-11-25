@@ -47,11 +47,19 @@
                   <p>{{task.description}}</p>
                   <h5>Max points for task: {{task.maxPoints}}</h5>
                 </div>
-
                 <div class="col-2">
                   <button class="btn" (click)="editTask(task)">Edit task</button>
                   <button class="btn">Notes</button>
                 </div>
+              </div>
+              <div class="repo-url">
+                Useful commands:<br>
+                <code>
+                  git checkout -b {{task.branchNamePrefix}}-master<br>
+                  git add newFile<br>
+                  git commit -m "commit description"<br>
+                  git push origin {{task.branchNamePrefix}}-master
+                </code>
               </div>
             </div>
           </div>

@@ -55,7 +55,13 @@
                 <div *ngIf="!this.isGraded(i)">
                   <h4>Master branch - you should push your work to this branch</h4>
                   <div class="repo-url">
-                    <code>git push origin {{task.branchNamePrefix}}-master</code>
+                    Useful commands:<br>
+                    <code>
+                      git checkout -b {{task.branchNamePrefix}}-master<br>
+                      git add newFile<br>
+                      git commit -m "commit description"<br>
+                      git push origin {{task.branchNamePrefix}}-master
+                    </code>
                   </div>
                   <h4>Develop branch - your work on this branch will not be marked</h4>
                   <div class="repo-url">
