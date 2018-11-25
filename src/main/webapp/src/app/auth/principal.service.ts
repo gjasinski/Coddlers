@@ -93,10 +93,10 @@ export class PrincipalService {
   redirectToRoleRootRoute(): Promise<User> {
     return this.identity().then((user: User) => {
       if (user.userRoles.includes(AccountTypesConstants.ROLE_TEACHER)) {
-        this.router.navigate(['/teacher', 'dashboard']);
+        this.router.navigate(['/teacher', 'courses']);
       }
       else if (user.userRoles.includes(AccountTypesConstants.ROLE_STUDENT)) {
-        this.router.navigate(['/student', 'dashboard']);
+        this.router.navigate(['/student', 'course-editions']);
       }
 
       // TODO handle admin case
