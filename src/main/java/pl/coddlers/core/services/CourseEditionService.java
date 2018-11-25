@@ -170,6 +170,7 @@ public class CourseEditionService {
     }
 
     public InvitationLinkDto getInvitationLink(String host, Long courseEditionId) {
+        host = addHttpWwwToInvitationLink(host);
         CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId)
                 .orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
@@ -187,6 +188,17 @@ public class CourseEditionService {
             courseEditionRepository.saveAndFlush(courseEdition);
         }
         return new InvitationLinkDto(host + environment.getProperty(INVITATION_TOKEN_PATH) + invitationToken);
+    }
+
+    private String addHttpWwwToInvitationLink(String host) {
+        if(!host.toLowerCase().startsWith("localhost")) {
+            if (!host.toLowerCase().startsWith("http://www.") && !host.toLowerCase().startsWith("www.")) {
+                host = "http://www." + host;
+            } else if (host.toLowerCase().startsWith("www.")) {
+                host = "http://" + host;
+            }
+        }
+        return host;
     }
 
     public void sendInvitationLinkByMail(String invitationLink, List<InternetAddress> students) throws AddressException {
