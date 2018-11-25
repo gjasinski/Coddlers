@@ -17,6 +17,7 @@ import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs";
 import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
 import {SubmissionStatus, SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
+import {NgbDropdownConfig} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-edition-page',
@@ -44,7 +45,9 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
               private submissionService: SubmissionService,
               private router: Router,
               public eventService: EventService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              config: NgbDropdownConfig) {
+    config.autoClose = "outside";
   }
 
   ngOnInit() {
@@ -93,7 +96,7 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
                    [Lesson[], CourseEditionLesson[], CourseEdition]) => {
         this.courseEdition = courseEdition;
         this.courseEditionLessonList = courseEditionLessonList;
-        this.editionEndDate = courseEditionLessonList[courseEditionLessonList.length-1].endDate;
+        this.editionEndDate = courseEditionLessonList[courseEditionLessonList.length - 1].endDate;
         let getTasksObs = [];
 
         lessons.forEach(lesson => {
@@ -176,10 +179,6 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
 
   forkLesson(lesson: Lesson) {
     this.lessonService.forkLessons(this.courseEdition.id, lesson.id).subscribe();
-  }
-
-  openSubmissionMenuModal(submission: Submission) {
-    this.eventService.emit(new Event('open-submission-menu-modal', submission));
   }
 
   ngOnDestroy(): void {

@@ -21,3 +21,12 @@ button {
 .btn-primary {
   display: inline;
 }
+
+.dots:after {
+  content: '\2807';
+  cursor: pointer;
+}
+
+.dropdown-toggle::after {
+  border: 0;
+}

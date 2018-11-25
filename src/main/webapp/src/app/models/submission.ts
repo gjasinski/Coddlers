@@ -49,8 +49,16 @@ export class Submission {
     return this._points;
   }
 
+  set points(points: number) {
+    this._points = points;
+  }
+
   get submissionStatusType(): SubmissionStatus {
     return this._submissionStatusType;
+  }
+
+  set submissionStatusType(submissionStatusType: SubmissionStatus) {
+    this._submissionStatusType = submissionStatusType;
   }
 
   public static fromJSON(jsonObj: any): Submission {
