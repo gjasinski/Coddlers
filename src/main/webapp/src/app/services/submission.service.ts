@@ -3,6 +3,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {Submission} from "../models/submission";
+import {GitFileContent} from "../models/gitFileContent";
+import {SubmissionData} from "../models/submissionData";
 
 @Injectable()
 export class SubmissionService {
@@ -52,4 +54,9 @@ export class SubmissionService {
         map((objArray: any[]) => objArray.map(obj => Submission.fromJSON(obj)))
       );
   }
+
+  public getSubmission(submissionId: number): Observable<SubmissionData> {
+    return this.http.get<SubmissionData>(`/api/submissions?submissionId=${submissionId}`);
+  }
+
 }

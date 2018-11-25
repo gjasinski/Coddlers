@@ -190,10 +190,10 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   }
 
   isGraded(submission: Submission): boolean {
-    return submission.submissionStatus.toString() == SubmissionStatusEnum.GRADED.toDescription();
+    return submission.submissionStatusType.toString() == SubmissionStatusEnum.GRADED.toString();
   }
 
   descriptionStatus(submission: Submission): string {
-    return SubmissionStatus.getEnumFromString(submission.submissionStatus.toString()).toDescription();
+    return SubmissionStatus.getEnumFromString(submission.submissionStatusType.toString()).toString();
   }
 }

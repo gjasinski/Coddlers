@@ -34,7 +34,6 @@
             <div *ngIf="showLesson[lessonIndex]">
               <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
               <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due date</button>
-              <button class="btn" (click)="forkLesson(lesson)">Fork</button>
 
               <div *ngFor="let task of courseMap.get(lesson)">
                 <br>
@@ -60,7 +59,7 @@
                     <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
                     <td>{{submission.submissionStatus}}</td>
                     <td>
-                      <img src="assets/img/{{submission.submissionStatus.toString().toLowerCase()}}.png" class="submission-status-img"/>
+                      <img src="assets/img/{{submission.submissionStatusType.toString().toLowerCase()}}.png" class="submission-status-img"/>
                     </td>
                     <td *ngIf="isGraded(submission)">{{submission.points}}</td>
                     <td *ngIf="!isGraded(submission)">-</td>

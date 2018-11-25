@@ -3,7 +3,7 @@
   <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
 
     <div class="buttons-group" *ngIf="!isGraded()">
-      <button class="btn btn-secondary">Review</button>
+      <button class="btn btn-secondary" [routerLink]="['submission', submission.id]">Review</button>
 
       <button class="btn btn-secondary" (click)="showGradeReason = !showGradeReason">Grade</button>
       <div class="col-12" *ngIf="showGradeReason">

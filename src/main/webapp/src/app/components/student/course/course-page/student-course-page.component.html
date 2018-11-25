@@ -14,7 +14,7 @@
     <div class="col-md-12">
       <ul class="course-list">
         <li class="course-item card" *ngFor="let course of courses | courseWithCourseEditionFilter : searchText">
-          <a class="card-body" [routerLink]="['/student', 'edition', course.courseEdition.id]">
+          <a class="card-body" [routerLink]="['/student', 'course-editions', course.courseEdition.id]">
             <div class="row">
               <div class="col-md-6">
                 <h3>{{ course.course.title}}</h3>
