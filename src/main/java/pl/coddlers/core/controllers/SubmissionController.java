@@ -102,13 +102,7 @@ public class SubmissionController {
     @PostMapping(path = "/{id}/grade")
     public ResponseEntity<Void> gradeSubmission(@PathVariable Long id, @Valid @RequestBody SubmissionGradeDto submissionGradeDto) {
         Submission submission = submissionService.getSubmissionById(id);
-        SubmissionStatusTypeEnum statusType = submission.getSubmissionStatusTypeEnum();
-        if (!(statusType == WAITING_FOR_REVIEW || statusType == GRADED)) {
-            throw new SubmissionStatusChangeException(String.format("You can grade submissions only when they " +
-                            "are in state %s or %s. Current submission state is %s", WAITING_FOR_REVIEW.getStatus(),
-                    GRADED.getStatus(),
-                    submission.getSubmissionStatusTypeEnum().getStatus()));
-        }
+
         int maxPoints = submission.getTask().getMaxPoints();
         int grade = submissionGradeDto.getPoints();
         if (grade > maxPoints || grade < 0) {

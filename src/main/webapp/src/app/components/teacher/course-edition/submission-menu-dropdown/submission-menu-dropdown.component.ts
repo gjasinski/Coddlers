@@ -34,7 +34,7 @@ export class SubmissionMenuDropdownComponent implements OnInit {
   }
 
   isGraded(): boolean {
-    return this.submission.submissionStatus.toString() == SubmissionStatusEnum.GRADED.toDescription();
+    return this.submission.submissionStatusType.toString() == SubmissionStatusEnum.GRADED.toString();
   }
 
   gradeSubmission(myDrop: NgbDropdown) {
@@ -43,7 +43,7 @@ export class SubmissionMenuDropdownComponent implements OnInit {
         myDrop.close();
         this.submission.points = this.grade;
         // TODO use this enum instead of reloading page
-        // this.submission.submissionStatus = SubmissionStatusEnum.GRADED;
+        // this.submission.submissionStatusType = SubmissionStatusEnum.GRADED;
         location.reload();
       });
   }
@@ -53,7 +53,7 @@ export class SubmissionMenuDropdownComponent implements OnInit {
       .subscribe(() => {
         myDrop.close();
         // TODO use this enum instead of reloading page
-        // this.submission.submissionStatus = SubmissionStatusEnum.CHANGES_REQUESTED;
+        // this.submission.submissionStatusType = SubmissionStatusEnum.CHANGES_REQUESTED;
         location.reload();
       })
   }

@@ -51,10 +51,9 @@ import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal
 import {StudentLessonPageComponent} from "./components/student/lesson/lesson-page/student-lesson-page.component";
 import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
 import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
-import {SubmissionMenuModalComponent} from './components/teacher/course-edition/submission-menu-modal/submission-menu-modal.component';
 import {SubmissionReviewPageComponent} from "./components/teacher/course-edition/submission-review-page/submission-review-page.component";
 import {NgxPageScrollModule} from 'ngx-page-scroll';
-import { SubmissionMenuDropdownComponent } from './components/teacher/course-edition/submission-menu-dropdown/submission-menu-dropdown.component';
+import {SubmissionMenuDropdownComponent} from './components/teacher/course-edition/submission-menu-dropdown/submission-menu-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +88,6 @@ import { SubmissionMenuDropdownComponent } from './components/teacher/course-edi
     InviteTeachersModalComponent,
     StudentCourseEditionPageComponent,
     StudentCoursePageComponent,
-    SubmissionMenuModalComponent,
     SubmissionReviewPageComponent,
     SubmissionMenuDropdownComponent
   ],
