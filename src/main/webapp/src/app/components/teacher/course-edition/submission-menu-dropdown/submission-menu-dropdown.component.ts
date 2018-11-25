@@ -13,7 +13,6 @@ import {NgbDropdown} from "@ng-bootstrap/ng-bootstrap";
 })
 
 export class SubmissionMenuDropdownComponent implements OnInit {
-  private eventSubscription: Subscription;
   @Input() submission: Submission;
   private grade: number;
   private gradeReason: string;
@@ -27,10 +26,6 @@ export class SubmissionMenuDropdownComponent implements OnInit {
 
   ngOnInit() {
     this.grade = this.submission.points;
-  }
-
-  ngOnDestroy() {
-    this.eventSubscription.unsubscribe();
   }
 
   isGraded(): boolean {
