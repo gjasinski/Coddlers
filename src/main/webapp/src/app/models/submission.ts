@@ -1,19 +1,21 @@
-import {User} from "./user";
-import {Task} from "./task";
-import {SubmissionStatusType} from "./submissionStatusType";
+import {SubmissionStatus} from "./submissionStatusEnum";
 
 export class Submission {
   private _id: number;
-  private _task: Task;
-  private _user: User;
+  private _taskId: number;
+  private _userId: number;
+  private _courseEditionId: number;
+  private _userFullName: string;
   private _submissionTime: Date;
-  private _submissionStatusType: SubmissionStatusType;
+  private _submissionStatusType: SubmissionStatus;
   private _points: number;
 
-  constructor(id: number, task: Task, user: User, submissionTime: Date, submissionStatusType: SubmissionStatusType, points: number) {
+  constructor(id: number, taskId: number, userId: number, userFullName: string, courseEditionId: number, submissionTime: Date, submissionStatusType: SubmissionStatus, points: number) {
     this._id = id;
-    this._task = task;
-    this._user = user;
+    this._taskId = taskId;
+    this._userId = userId;
+    this._userFullName = userFullName;
+    this._courseEditionId = courseEditionId;
     this._submissionTime = submissionTime;
     this._submissionStatusType = submissionStatusType;
     this._points = points;
@@ -23,12 +25,20 @@ export class Submission {
     return this._id;
   }
 
-  get task(): Task {
-    return this._task;
+  get taskId(): number {
+    return this._taskId;
   }
 
-  get user(): User {
-    return this._user;
+  get userId(): number {
+    return this._userId;
+  }
+
+  get userFullName(): string {
+    return this._userFullName;
+  }
+
+  get courseEditionId(): number {
+    return this._courseEditionId;
   }
 
   get submissionTime(): Date {
@@ -39,20 +49,30 @@ export class Submission {
     return this._points;
   }
 
-  get submissionStatusType(): SubmissionStatusType {
+  set points(points: number) {
+    this._points = points;
+  }
+
+  get submissionStatusType(): SubmissionStatus {
     return this._submissionStatusType;
   }
 
+  set submissionStatusType(submissionStatusType: SubmissionStatus) {
+    this._submissionStatusType = submissionStatusType;
+  }
+
   public static fromJSON(jsonObj: any): Submission {
-    return new Submission(+jsonObj.id, jsonObj.task, jsonObj.user,
-      new Date(jsonObj.submissionTime), jsonObj.submissionStatusType, +jsonObj.points);
+    let submissionTime = (!jsonObj.submissionTime) ? null :  new Date(jsonObj.submissionTime);
+    return new Submission(+jsonObj.id, +jsonObj.taskId, +jsonObj.userId, jsonObj.userFullName, +jsonObj.courseEditionId,
+      submissionTime, jsonObj.submissionStatusType, +jsonObj.points);
   }
 
   public toJSON() {
     return {
       id: this.id,
-      task: this.task,
-      user: this.user,
+      taskId: this.taskId,
+      userId: this.userId,
+      courseEditionId: this.courseEditionId,
       submissionTime: this.submissionTime,
       points: this.points,
       submissionStatusType: this.submissionStatusType

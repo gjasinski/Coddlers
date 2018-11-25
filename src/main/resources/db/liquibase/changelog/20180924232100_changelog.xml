@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet id="180924223800-1" author="damian">
+        <loadData encoding="UTF-8"
+                  file="db/liquibase/account_type.csv"
+                  separator=";"
+                  tableName="account_type"/>
+        <loadData encoding="UTF-8"
+                  file="db/liquibase/users.csv"
+                  separator=";"
+                  tableName="users"/>
+        <loadData encoding="UTF-8"
+                  file="db/liquibase/user_account_type.csv"
+                  separator=";"
+                  tableName="user_account_type"/>
+        <loadData encoding="UTF-8"
+                  file="db/liquibase/submission_status_type.csv"
+                  separator=";"
+                  tableName="submission_status_type"/>
+    </changeSet>
+</databaseChangeLog>

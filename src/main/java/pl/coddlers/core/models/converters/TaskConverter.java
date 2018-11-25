@@ -31,6 +31,7 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 		taskDto.setDescription(entity.getDescription());
 		taskDto.setMaxPoints(entity.getMaxPoints());
 		taskDto.setIsCodeTask(entity.getIsCodeTask());
+		taskDto.setBranchNamePrefix(entity.getBranchNamePrefix());
 
 		return taskDto;
 	}
@@ -51,6 +52,7 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 		task.setMaxPoints(dto.getMaxPoints());
 		task.setLesson(lesson);
 		task.setIsCodeTask(dto.getIsCodeTask());
+		task.setBranchNamePrefix(dto.getBranchNamePrefix());
 
 		return task;
 	}

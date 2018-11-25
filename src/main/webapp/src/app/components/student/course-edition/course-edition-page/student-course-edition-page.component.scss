@@ -1,0 +1,75 @@
+@import "../styles/variables";
+
+h1 {
+  color: white;
+  margin-bottom: 8px;
+  line-height: 1.2
+}
+
+.tab-title {
+  color: black;
+}
+
+:host ::ng-deep .tabset-course a.nav-link {
+  background-color: gray;
+  color: black;
+}
+
+:host ::ng-deep .tabset-course a.nav-link.active {
+  background-color: white;
+  color: black;
+}
+
+.versions-dropdown {
+  width: 110px;
+  text-align: right;
+}
+
+.people-button {
+  margin-top: 10px;
+  width: 130px;
+}
+
+.div.modal-content {
+  width: 200px;
+}
+
+.course-container {
+  h2 {
+    margin-bottom: 20px;
+  }
+}
+
+.course-list {
+  padding: 30px 15px 0 15px;
+  margin: 0;
+}
+
+.course-item {
+  background-color: $course-item-bg-color;
+  margin-bottom: 15px;
+
+  &:hover {
+    background-color: $course-item-hover-color;
+  }
+
+  a {
+    color: #303030;
+    &:hover {
+      text-decoration: none;
+      color: #000;
+    }
+  }
+
+  h3 {
+    margin-bottom: 0;
+  }
+}
+
+.notes {
+  margin-top: 50px;
+}
+
+.lesson-details{
+  font-size: 12px;
+}

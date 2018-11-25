@@ -5,14 +5,16 @@ export class Task {
   private _description: string;
   private _maxPoints: number;
   private _isCodeTask: boolean;
+  private _branchNamePrefix: string;
 
-  constructor(id: number, lessonId: number, title: string, description: string, maxPoints: number, isCodeTask: boolean) {
+  constructor(id: number, lessonId: number, title: string, description: string, maxPoints: number, isCodeTask: boolean, branchNamePrefix: string) {
     this._id = id;
     this._lessonId = lessonId;
     this._title = title;
     this._description = description;
     this._maxPoints = maxPoints;
     this._isCodeTask = isCodeTask;
+    this._branchNamePrefix = branchNamePrefix;
   }
 
   get id(): number {
@@ -39,9 +41,13 @@ export class Task {
     return this._isCodeTask;
   }
 
+  get branchNamePrefix(): string {
+    return this._branchNamePrefix;
+  }
+
   public static fromJSON(jsonObj: any): Task {
     return new Task(+jsonObj.id, +jsonObj.lessonId, jsonObj.title,
-      jsonObj.description, +jsonObj.maxPoints, jsonObj.isCodeTask);
+      jsonObj.description, +jsonObj.maxPoints, jsonObj.isCodeTask, jsonObj.branchNamePrefix);
   }
 
   public toJSON() {
@@ -51,7 +57,8 @@ export class Task {
       title: this.title,
       description: this.description,
       maxPoints: this.maxPoints,
-      isCodeTask: this.isCodeTask
+      isCodeTask: this.isCodeTask,
+      branchNamePrefix: this.branchNamePrefix
     }
   }
 }

@@ -36,9 +36,9 @@ export class RegisterModalComponent implements OnInit, OnDestroy {
       'lastname': ['', Validators.compose([Validators.required, Validators.minLength(1)])],
       'email': ['', Validators.compose([Validators.required, Validators.email, Validators.minLength(4),
         Validators.maxLength(50)])],
-      'password': ['', Validators.compose([Validators.required, Validators.minLength(4),
+      'password': ['', Validators.compose([Validators.required, Validators.minLength(8),
         Validators.maxLength(50)])],
-      'passwordRepeat': ['', Validators.compose([Validators.required, Validators.minLength(4),
+      'passwordRepeat': ['', Validators.compose([Validators.required, Validators.minLength(8),
         Validators.maxLength(50)])],
     }, {
       validator: PasswordValidation.MatchPassword
@@ -57,16 +57,9 @@ export class RegisterModalComponent implements OnInit, OnDestroy {
 
   open() {
     this.modalRefNgb = this.modalService.open(this.modalRef);
-    // this.modalRefNgb.result.then((result) => {
-    //   console.log(`closed ${result}`);
-    // }, (reason) => {
-    //   console.log(`dismissed ${reason}`);
-    // });
   }
 
   register(form): void {
-    console.log(form);
-
     let userRoles: string[] = [];
     if (form.userRole === 'student') {
       userRoles.push(AccountTypesConstants.ROLE_STUDENT);

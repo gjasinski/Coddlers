@@ -74,7 +74,8 @@ export class EditTaskModalComponent implements OnInit, OnDestroy {
       task.title,
       task.description,
       task.maxPoints,
-      task.isCodeTask)
+      task.isCodeTask,
+      this.task.branchNamePrefix)
     ).subscribe(() => {
         this.modalRefNgb.close('updated');
         this.router.navigate([this.router.url]);

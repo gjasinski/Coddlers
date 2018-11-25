@@ -2,15 +2,21 @@ package pl.coddlers.core.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Data
-@Table(name="users")
+@Table(name = "users")
+@ToString(exclude = {"courseEditions", "teacherInCourse", "userGroups", "studentLessonRepositories", "submissions", "courseGrades"})
+@EqualsAndHashCode(exclude = {"teacherInCourse", "studentLessonRepositories"})
 public class User {
 
     @Id
@@ -21,10 +27,10 @@ public class User {
     private String lastname;
     private String profilePictureName;
 
-    @Column(nullable=false, length = 50, unique = true)
+    @Column(nullable = false, length = 50, unique = true)
     private String userMail;
 
-    @Column(nullable=false, length = 100)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @JsonIgnore
@@ -64,4 +70,11 @@ public class User {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", targetEntity = CourseGrade.class)
     private Set<CourseGrade> courseGrades = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author", targetEntity = Comment.class)
+    private List<Comment> comments = new ArrayList<>();
+
+    public String getFullName() {
+        return firstname + " " + lastname;
+    }
 }

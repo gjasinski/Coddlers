@@ -2,7 +2,9 @@ package pl.coddlers.core.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -14,6 +16,8 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
+@ToString(exclude = {"courseVersion", "courseEditionLesson", "users", "studentLessonRepositories"})
+@EqualsAndHashCode(exclude = {"users", "studentLessonRepositories"})
 public class CourseEdition {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,6 +32,11 @@ public class CourseEdition {
     @ManyToOne(targetEntity = CourseVersion.class)
     @JoinColumn(name = "course_version_id")
     private CourseVersion courseVersion;
+
+    @Column
+    private String invitationToken;
+  
+    private Long gitGroupId;
 
     public CourseEdition(String title, CourseVersion courseVersion, Timestamp startDate) {
         this.title = title;

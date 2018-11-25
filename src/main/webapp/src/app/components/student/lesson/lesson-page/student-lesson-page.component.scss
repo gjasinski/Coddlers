@@ -1,0 +1,35 @@
+.navigation-header {
+  color: white;
+  cursor: pointer
+}
+
+.btn {
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+
+.task-button {
+  width: 100%;
+  margin: 4px;
+}
+
+.note-image {
+  width: 80%;
+}
+
+.arrow-image {
+  height: 35px;
+  width: 35px;
+  float: right;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.repo-url {
+  padding: 1rem 1rem;
+  margin-bottom: 2rem;
+  background-color: #e9ecef;
+  border-radius: .3rem;
+}

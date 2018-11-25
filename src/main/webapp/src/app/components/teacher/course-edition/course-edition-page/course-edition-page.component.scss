@@ -16,11 +16,6 @@ h5 {
   margin: 4px;
 }
 
-.dots:after {
-  content: '\2807';
-  cursor: pointer;
-}
-
 .submission-status-img {
   width: 1.2rem;
   height: 1rem;
@@ -34,4 +29,9 @@ h5 {
 
 .rotate {
   transform: rotate(180deg);
+}
+
+.lesson-date {
+  margin-top: 8px;
+  margin-right: 10px;
 }

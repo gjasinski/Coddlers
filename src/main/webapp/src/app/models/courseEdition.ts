@@ -38,7 +38,7 @@ export class CourseEdition {
       id: this.id,
       title: this.title,
       courseVersion: this.courseVersion.toJSON(),
-      startDate: new Date().getTime(),
+      startDate: this.startDate,
     }
   }
 }

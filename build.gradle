@@ -1,3 +1,10 @@
+import groovy.xml.StreamingMarkupBuilder
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.Transformer
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.stream.StreamSource
+
 buildscript {
     ext {
         springBootVersion = '2.0.0.RELEASE'
@@ -12,6 +19,10 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("com.moowork.gradle:gradle-node-plugin:1.2.0")
     }
+}
+
+plugins {
+    id 'org.liquibase.gradle' version '2.0.1'
 }
 
 apply plugin: 'java'
@@ -36,7 +47,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.apache.logging.log4j:log4j-core:2.11.0')
-    compile('org.postgresql:postgresql:9.4-1206-jdbc42')
+    compile('org.apache.commons:commons-text:1.1')
+    compile('org.postgresql:postgresql:42.2.5')
     compile('io.springfox:springfox-swagger2:2.9.0')
     compile('io.springfox:springfox-swagger-ui:2.9.0')
     compile('org.springframework.boot:spring-boot-starter-security')
@@ -44,6 +56,13 @@ dependencies {
     compile('javax.mail:javax.mail-api:1.6.1')
     compile('com.sun.mail:javax.mail:1.6.1')
     compile('javax.activation:activation:1.1.1')
+    compile('org.liquibase:liquibase-core:3.5.3')
+    compile('com.mattbertolini:liquibase-slf4j:2.0.0')
+    liquibaseRuntime('org.liquibase:liquibase-core')
+    liquibaseRuntime('org.liquibase.ext:liquibase-hibernate5:3.6')
+    liquibaseRuntime(sourceSets.main.compileClasspath)
+    liquibaseRuntime(sourceSets.main.output)
+    liquibaseRuntime('org.postgresql:postgresql:9.4-1206-jdbc42')
     runtime('com.h2database:h2')
     compileOnly('org.projectlombok:lombok')
     testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -63,18 +82,107 @@ sourceSets {
 }
 
 node {
-    version = '10.0.0'
-    npmVersion = '5.6.0'
+    version = '8.12.0'
+    npmVersion = '6.4.1'
     download = true
     workDir = file("${project.buildDir}/node")
     nodeModulesDir = file("$webappDir")
 }
 
+def skipBuildAngular = false
 task buildAngular(type: NpmTask) {
     args = ['run', 'build']
 }
 buildAngular.dependsOn(npm_install)
+buildAngular.onlyIf { !skipBuildAngular }
+nodeSetup.onlyIf { !skipBuildAngular }
+npmSetup.onlyIf { !skipBuildAngular }
+npm_install.onlyIf { !skipBuildAngular }
 
 processResources {
     dependsOn "buildAngular"
+}
+
+if (!project.hasProperty('runList')) {
+    project.ext.runList = 'main'
+}
+
+project.ext.diffChangelogFileName = new Date().format('yyyyMMddHHmmss') + '_changelog.xml'
+project.ext.diffChangelogFile = "src/main/resources/db/liquibase/changelog/${project.ext.diffChangelogFileName}"
+
+liquibase {
+    activities {
+        main {
+            driver 'org.postgresql.Driver'
+            url 'jdbc:postgresql://localhost:5432/coddlers'
+            username 'postgres'
+            password '6lettersAGHUST'
+            changeLogFile 'src/main/resources/db/liquibase/master.xml'
+            defaultSchemaName ''
+            logLevel 'debug'
+            classpath 'src/main/resources/'
+        }
+        diffLog {
+            driver 'org.postgresql.Driver'
+            url 'jdbc:postgresql://localhost:5432/coddlers'
+            username 'postgres'
+            password '6lettersAGHUST'
+            changeLogFile project.ext.diffChangelogFile
+            referenceUrl 'hibernate:spring:pl.coddlers.core.models?' +
+                    'dialect=org.hibernate.dialect.PostgreSQLDialect&' +
+                    'hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&' +
+                    'hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+            defaultSchemaName ''
+            logLevel 'debug'
+            classpath 'src/main/resources/'
+        }
+    }
+
+    runList = project.ext.runList
+}
+
+diffChangeLog.doFirst {
+    liquibase.runList = 'diffLog'
+    skipBuildAngular = true
+}
+diffChangeLog.dependsOn(compileJava)
+diffChangeLog.doLast {
+    if (addChangeLogToMaster(project.ext.diffChangelogFileName))
+        println "Append ${project.ext.diffChangelogFile} to master.xml"
+}
+
+def writeXml(String xml, File file) {
+    TransformerFactory factory = TransformerFactory.newInstance()
+    factory.setAttribute("indent-number", 4)
+
+    Transformer transformer = factory.newTransformer()
+    transformer.setOutputProperty(OutputKeys.METHOD, "xml")
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+    transformer.setOutputProperty(OutputKeys.STANDALONE, "no")
+
+    StreamResult result = new StreamResult(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))
+    transformer.transform(new StreamSource(new ByteArrayInputStream(xml.bytes)), result)
+}
+
+def addChangeLogToMaster(def changelog) {
+    def diffChangelogFile = new File("src/main/resources/db/liquibase/changelog/${changelog}")
+    def diffRoot = new XmlSlurper(false, false).parse(diffChangelogFile)
+
+    if (diffRoot.children().size() == 0) {
+        println "Nothing to add. There are no differences between database and hibernate classes."
+        diffChangelogFile.delete()
+        return false
+    }
+
+    def masterChangelogFile = new File("src/main/resources/db/liquibase/master.xml")
+    def root = new XmlSlurper(false, false).parse(masterChangelogFile)
+
+    root.appendNode {
+        include(file: "db/liquibase/changelog/${changelog}")
+    }
+
+    String xml = (new StreamingMarkupBuilder()).bind { mkp.yield root }
+    writeXml(xml, masterChangelogFile)
+    return true
 }

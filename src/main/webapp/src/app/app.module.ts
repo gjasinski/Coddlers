@@ -10,6 +10,7 @@ import {CourseService} from "./services/course.service";
 import {TeacherCoursesComponent} from "./components/teacher/course/courses/teacher-courses.component";
 import {PageNotFoundComponent} from "./components/common/page-not-found/page-not-found.component";
 import {CourseFilterPipe} from "./filters/course-filter.pipe";
+import {CourseWithCourseEditionFilterPipe} from "./filters/course-with-course-edition-filter.pipe";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NavbarComponent} from "./components/common/navbar/navbar.component";
 import {TeacherCoursePageComponent} from "./components/teacher/course/course-page/teacher-course-page.component";
@@ -21,7 +22,6 @@ import {TeacherLessonPageComponent} from './components/teacher/lesson/lesson-pag
 import {EditLessonPageComponent} from './components/teacher/lesson/edit-lesson-page/edit-lesson-page.component';
 import {EditCoursePageComponent} from "./components/teacher/course/edit-course-page/edit-course-page.component";
 import {DatePipe} from "@angular/common";
-import {StudentLessonPageComponent} from './components/student/lesson-page/student-lesson-page.component';
 import {LandingPageComponent} from './components/common/landing-page/landing-page.component';
 import {HasAnyAuthorityDirective} from './auth/has-any-authority.directive';
 import {AuthenticationService} from "./auth/authentication.service";
@@ -35,11 +35,25 @@ import {TeacherDashboardComponent} from './components/teacher/dashboard/teacher-
 import {CourseEditionPageComponent} from './components/teacher/course-edition/course-edition-page/course-edition-page.component';
 import {CourseEditionService} from "./services/course-edition.service";
 import {SubmissionService} from "./services/submission.service";
+import {StudentLessonRepositoryService} from "./services/student-lesson-repository.service";
 import {EditLessonDueDateModalComponent} from "./components/teacher/course-edition/edit-lesson-due-date-modal/edit-lesson-due-date-modal.component";
 import {AddTaskModalComponent} from "./components/teacher/task/add-task-modal/add-task-modal.component";
 import {EditTaskModalComponent} from "./components/teacher/task/edit-task-modal/edit-task-modal.component";
-import { AddEditionModalComponent } from './components/teacher/course-edition/add-edition-modal/add-edition-modal.component';
-
+import {AddEditionModalComponent} from './components/teacher/course-edition/add-edition-modal/add-edition-modal.component';
+import {InvitePageComponent} from './components/common/invite-page/invite-page.component';
+import {AfterAddToCourseModalComponent} from './components/common/after-add-to-course-modal/after-add-to-course-modal.component';
+import {InviteStudentsModalComponent} from "./components/teacher/course-edition/invite-students-modal/invite-students-modal.component";
+import {TagInputModule} from "ngx-chips";
+import {ClipboardModule} from 'ngx-clipboard';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {InviteTeachersModalComponent} from './components/teacher/course/invite-teachers-modal/invite-teachers-modal.component';
+import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal.component';
+import {StudentLessonPageComponent} from "./components/student/lesson/lesson-page/student-lesson-page.component";
+import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
+import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
+import {SubmissionReviewPageComponent} from "./components/teacher/course-edition/submission-review-page/submission-review-page.component";
+import {NgxPageScrollModule} from 'ngx-page-scroll';
+import {SubmissionMenuDropdownComponent} from './components/teacher/course-edition/submission-menu-dropdown/submission-menu-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +61,7 @@ import { AddEditionModalComponent } from './components/teacher/course-edition/ad
     TeacherCoursesComponent,
     PageNotFoundComponent,
     CourseFilterPipe,
+    CourseWithCourseEditionFilterPipe,
     NavbarComponent,
     TeacherCoursePageComponent,
     AddCoursePageComponent,
@@ -62,10 +77,19 @@ import { AddEditionModalComponent } from './components/teacher/course-edition/ad
     HasAnyAuthorityDirective,
     LoginModalComponent,
     RegisterModalComponent,
+    YesNoModalComponent,
     EditLessonDueDateModalComponent,
     StudentDashboardComponent,
     TeacherDashboardComponent,
-    AddEditionModalComponent
+    AddEditionModalComponent,
+    InvitePageComponent,
+    AfterAddToCourseModalComponent,
+    InviteStudentsModalComponent,
+    InviteTeachersModalComponent,
+    StudentCourseEditionPageComponent,
+    StudentCoursePageComponent,
+    SubmissionReviewPageComponent,
+    SubmissionMenuDropdownComponent
   ],
   imports: [
     BrowserModule,
@@ -80,7 +104,11 @@ import { AddEditionModalComponent } from './components/teacher/course-edition/ad
     ),
     FormsModule,
     ReactiveFormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    TagInputModule,
+    ClipboardModule,
+    BrowserAnimationsModule,
+    NgxPageScrollModule
   ],
   providers: [
     CourseService,
@@ -91,6 +119,7 @@ import { AddEditionModalComponent } from './components/teacher/course-edition/ad
     DatePipe,
     AuthenticationService,
     AccountService,
+    StudentLessonRepositoryService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

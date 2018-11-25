@@ -4,19 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.coddlers.core.models.dto.CourseEditionDto;
 import pl.coddlers.core.models.entity.CourseEdition;
-import pl.coddlers.core.repositories.CourseRepository;
 import pl.coddlers.core.repositories.CourseVersionRepository;
 
 @Component
 public class CourseEditionConverter implements BaseConverter<CourseEdition, CourseEditionDto> {
 
-    private final CourseRepository courseRepository;
     private final CourseVersionRepository courseVersionRepository;
     private final CourseVersionConverter courseVersionConverter;
 
     @Autowired
-    public CourseEditionConverter(CourseRepository courseRepository, CourseVersionRepository courseVersionRepository, CourseVersionConverter courseVersionConverter) {
-        this.courseRepository = courseRepository;
+    public CourseEditionConverter(CourseVersionRepository courseVersionRepository, CourseVersionConverter courseVersionConverter) {
         this.courseVersionRepository = courseVersionRepository;
         this.courseVersionConverter = courseVersionConverter;
     }
@@ -28,7 +25,7 @@ public class CourseEditionConverter implements BaseConverter<CourseEdition, Cour
         courseEditionDto.setTitle(entity.getTitle());
         courseEditionDto.setCourseVersion(courseVersionConverter.convertFromEntity(entity.getCourseVersion()));
         courseEditionDto.setStartDate(entity.getStartDate());
-
+        courseEditionDto.setInvitationToken(entity.getInvitationToken());
         return courseEditionDto;
     }
 
@@ -39,7 +36,7 @@ public class CourseEditionConverter implements BaseConverter<CourseEdition, Cour
         courseEdition.setTitle(dto.getTitle());
         courseEdition.setStartDate(dto.getStartDate());
         courseEdition.setCourseVersion(courseVersionRepository.getOne(dto.getCourseVersion().getId()));
-
+        courseEdition.setInvitationToken(dto.getInvitationToken());
         return courseEdition;
     }
 }
