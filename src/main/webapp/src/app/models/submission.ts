@@ -62,8 +62,9 @@ export class Submission {
   }
 
   public static fromJSON(jsonObj: any): Submission {
+    let submissionTime = (!jsonObj.submissionTime) ? null :  new Date(jsonObj.submissionTime);
     return new Submission(+jsonObj.id, +jsonObj.taskId, +jsonObj.userId, jsonObj.userFullName, +jsonObj.courseEditionId,
-      new Date(jsonObj.submissionTime), jsonObj.submissionStatusType, +jsonObj.points);
+      submissionTime, jsonObj.submissionStatusType, +jsonObj.points);
   }
 
   public toJSON() {
