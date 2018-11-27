@@ -108,7 +108,6 @@ import {SubmissionMenuDropdownComponent} from './components/teacher/course-editi
     NgbModule.forRoot(),
     TagInputModule,
     ClipboardModule,
-    BrowserAnimationsModule,
     NgxPageScrollModule,
     BrowserAnimationsModule,
     FontAwesomeModule
