@@ -34,7 +34,6 @@
             <div *ngIf="showLesson[lessonIndex]">
               <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
               <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due date</button>
-              <button class="btn" (click)="forkLesson(lesson)">Fork</button>
 
               <div *ngFor="let task of courseMap.get(lesson)">
                 <br>
@@ -57,15 +56,15 @@
                       [attr.data-index]="submissionIndex">
                     <td>{{submissionIndex+1}}</td>
                     <td>{{submission.userFullName}}</td>
-                    <td>{{submission.submissionTime | date: 'dd MMMM yyyy'}}</td>
-                    <td>{{descriptionStatus(submission)}}</td>
+                    <td>{{(submission.submissionTime !== null) ? (submission.submissionTime | date: 'dd MMMM yyyy') : '-'}}</td>
+                    <td>{{submission.submissionStatusType}}</td>
                     <td>
-                      <img src="assets/img/{{submission.submissionStatus.toString().toLowerCase()}}.png" class="submission-status-img"/>
+                      <img src="assets/img/{{submission.submissionStatusType.toString().toLowerCase()}}.png" class="submission-status-img"/>
                     </td>
                     <td *ngIf="isGraded(submission)">{{submission.points}}</td>
                     <td *ngIf="!isGraded(submission)">-</td>
                     <td>
-                      <div class="dots" (click)="openSubmissionMenuModal(submission)"></div>
+                      <cod-submission-menu-dropdown [submission]="submission"></cod-submission-menu-dropdown>
                     </td>
                   </tr>
                   </tbody>
@@ -92,4 +91,3 @@
 <router-outlet></router-outlet>
 <cod-edit-lesson-due-date-modal></cod-edit-lesson-due-date-modal>
 <cod-invite-students-modal></cod-invite-students-modal>
-<cod-submission-menu-modal></cod-submission-menu-modal>

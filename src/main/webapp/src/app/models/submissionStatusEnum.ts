@@ -5,10 +5,9 @@ export class Status extends EnumValue {
     super(name);
   }
 
-  public toDescription(): string{
+  public toString(): string{
     return this.description.toString().toUpperCase().replace(/[_]/g, " ");
   }
-
 }
 
 export class SubmissionStatus extends Enum<Status> {

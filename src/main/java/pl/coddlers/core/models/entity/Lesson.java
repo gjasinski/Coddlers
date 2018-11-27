@@ -39,7 +39,7 @@ public class Lesson {
     @JsonIgnore
     private Long gitProjectId;
 
-    private String repositoryUrl;
+    private String repositoryName;
 
     @OneToMany(mappedBy = "lesson", targetEntity = Task.class)
     private List<Task> tasks = new ArrayList<>();

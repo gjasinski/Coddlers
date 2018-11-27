@@ -1,3 +1,5 @@
+@import "../styles/variables";
+
 .course-container {
   h2 {
     margin-bottom: 20px;
@@ -10,11 +12,11 @@
 }
 
 .course-item {
-  background-color: #f8f8f8;
+  background-color: $course-item-bg-color;
   margin-bottom: 15px;
 
   &:hover {
-    background-color: #fff;
+    background-color: $course-item-hover-color;
   }
 
   a {

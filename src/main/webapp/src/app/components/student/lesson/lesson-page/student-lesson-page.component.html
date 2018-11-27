@@ -35,10 +35,10 @@
               <div class="float-left" *ngIf="!tasks[i].isCodeTask">Task {{i+1}}: {{task.title}} - no coding task</div>
               <div class="float-left" *ngIf="tasks[i].isCodeTask">Task {{i+1}}: {{task.title}} - coding task</div>
               <div *ngIf="tasksVisibility[i]">
-                <img src='assets/img/downArrow.png' class="arrow-image"/>
+                <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
               </div>
               <div *ngIf="!tasksVisibility[i]">
-                <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+                <img src='assets/img/downArrow.png' class="arrow-image"/>
               </div>
             </button>
             <div *ngIf="tasksVisibility[i]">
@@ -55,7 +55,14 @@
                 <div *ngIf="!this.isGraded(i)">
                   <h4>Master branch - you should push your work to this branch</h4>
                   <div class="repo-url">
-                    <code>git push origin {{task.branchNamePrefix}}-master</code>
+                    Useful commands:<br>
+                    <code>
+                      git checkout -b {{task.branchNamePrefix}}-master<br>
+                      git pull origin {{task.branchNamePrefix}}-master<br>
+                      git add newFile<br>
+                      git commit -m "commit description"<br>
+                      git push origin {{task.branchNamePrefix}}-master
+                    </code>
                   </div>
                   <h4>Develop branch - your work on this branch will not be marked</h4>
                   <div class="repo-url">
@@ -66,14 +73,14 @@
                 <h4>Status</h4>
                 <div class="row" *ngIf="this.isGraded(i)">
                   <div class="col-md-2">
-                    <h4><b>{{descriptionStatus(submissions[i].submissionStatus)}}</b></h4>
+                    <h4><b>{{descriptionStatus(submissions[i].submissionStatusType)}}</b></h4>
                   </div>
                   <div class="col-md-10">
                     <button class="btn btn-secondary">Show review</button>
                   </div>
                 </div>
                 <div *ngIf="!this.isGraded(i)">
-                  <h4><b>{{descriptionStatus(submissions[i].submissionStatus)}}</b></h4>
+                  <h4><b>{{descriptionStatus(submissions[i].submissionStatusType)}}</b></h4>
                 </div>
                 <div *ngIf="this.isGraded(i)">
                   <h4><b>Points: {{submissions[i].points}}/{{tasks[i].maxPoints}}</b></h4>

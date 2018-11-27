@@ -10,6 +10,7 @@ import pl.coddlers.core.exceptions.InternalServerErrorException;
 import pl.coddlers.core.exceptions.InvalidPointsAmountException;
 import pl.coddlers.core.exceptions.NotSuchCommentTypeSpecifiedException;
 import pl.coddlers.core.exceptions.SubmissionStatusChangeException;
+import pl.coddlers.core.models.converters.SubmissionConverter;
 import pl.coddlers.core.models.dto.*;
 import pl.coddlers.core.models.entity.Submission;
 import pl.coddlers.core.models.entity.SubmissionStatusType;
@@ -30,11 +31,13 @@ public class SubmissionController {
 
     private final SubmissionService submissionService;
     private final CommentService commentService;
+    private final SubmissionConverter submissionConverter;
 
     @Autowired
-    public SubmissionController(SubmissionService submissionService, CommentService commentService) {
+    public SubmissionController(SubmissionService submissionService, CommentService commentService, SubmissionConverter submissionConverter) {
         this.submissionService = submissionService;
         this.commentService = commentService;
+        this.submissionConverter = submissionConverter;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
@@ -43,10 +46,27 @@ public class SubmissionController {
         return ResponseEntity.ok(submissionService.getAllTaskSubmissions(taskId));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
+    @GetMapping(params = {"taskId", "courseEditionId"})
+    public ResponseEntity<Collection<SubmissionDto>> getSubmissionsForCourseEdition(@RequestParam(value = "taskId") Long taskId,
+                                                                                    @RequestParam(value = "courseEditionId") Long courseEdition) {
+        return ResponseEntity.ok(submissionService.getAllTaskSubmissionsForCourseEdition(taskId, courseEdition));
+    }
+
     @GetMapping(params = {"lessonId", "courseEditionId"})
     public ResponseEntity<Collection<SubmissionDto>> getStudentSubmission(@RequestParam(value = "courseEditionId") Long courseEditionId,
-                                                              @RequestParam(value = "lessonId") Long lessonId) {
+                                                                          @RequestParam(value = "lessonId") Long lessonId) {
         return ResponseEntity.ok(submissionService.getTaskSubmission(lessonId, courseEditionId));
+    }
+
+    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
+    @GetMapping(params = {"submissionId"})
+    public ResponseEntity<SubmissionDataDto> getSubmission(@RequestParam(value = "submissionId") Long submissionId) {
+        SubmissionDataDto submissionData = new SubmissionDataDto();
+        submissionData.setFullName(submissionService.getStudentFullName(submissionId));
+        submissionData.setSubmission(submissionConverter.convertFromEntity(submissionService.getSubmissionById(submissionId)));
+        submissionData.setGitFileContents(submissionService.getSubmissionContent(submissionId));
+        return ResponseEntity.ok(submissionData);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -82,13 +102,7 @@ public class SubmissionController {
     @PostMapping(path = "/{id}/grade")
     public ResponseEntity<Void> gradeSubmission(@PathVariable Long id, @Valid @RequestBody SubmissionGradeDto submissionGradeDto) {
         Submission submission = submissionService.getSubmissionById(id);
-        SubmissionStatusTypeEnum statusType = submission.getSubmissionStatusTypeEnum();
-        if (!(statusType == WAITING_FOR_REVIEW || statusType == GRADED)) {
-            throw new SubmissionStatusChangeException(String.format("You can grade submissions only when they " +
-                            "are in state %s or %s. Current submission state is %s", WAITING_FOR_REVIEW.getStatus(),
-                    GRADED.getStatus(),
-                    submission.getSubmissionStatusTypeEnum().getStatus()));
-        }
+
         int maxPoints = submission.getTask().getMaxPoints();
         int grade = submissionGradeDto.getPoints();
         if (grade > maxPoints || grade < 0) {

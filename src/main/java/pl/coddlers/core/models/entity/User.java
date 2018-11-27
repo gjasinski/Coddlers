@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 @Table(name = "users")
 @ToString(exclude = {"courseEditions", "teacherInCourse", "userGroups", "studentLessonRepositories", "submissions", "courseGrades"})
-@EqualsAndHashCode(exclude = {"teacherInCourse"})
+@EqualsAndHashCode(exclude = {"teacherInCourse", "studentLessonRepositories"})
 public class User {
 
     @Id

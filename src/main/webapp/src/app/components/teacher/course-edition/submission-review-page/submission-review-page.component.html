@@ -1,0 +1,125 @@
+<div class="col-md-12">
+  <h4 (click)="navigateToCourseEdition()" class="navigation-header">{{courseEdition?.title}}</h4>
+</div>
+
+<div *ngIf="route.children.length === 0" class="content-container">
+  <div class="row">
+    <div class="col-12">
+      <h2>{{fullName}}'s Submission</h2>
+      Submission time: {{submission?.submissionTime | date: 'dd MMMM yyyy'}}
+
+      <div class="line"></div>
+      <br>
+      <ngb-tabset class="tabset-course">
+        <ngb-tab>
+          <ng-template ngbTabTitle>Files</ng-template>
+          <ng-template ngbTabContent>
+            <div class="content-container tab-border">
+              <div class="row">
+                <div class="col-md-12">
+                  <div ngbDropdown class="d-inline-block">
+                    <button class="btn btn-secondary" id="jumpto-dropdown" ngbDropdownToggle>
+                      Jump to:
+                    </button>
+                    <div ngbDropdownMenu aria-labelledby="goto-dropdownBasic" id="goto-dropdown-menu">
+                      <div *ngFor="let file of filesContent; let i = index">
+                        <a pageScroll [href]="'#file' + i">
+                          <button class="dropdown-item">{{file.path}}</button>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div ngbDropdown class="d-inline-block float-right" placement="bottom-right">
+                    <button class="btn btn-secondary dropleft" id="grade-dropdown" ngbDropdownToggle>
+                      Grade:
+                    </button>
+                    <div ngbDropdownMenu class="dropdown-menu">
+                      <form class="px-4" (click)="$event.stopPropagation();">
+                        Review summary
+                        <textarea #commentTextArea type="text" id="summaryReview" placeholder="Leave a comment"
+                                  cols="30"
+                                  rows="5"></textarea>
+                        <br>
+                        <div *ngIf="radioGrade.checked">
+                          Points for submission
+                          <input type="number" min="0" [max]="task?.maxPoints" on-focusout="validateGradePoints();"
+                                 [(ngModel)]="gradePoints" #gradePointsInput name="gradePointsInput">
+                        </div>
+                        <div class="alert alert-warning" *ngIf="showWarning">{{warningMessage}}</div>
+                        <div class="radio">
+                          <label>
+                            <input #radioComment type="radio" name="radioOp" id="radioComment" checked>Comment
+                          </label>
+                          <div class="text-muted">Submit general comment</div>
+                          <br>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input #radioGrade type="radio" name="radioOp" id="radioGrade">Grade
+                          </label>
+                          <div class="text-muted">Grade submission and give feedback</div>
+                          <br>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <input #radioRequestChanges type="radio" name="radioOp" id="radioRequestChanges"
+                                   [disabled]="disableRequestChanges">Request changes
+                          </label>
+                          <div class="text-muted" *ngIf="!disableRequestChanges">Grade submission and give feedback
+                          </div>
+                          <div class="text-muted" *ngIf="disableRequestChanges">You can request changes only in waiting
+                            for review state
+                          </div>
+                        </div>
+                      </form>
+                      <button class="btn btn-secondary w-100 p-3 mb-0" id="submitReview"
+                              (click)="this.saveReview(commentTextArea.value, radioComment.checked, radioGrade.checked); commentTextArea.value = '';">
+                        Submit review
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="head-line"></div>
+              <b>Submission files: {{numberOfFiles}}</b>
+              <div class="code-margin" *ngFor="let file of filesContent">
+                <div class="float-left">{{file.path}}</div>
+                <br/>
+              </div>
+
+              <div *ngFor="let file of filesContent; let i = index">
+                <button class="btn file-button" (click)="changeVisibilityForFile(i)">
+                  <div class="float-left" [id]="'file' + i">{{file.path}}</div>
+                  <div *ngIf="filesVisibility[i]">
+                    <img src='assets/img/downArrow.png' class="arrow-image"/>
+                  </div>
+                  <div *ngIf="!filesVisibility[i]">
+                    <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+                  </div>
+                </button>
+                <div *ngIf="filesVisibility[i]">
+                  <div class="col-12">
+                    <div class="row code-margin">
+                      <pre><code>{{file.content}}</code></pre>
+                    </div>
+                    <br>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab>
+          <ng-template ngbTabTitle>Conversation</ng-template>
+          <ng-template ngbTabContent>
+            <div class="content-container tab-border">
+            </div>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
+    </div>
+  </div>
+</div>
+
+
+<router-outlet></router-outlet>

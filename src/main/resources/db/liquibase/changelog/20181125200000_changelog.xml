@@ -1,0 +1,13 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet id="180924223800-1" author="grzegorz">
+        <update tableName="users">
+            <column name="password" value="$2a$10$BVjKQ5EdY6NSZ9mcM9ZNieQD576yRE8y3n0NRieFLruyyolJRUOf." />
+            <where>user_mail= 'student@coddlers.pl'</where>
+        </update>
+        <update tableName="users">
+            <column name="password" value="$2a$10$BVjKQ5EdY6NSZ9mcM9ZNieQD576yRE8y3n0NRieFLruyyolJRUOf." />
+            <where>user_mail= 'teacher@coddlers.pl'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

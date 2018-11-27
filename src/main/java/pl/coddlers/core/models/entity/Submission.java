@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @ToString(exclude={"studentLessonRepository", "comments", "user", "courseEdition"})
-@EqualsAndHashCode(exclude = {"user"})
+@EqualsAndHashCode(exclude = {"studentLessonRepository", "user"})
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

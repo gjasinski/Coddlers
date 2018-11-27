@@ -1,0 +1,34 @@
+<div ngbDropdown class="d-inline-block" #myDrop="ngbDropdown">
+  <div class="dots" id="dropdownBasic1" ngbDropdownToggle></div>
+  <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+
+    <div class="buttons-group" *ngIf="!isGraded()">
+      <button class="btn btn-secondary" [routerLink]="['submission', submission.id]">Review</button>
+
+      <button class="btn btn-secondary" (click)="showGradeReason = !showGradeReason">Grade</button>
+      <div class="col-12" *ngIf="showGradeReason">
+        <textarea [(ngModel)]="gradeReason" type="text" class="form-control textarea-height" placeholder="Enter reason"></textarea>
+        <input [(ngModel)]="grade" type="number" class="form-control" min="0">
+        <button class="btn btn-primary" (click)="gradeSubmission(myDrop)">Send</button>
+      </div>
+    </div>
+
+    <div class="buttons-group" *ngIf="isGraded()">
+      <button class="btn btn-secondary" (click)="showReopenReason = !showReopenReason">Reopen</button>
+      <div class="col-12" *ngIf="showReopenReason">
+        <textarea [(ngModel)]="reopenReason" type="text" class="form-control textarea-height" placeholder="Enter reason"></textarea>
+        <button class="btn btn-primary" (click)="reopenSubmission(myDrop)">Send</button>
+      </div>
+
+      <button class="btn btn-secondary" [routerLink]="['submission', submission.id]">Show</button>
+
+      <button class="btn btn-secondary" (click)="showGradeReason = !showGradeReason">Edit grade</button>
+      <div class="col-12" *ngIf="showGradeReason">
+        <textarea [(ngModel)]="gradeReason" type="text" class="form-control textarea-height" placeholder="Enter reason"></textarea>
+        <input [(ngModel)]="grade" type="number" class="form-control" min="0">
+        <button class="btn btn-primary" (click)="gradeSubmission(myDrop)">Send</button>
+      </div>
+    </div>
+
+  </div>
+</div>

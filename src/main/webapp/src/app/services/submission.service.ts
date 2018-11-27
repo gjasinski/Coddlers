@@ -3,6 +3,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {Submission} from "../models/submission";
+import {GitFileContent} from "../models/gitFileContent";
+import {SubmissionData} from "../models/submissionData";
 
 @Injectable()
 export class SubmissionService {
@@ -15,8 +17,8 @@ export class SubmissionService {
   constructor(private http: HttpClient) {
   }
 
-  public getSubmissions(taskId: number): Observable<Submission[]> {
-    return this.http.get<Submission[]>(`/api/submissions?taskId=${taskId}`)
+  public getSubmissions(taskId: number, courseEditionId: number): Observable<Submission[]> {
+    return this.http.get<Submission[]>(`/api/submissions?taskId=${taskId}&courseEditionId=${courseEditionId}`)
       .pipe(
         map((objArray: any[]) => objArray.map(obj => Submission.fromJSON(obj)))
       );
@@ -52,4 +54,9 @@ export class SubmissionService {
         map((objArray: any[]) => objArray.map(obj => Submission.fromJSON(obj)))
       );
   }
+
+  public getSubmission(submissionId: number): Observable<SubmissionData> {
+    return this.http.get<SubmissionData>(`/api/submissions?submissionId=${submissionId}`);
+  }
+
 }

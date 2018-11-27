@@ -7,17 +7,17 @@ export class Submission {
   private _courseEditionId: number;
   private _userFullName: string;
   private _submissionTime: Date;
-  private _submissionStatus: SubmissionStatus;
+  private _submissionStatusType: SubmissionStatus;
   private _points: number;
 
-  constructor(id: number, taskId: number, userId: number, userFullName: string, courseEditionId: number, submissionTime: Date, submissionStatus: SubmissionStatus, points: number) {
+  constructor(id: number, taskId: number, userId: number, userFullName: string, courseEditionId: number, submissionTime: Date, submissionStatusType: SubmissionStatus, points: number) {
     this._id = id;
     this._taskId = taskId;
     this._userId = userId;
     this._userFullName = userFullName;
     this._courseEditionId = courseEditionId;
     this._submissionTime = submissionTime;
-    this._submissionStatus = submissionStatus;
+    this._submissionStatusType = submissionStatusType;
     this._points = points;
   }
 
@@ -49,13 +49,22 @@ export class Submission {
     return this._points;
   }
 
-  get submissionStatus(): SubmissionStatus {
-    return this._submissionStatus;
+  set points(points: number) {
+    this._points = points;
+  }
+
+  get submissionStatusType(): SubmissionStatus {
+    return this._submissionStatusType;
+  }
+
+  set submissionStatusType(submissionStatusType: SubmissionStatus) {
+    this._submissionStatusType = submissionStatusType;
   }
 
   public static fromJSON(jsonObj: any): Submission {
+    let submissionTime = (!jsonObj.submissionTime) ? null :  new Date(jsonObj.submissionTime);
     return new Submission(+jsonObj.id, +jsonObj.taskId, +jsonObj.userId, jsonObj.userFullName, +jsonObj.courseEditionId,
-      new Date(jsonObj.submissionTime), jsonObj.submissionStatusType, +jsonObj.points);
+      submissionTime, jsonObj.submissionStatusType, +jsonObj.points);
   }
 
   public toJSON() {
@@ -66,7 +75,7 @@ export class Submission {
       courseEditionId: this.courseEditionId,
       submissionTime: this.submissionTime,
       points: this.points,
-      submissionStatus: this.submissionStatus
+      submissionStatusType: this.submissionStatusType
     }
   }
 }
