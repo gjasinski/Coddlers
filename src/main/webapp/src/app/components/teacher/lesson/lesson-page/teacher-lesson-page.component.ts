@@ -14,6 +14,10 @@ import {EventService} from "../../../../services/event.service";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs/index";
 import {StudentLessonRepositoryService} from "../../../../services/student-lesson-repository.service";
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faStickyNote} from '@fortawesome/free-solid-svg-icons';
+import {faArrowUp} from '@fortawesome/free-solid-svg-icons';
+import {faArrowDown} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'cod-teacher-lesson-page',
@@ -36,6 +40,7 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
               private taskService: TaskService,
               private eventService: EventService,
               private studentLessonRepositoryService: StudentLessonRepositoryService) {
+    library.add(faStickyNote, faArrowUp, faArrowDown);
   }
 
   ngOnInit() {
@@ -50,7 +55,7 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
 
     let routeParamsSub = this.route.parent.params.subscribe(params =>
       this.courseService.getCourse(params.courseId)
-        .subscribe((course: Course) => this.course = course));
+      .subscribe((course: Course) => this.course = course));
     this.subscriptionManager.add(routeParamsSub);
   }
 
@@ -60,15 +65,15 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
 
   private getLessonsAndTasks(): Observable<any> {
     return this.route.paramMap
-      .pipe(switchMap((params) => forkJoin(
-        this.lessonService.getLesson(+params.get('lessonId')),
-        this.studentLessonRepositoryService.getTeacherLessonRepositoryUrl(+params.get('lessonId'))
+    .pipe(switchMap((params) => forkJoin(
+      this.lessonService.getLesson(+params.get('lessonId')),
+      this.studentLessonRepositoryService.getTeacherLessonRepositoryUrl(+params.get('lessonId'))
       )),
-        switchMap(([lesson, repositoryUrl]) => {
-          this.lesson = lesson;
-          this.repoUrl = "git clone " + repositoryUrl + " \"" + this.lesson.title + "\"";
-          return this.getTasks(lesson.id);
-        }));
+      switchMap(([lesson, repositoryUrl]) => {
+        this.lesson = lesson;
+        this.repoUrl = "git clone " + repositoryUrl + " \"" + this.lesson.title + "\"";
+        return this.getTasks(lesson.id);
+      }));
   }
 
   private getTasks(lessonId: number): Observable<any> {

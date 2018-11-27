@@ -32,13 +32,13 @@
 
           <div *ngFor="let task of tasks;let i = index">
             <button class="btn task-button" (click)="changeVisibilityForSubmissions(i)">
-              <div class="float-left">Task {{i+1}}: {{task.title}}</div>
               <div *ngIf="tasksVisibility[i]">
-                <img src='assets/img/downArrow.png' class="arrow-image"/>
+                <fa-icon icon="arrow-up" pull="left" size="lg"></fa-icon>
               </div>
               <div *ngIf="!tasksVisibility[i]">
-                <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+                <fa-icon icon="arrow-down" pull="left" size="lg"></fa-icon>
               </div>
+              <div class="float-left">Task {{i+1}}: {{task.title}}</div>
             </button>
             <div *ngIf="tasksVisibility[i]">
               <div class="row">
@@ -73,7 +73,7 @@
       <br>
       <br>
       <h4>Notes</h4>
-      <img src='assets/img/addNote.png' class="note-image"/>
+      <fa-icon icon="sticky-note" pull="left" size="lg"></fa-icon>
       <p>Add new note</p>
     </div>
   </div>

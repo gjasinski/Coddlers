@@ -8,32 +8,39 @@
         <div class="col-12">
           <h2>CourseEdition - {{courseEdition?.title}}</h2>
           <h6>{{courseEdition?.id}}/v{{courseEdition?.courseVersion.versionNumber}}/
-            {{courseEdition?.startDate | date: 'dd MMMM yyyy'}} - {{ editionEndDate | date: 'dd MMMM yyyy' }}</h6>
+            {{courseEdition?.startDate | date: 'dd MMMM yyyy'}}
+            - {{ editionEndDate | date: 'dd MMMM yyyy' }}</h6>
 
           <div class="line"></div>
           <br>
 
           <h4>Submissions</h4>
 
-          <div *ngFor="let lesson of lessons; let lessonIndex = index" [attr.data-index]="lessonIndex">
+          <div *ngFor="let lesson of lessons; let lessonIndex = index"
+               [attr.data-index]="lessonIndex">
             <button class="btn lesson-button" (click)="swapShowLesson(lessonIndex)">
               <div class="float-left">{{lesson.title}}</div>
 
               <div class="float-right d-flex">
-                <small class="lesson-date">{{ lessonTimeMap.get(lesson).startDate | date: 'dd MMMM yyyy'}} -
+                <small class="lesson-date">{{ lessonTimeMap.get(
+                  lesson).startDate | date: 'dd MMMM yyyy'}} -
                   {{ lessonTimeMap.get(lesson).endDate | date: 'dd MMMM yyyy'}}</small>
                 <div *ngIf="showLesson[lessonIndex]">
-                  <img src='assets/img/downArrow.png' class="arrow-image"/>
+                  <fa-icon icon="arrow-down" pull="left" size="lg"></fa-icon>
                 </div>
                 <div *ngIf="!showLesson[lessonIndex]">
-                  <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+                  <fa-icon icon="arrow-up" pull="left" size="lg"></fa-icon>
                 </div>
               </div>
             </button>
 
             <div *ngIf="showLesson[lessonIndex]">
-              <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
-              <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due date</button>
+              <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson
+                view
+              </button>
+              <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due
+                date
+              </button>
 
               <div *ngFor="let task of courseMap.get(lesson)">
                 <br>
@@ -52,19 +59,29 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr *ngFor="let submission of submissionsMap.get(task); let submissionIndex = index"
-                      [attr.data-index]="submissionIndex">
-                    <td>{{submissionIndex+1}}</td>
+                  <tr
+                    *ngFor="let submission of submissionsMap.get(task); let submissionIndex = index"
+                    [attr.data-index]="submissionIndex">
+                    <td>{{submissionIndex + 1}}</td>
                     <td>{{submission.userFullName}}</td>
-                    <td>{{(submission.submissionTime !== null) ? (submission.submissionTime | date: 'dd MMMM yyyy') : '-'}}</td>
+                    <td>{{(submission.submissionTime !== null)
+                      ? (submission.submissionTime | date: 'dd MMMM yyyy') : '-'}}</td>
                     <td>{{submission.submissionStatusType}}</td>
                     <td>
-                      <img src="assets/img/{{submission.submissionStatusType.toString().toLowerCase()}}.png" class="submission-status-img"/>
+                      <fa-icon *ngIf="submission.submissionStatusType.toString() === 'GRADED'"
+                               icon="check" pull="left" size="lg"></fa-icon>
+                      <fa-icon *ngIf="submission.submissionStatusType.toString() === 'NOT_SUBMITTED'"
+                               icon="times" pull="left" size="lg"></fa-icon>
+                      <fa-icon *ngIf="submission.submissionStatusType.toString() === 'WAITING_FOR_REVIEW'"
+                        icon="question" pull="left" size="lg"></fa-icon>
+                      <fa-icon *ngIf="submission.submissionStatusType.toString() === 'CHANGES_REQUESTED'"
+                        icon="exchange-alt" pull="left" size="lg"></fa-icon>
                     </td>
                     <td *ngIf="isGraded(submission)">{{submission.points}}</td>
                     <td *ngIf="!isGraded(submission)">-</td>
                     <td>
-                      <cod-submission-menu-dropdown [submission]="submission"></cod-submission-menu-dropdown>
+                      <cod-submission-menu-dropdown
+                        [submission]="submission"></cod-submission-menu-dropdown>
                     </td>
                   </tr>
                   </tbody>
@@ -80,7 +97,8 @@
         <h3>People</h3>
       </div>
       <div class="row">
-        <button id="students-list" class="btn btn-secondary people-button float-md-right" (click)="inviteStudents()">
+        <button id="students-list" class="btn btn-secondary people-button float-md-right"
+                (click)="inviteStudents()">
           Students
         </button>
       </div>

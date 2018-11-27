@@ -48,10 +48,7 @@ import {ClipboardModule} from 'ngx-clipboard';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {InviteTeachersModalComponent} from './components/teacher/course/invite-teachers-modal/invite-teachers-modal.component';
 import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal.component';
-import { SubmissionMenuModalComponent } from './components/teacher/course-edition/submission-menu-modal/submission-menu-modal.component';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 import {StudentLessonPageComponent} from "./components/student/lesson/lesson-page/student-lesson-page.component";
 import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
 import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
@@ -112,7 +109,7 @@ import {SubmissionMenuDropdownComponent} from './components/teacher/course-editi
     TagInputModule,
     ClipboardModule,
     BrowserAnimationsModule,
-    NgxPageScrollModule
+    NgxPageScrollModule,
     BrowserAnimationsModule,
     FontAwesomeModule
   ],
@@ -143,8 +140,4 @@ import {SubmissionMenuDropdownComponent} from './components/teacher/course-editi
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor() {
-    // Add an icon to the library for convenient access in other components
-    library.add(faCoffee);
-  }
 }

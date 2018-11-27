@@ -8,6 +8,8 @@ import {EventService} from "../../../../services/event.service";
 import {CourseVersion} from "../../../../models/courseVersion";
 import {CourseEditionService} from "../../../../services/course-edition.service";
 import {CourseEdition} from "../../../../models/courseEdition";
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faCalendarAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'cod-add-edition-modal',
@@ -31,6 +33,7 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
               private eventService: EventService,
               private router: Router,
               private courseEditionService: CourseEditionService) {
+    library.add(faCalendarAlt);
   }
 
   ngOnInit() {
@@ -75,17 +78,17 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
   }
 
   addEdition(courseEdition) {
-    let { day, month, year } = courseEdition.date;
+    let {day, month, year} = courseEdition.date;
     let c = new CourseEdition(null,
       courseEdition.title,
       this.currentCourseVersion,
       new Date(`${year}-${month}-${day}`));
     this.courseEditionService.createCourseEdition(c)
-      .subscribe(() => {
-        this.modalRefNgb.close('created');
-        this.formGroup.reset();
-        this.router.navigate([this.router.url]);
-        this.eventService.emit(new Event("close-add-edition-modal"))
-      });
+    .subscribe(() => {
+      this.modalRefNgb.close('created');
+      this.formGroup.reset();
+      this.router.navigate([this.router.url]);
+      this.eventService.emit(new Event("close-add-edition-modal"))
+    });
   }
 }

@@ -35,10 +35,10 @@
               <div class="float-left" *ngIf="!tasks[i].isCodeTask">Task {{i+1}}: {{task.title}} - no coding task</div>
               <div class="float-left" *ngIf="tasks[i].isCodeTask">Task {{i+1}}: {{task.title}} - coding task</div>
               <div *ngIf="tasksVisibility[i]">
-                <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+                <fa-icon icon="arrow-up" pull="left" size="lg"></fa-icon>
               </div>
               <div *ngIf="!tasksVisibility[i]">
-                <img src='assets/img/downArrow.png' class="arrow-image"/>
+                <fa-icon icon="arrow-down" pull="left" size="lg"></fa-icon>
               </div>
             </button>
             <div *ngIf="tasksVisibility[i]">
