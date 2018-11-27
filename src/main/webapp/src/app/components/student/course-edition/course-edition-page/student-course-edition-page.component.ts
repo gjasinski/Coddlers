@@ -73,7 +73,7 @@ export class StudentCourseEditionPageComponent implements OnInit {
           this.submissionsStatus.set(lessonId, SubmissionStatusEnum.NOT_SUBMITTED.description);
           this.submissionsGrade.set(lessonId, -1);
         } else {
-          this.submissionsStatus.set(lessonId, _.last(submissions).submissionStatus);
+          this.submissionsStatus.set(lessonId, _.last(submissions).submissionStatusType);
           if (this.submissionsStatus.get(lessonId) === SubmissionStatusEnum.NOT_SUBMITTED.description) {
             this.submissionsGrade.set(lessonId, -1);
           } else {
@@ -93,8 +93,7 @@ export class StudentCourseEditionPageComponent implements OnInit {
     })
   }
 
-  ngOnDestroy():
-    void {
+  ngOnDestroy(): void {
     this.subscriptionManager.unsubscribeAll();
   }
 }
