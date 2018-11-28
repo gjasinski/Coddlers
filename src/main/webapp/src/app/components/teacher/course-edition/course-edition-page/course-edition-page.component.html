@@ -68,13 +68,13 @@
                       ? (submission.submissionTime | date: 'dd MMMM yyyy') : '-'}}</td>
                     <td>{{submission.submissionStatusType}}</td>
                     <td>
-                      <fa-icon *ngIf="submission.submissionStatusType.toString() === 'GRADED'"
+                      <fa-icon *ngIf="isGraded(submission)"
                                icon="check" pull="left" size="lg"></fa-icon>
-                      <fa-icon *ngIf="submission.submissionStatusType.toString() === 'NOT_SUBMITTED'"
+                      <fa-icon *ngIf="isNotSubmitted(submission)"
                                icon="times" pull="left" size="lg"></fa-icon>
-                      <fa-icon *ngIf="submission.submissionStatusType.toString() === 'WAITING_FOR_REVIEW'"
+                      <fa-icon *ngIf="isForReview(submission)"
                         icon="question" pull="left" size="lg"></fa-icon>
-                      <fa-icon *ngIf="submission.submissionStatusType.toString() === 'CHANGES_REQUESTED'"
+                      <fa-icon *ngIf="changesRequested(submission)"
                         icon="exchange-alt" pull="left" size="lg"></fa-icon>
                     </td>
                     <td *ngIf="isGraded(submission)">{{submission.points}}</td>

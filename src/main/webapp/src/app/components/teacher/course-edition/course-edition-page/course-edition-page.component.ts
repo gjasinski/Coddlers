@@ -202,6 +202,18 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
     return submission.submissionStatusType.toString() == SubmissionStatusEnum.GRADED.toString();
   }
 
+  isNotSubmitted(submission: Submission): boolean {
+    return submission.submissionStatusType.toString() == SubmissionStatusEnum.NOT_SUBMITTED.toString();
+  }
+
+  isForReview(submission: Submission): boolean {
+    return submission.submissionStatusType.toString() == SubmissionStatusEnum.WAITING_FOR_REVIEW.toString();
+  }
+
+  changesRequested(submission: Submission): boolean {
+    return submission.submissionStatusType.toString() == SubmissionStatusEnum.CHANGES_REQUESTED.toString();
+  }
+
   descriptionStatus(submission: Submission): string {
     return SubmissionStatus.getEnumFromString(submission.submissionStatusType.toString()).toString();
   }
