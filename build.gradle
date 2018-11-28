@@ -70,6 +70,9 @@ dependencies {
     testCompile 'org.spockframework.spock:spock-core:spock-1.1'
     testCompile 'org.spockframework.spock:spock-spring:spock-1.1'
     testCompile 'com.jayway.awaitility:awaitility:1.7.0'
+    testCompile 'io.rest-assured:rest-assured:3.2.0'
+    testCompile 'com.google.code.gson:gson:2.8.5'
+    testCompile 'org.apache.commons:commons-lang3:3.8.1'
 }
 
 def webappDir = "$projectDir/src/main/webapp"
