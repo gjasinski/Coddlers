@@ -1,6 +1,6 @@
-<div class="col-md-12">
-  <h1 (click)="navigateToCourseEdition()" class="navigation-header">{{course?.title}}</h1>
-  <h4 (click)="navigateToCourseEdition()" class="navigation-header">{{courseEdition?.title}}</h4>
+<div class="col-md-12" (click)="navigateToCourseEdition()">
+  <h1 class="navigation-header">{{course?.title}}</h1>
+  <h4 class="navigation-header">{{courseEdition?.title}}</h4>
 </div>
 
 <div *ngIf="route.children.length === 0" class="content-container">

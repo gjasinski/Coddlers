@@ -111,7 +111,7 @@ export class StudentLessonPageComponent implements OnInit {
   }
 
   navigateToCourseEdition() {
-    this.router.navigate(["student", "course-editions", this.course.id]);
+    this.router.navigate(["student", "course-editions", this.courseEdition.id]);
   }
 
   countPointsForLesson(): number {
