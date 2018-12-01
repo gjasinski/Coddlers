@@ -13,4 +13,6 @@ public interface CourseEditionLessonRepository extends JpaRepository<CourseEditi
     List<CourseEditionLesson> findByCourseEdition_Id(long courseEditionId);
 
     List<CourseEditionLesson> findAllByStartDateBetween(Timestamp t1, Timestamp t2);
+
+    Optional<CourseEditionLesson> findFirstByCourseEdition_IdOrderByStartDateDesc(long courseEditionId);
 }

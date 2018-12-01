@@ -66,6 +66,7 @@ public class CourseEditionService {
     private final SubmissionService submissionService;
     private final CourseService courseService;
     private final LessonService lessonService;
+    private final CourseEditionLessonService courseEditionLessonService;
 
     @Autowired
     public CourseEditionService(CourseEditionRepository courseEditionRepository, CourseEditionConverter courseEditionConverter,
@@ -73,7 +74,7 @@ public class CourseEditionService {
                                 GitGroupService gitGroupService, UserDetailsServiceImpl userDetailsService,
                                 SubmissionService submissionService, CourseService courseService, Environment environment,
                                 CourseEditionLessonConverter courseEditionLessonConverter, LessonService lessonService,
-                                StudentLessonRepositoryRepository studentLessonRepositoryRepository) {
+                                StudentLessonRepositoryRepository studentLessonRepositoryRepository, CourseEditionLessonService courseEditionLessonService) {
         this.courseEditionRepository = courseEditionRepository;
         this.courseEditionConverter = courseEditionConverter;
         this.lessonRepository = lessonRepository;
@@ -86,6 +87,7 @@ public class CourseEditionService {
         this.userDetailsService = userDetailsService;
         this.lessonService = lessonService;
         this.studentLessonRepositoryRepository = studentLessonRepositoryRepository;
+        this.courseEditionLessonService = courseEditionLessonService;
     }
 
     public CourseEditionDto getCourseEditionById(Long id) {
@@ -134,9 +136,9 @@ public class CourseEditionService {
         Timestamp startDate = courseEdition.getStartDate();
 
         for (Lesson lesson : lessons) {
-            CourseEditionLesson courseEditionLesson = createCourseEditionLesson(courseEdition, lesson, startDate);
-            startDate = addDaysToDate(courseEditionLesson.getEndDate(), 1);
-            courseEditionLessons.add(courseEditionLessonRepository.save(courseEditionLesson));
+            CourseEditionLesson courseEditionLesson = courseEditionLessonService.createCourseEditionLesson(courseEdition, lesson, startDate);
+            courseEditionLessons.add(courseEditionLesson);
+            startDate = courseEditionLessonService.addDaysToDate(courseEditionLesson.getEndDate(), 1);
         }
         return courseEditionLessons;
     }
@@ -228,20 +230,6 @@ public class CourseEditionService {
                 courseEditionLessonRepository.findByLesson_IdAndCourseEdition_Id(lessonId, editionId)
                         .orElseThrow(() -> new CourseEditionLessonNotFoundException(lessonId, editionId))
         );
-    }
-
-    private CourseEditionLesson createCourseEditionLesson(CourseEdition courseEdition, Lesson lesson, Timestamp startDate) {
-        CourseEditionLesson courseEditionLesson = new CourseEditionLesson();
-        courseEditionLesson.setCourseEdition(courseEdition);
-        courseEditionLesson.setLesson(lesson);
-        Timestamp endDate = addDaysToDate(startDate, lesson.getTimeInDays());
-        courseEditionLesson.setStartDate(startDate);
-        courseEditionLesson.setEndDate(endDate);
-        return courseEditionLesson;
-    }
-
-    private Timestamp addDaysToDate(Timestamp date, int days) {
-        return Timestamp.valueOf(date.toLocalDateTime().plusDays(days));
     }
 
     public void updateCourseEditionLesson(Long id, CourseEditionLessonDto courseEditionLessonDto) {
