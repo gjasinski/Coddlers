@@ -9,6 +9,8 @@ import pl.coddlers.core.models.entity.Task;
 import pl.coddlers.core.repositories.LessonRepository;
 import pl.coddlers.core.repositories.TaskRepository;
 
+import java.sql.Timestamp;
+
 @Component
 public class TaskConverter implements BaseConverter<Task, TaskDto> {
 
@@ -53,6 +55,7 @@ public class TaskConverter implements BaseConverter<Task, TaskDto> {
 		task.setLesson(lesson);
 		task.setIsCodeTask(dto.getIsCodeTask());
 		task.setBranchNamePrefix(dto.getBranchNamePrefix());
+		task.setCreationTime(new Timestamp(System.currentTimeMillis()));
 
 		return task;
 	}

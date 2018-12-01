@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.coddlers.core.exceptions.WrongParametersException;
 import pl.coddlers.git.services.GitTaskService;
 import pl.coddlers.core.models.dto.TaskDto;
 import pl.coddlers.core.models.entity.Task;
@@ -32,9 +33,6 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDto taskDto) {
         Task task = taskService.createTask(taskDto);
-        // TODO only for prototype purposes
-//        long gitStudentProjectId = task.getLesson().getGitStudentProjectId();
-//        gitTaskService.createTask(gitStudentProjectId, task.getTitle().replaceAll("\\s+","-"));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
@@ -44,9 +42,21 @@ public class TaskController {
     }
 
     // TODO check if user is assigned to lesson
-    @GetMapping(params = {"lessonId"})
-    public ResponseEntity<Collection<TaskDto>> getTasks(@RequestParam(value = "lessonId") Long lessonId) {
-        return ResponseEntity.ok(taskService.getAllLessonsTasks(lessonId));
+    @GetMapping(params = {"lessonId", "courseEditionLessonId"})
+    public ResponseEntity<Collection<TaskDto>> getTasks(@RequestParam(value = "lessonId", required = false) Long lessonId,
+                                                        @RequestParam(value = "courseEditionLessonId", required = false) Long courseEditionLessonId) {
+        if (courseEditionLessonId != null) {
+            return ResponseEntity.ok(taskService.getAllCourseEditionLessonTasks(courseEditionLessonId));
+        } else if (lessonId != null) {
+            return ResponseEntity.ok(taskService.getAllLessonsTasks(lessonId));
+        } else {
+            throw new WrongParametersException("You should provide either lessonId or courseEditionLessonId");
+        }
+    }
+
+    @GetMapping(params = {"courseEditionLessonId"})
+    public ResponseEntity<Collection<TaskDto>> getCourseEditionLessonTasks(@RequestParam(value = "courseEditionLessonId") Long courseEditionLessonId) {
+        return ResponseEntity.ok(taskService.getAllCourseEditionLessonTasks(courseEditionLessonId));
     }
 
     // TODO check if user is assigned to lesson connected to this task

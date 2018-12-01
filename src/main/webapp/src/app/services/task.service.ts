@@ -15,7 +15,14 @@ export class TaskService {
   constructor(private http: HttpClient) { }
 
   public getTasks(lessonId: number): Observable<Task[]> {
-    return this.http.get<Task[]>(`/api/tasks?lessonId=${lessonId}`)
+    return this.http.get<Task[]>(`/api/tasks?lessonId=${lessonId}&courseEditionLessonId`)
+      .pipe(
+        map((objArray: any[]) => objArray.map(obj => Task.fromJSON(obj)))
+      );
+  }
+
+  public getCourseEditionLessonTasks(courseEditionLessonId: number): Observable<Task[]> {
+    return this.http.get<Task[]>(`/api/tasks?lessonId&courseEditionLessonId=${courseEditionLessonId}`)
       .pipe(
         map((objArray: any[]) => objArray.map(obj => Task.fromJSON(obj)))
       );

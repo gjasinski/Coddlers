@@ -4,11 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coddlers.core.exceptions.CouldNotCreateGitTaskException;
+import pl.coddlers.core.exceptions.CourseEditionLessonNotFoundException;
 import pl.coddlers.core.exceptions.InternalServerErrorException;
 import pl.coddlers.core.exceptions.TaskNotFoundException;
 import pl.coddlers.core.models.converters.TaskConverter;
 import pl.coddlers.core.models.dto.TaskDto;
+import pl.coddlers.core.models.entity.CourseEditionLesson;
 import pl.coddlers.core.models.entity.Task;
+import pl.coddlers.core.repositories.CourseEditionLessonRepository;
 import pl.coddlers.core.repositories.TaskRepository;
 import pl.coddlers.git.services.GitTaskService;
 
@@ -25,16 +28,28 @@ public class TaskService {
 	private final TaskConverter taskConverter;
 
 	private final GitTaskService gitTaskService;
+	private final CourseEditionLessonRepository courseEditionLessonRepository;
 
 	@Autowired
-	public TaskService(TaskRepository taskRepository, TaskConverter taskConverter, GitTaskService gitTaskService) {
+	public TaskService(TaskRepository taskRepository, TaskConverter taskConverter, GitTaskService gitTaskService,
+					   CourseEditionLessonRepository courseEditionLessonRepository) {
 		this.taskRepository = taskRepository;
 		this.taskConverter = taskConverter;
 		this.gitTaskService = gitTaskService;
+		this.courseEditionLessonRepository = courseEditionLessonRepository;
 	}
 
 	public Collection<TaskDto> getAllLessonsTasks(long lessonId) {
 		return taskConverter.convertFromEntities(taskRepository.findByLessonId(lessonId));
+	}
+
+	public Collection<TaskDto> getAllCourseEditionLessonTasks(long courseEditionLessonId) {
+		CourseEditionLesson courseEditionLesson = courseEditionLessonRepository
+				.findById(courseEditionLessonId)
+				.orElseThrow(() -> new CourseEditionLessonNotFoundException(courseEditionLessonId));
+		Collection<Task> tasks = taskRepository.findByLessonIdAndCreationTimeLessThan(courseEditionLesson.getLesson().getId(), courseEditionLesson.getStartDate());
+
+		return taskConverter.convertFromEntities(tasks);
 	}
 
 	public Task createTask(final TaskDto taskDto) {

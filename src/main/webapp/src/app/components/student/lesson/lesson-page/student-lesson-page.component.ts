@@ -1,4 +1,3 @@
-///<reference path="../../../../../../node_modules/rxjs/internal/Observable.d.ts"/>
 import {Component, OnInit} from '@angular/core';
 import {Lesson} from "../../../../models/lesson";
 import {Task} from "../../../../models/task";
@@ -55,27 +54,28 @@ export class StudentLessonPageComponent implements OnInit {
         return forkJoin(
           this.courseService.getCourseByCourseEditionId(this.courseEditionId),
           this.courseEditionService.getCourseEdition(this.courseEditionId));
-      })).subscribe(([course, courseEdition]) => {
-      this.course = course;
-      this.courseEdition = courseEdition;
+      }))
+      .subscribe(([course, courseEdition]) => {
+        this.course = course;
+        this.courseEdition = courseEdition;
 
-      let paramMapSubscription = this.route.paramMap
-        .pipe(switchMap((params) => forkJoin(
-          this.getLessonAndTasksAndReturnSubmissions(params),
-          this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, +params.get('lessonId')),
-          this.studentLessonRepositoryService.getStudentLessonRepositoryUrl(this.courseEditionId, +params.get('lessonId')),
-        )))
-        .subscribe(([submissions, courseEditionLesson, lessonRepositoryUrl]) => {
-          this.courseEditionLesson = courseEditionLesson;
-          if (lessonRepositoryUrl.length > 1) {
-            this.repoUrl = "git clone " + lessonRepositoryUrl + " \"" + this.lesson.title + "\"";
-          }
-          else {
-            this.repoUrl = "Your repository is not forked yet"
-          }
-        });
-      this.subscriptionManager.add(paramMapSubscription);
-    });
+        let paramMapSubscription = this.route.paramMap
+          .pipe(switchMap((params) => forkJoin(
+            this.getLessonAndTasksAndReturnSubmissions(params),
+            this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, +params.get('lessonId')),
+            this.studentLessonRepositoryService.getStudentLessonRepositoryUrl(this.courseEditionId, +params.get('lessonId')),
+          )))
+          .subscribe(([submissions, courseEditionLesson, lessonRepositoryUrl]) => {
+            this.courseEditionLesson = courseEditionLesson;
+            if (lessonRepositoryUrl.length > 1) {
+              this.repoUrl = "git clone " + lessonRepositoryUrl + " \"" + this.lesson.title + "\"";
+            }
+            else {
+              this.repoUrl = "Your repository is not forked yet"
+            }
+          });
+        this.subscriptionManager.add(paramMapSubscription);
+      });
 
     this.subscriptionManager.add(paramParentMapSubscription);
   }
@@ -87,7 +87,6 @@ export class StudentLessonPageComponent implements OnInit {
         return this.getTasksAndReturnSubmissions(this.courseEditionId, lesson.id);
       }))
   }
-
 
   private getTasksAndReturnSubmissions(courseEditionId: number, lessonId: number): Observable<Submission[]> {
     return this.taskService.getTasks(lessonId)

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class Task {
     private Boolean isCodeTask;
 
     private String branchNamePrefix;
+
+    private Timestamp creationTime;
 
     @JsonIgnore
     @ManyToOne(targetEntity = Lesson.class)
