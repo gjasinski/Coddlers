@@ -159,8 +159,9 @@ public class CourseEditionService {
         courseEdition.getUsers().add(currentUser);
         courseEditionRepository.saveAndFlush(courseEdition);
 
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         courseEdition.getCourseEditionLesson().stream()
-                .filter(courseEditionLesson -> courseEditionLesson.getStartDate().before(new Timestamp(System.currentTimeMillis())))
+                .filter(courseEditionLesson -> courseEditionLesson.getStartDate().before(currentTime))
                 .forEach(courseEditionLesson ->
                         lessonService.forkModelLessonForUser(courseEdition, courseEditionLesson.getLesson(), currentUser)
 //                                .thenAccept(studentLessonRepositoryRepository::save)

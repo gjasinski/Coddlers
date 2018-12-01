@@ -67,13 +67,4 @@ public class LessonController {
     public ResponseEntity<LessonDto> updateLesson(@PathVariable Long id, @Valid @RequestBody LessonDto lessonDto) {
         return ResponseEntity.ok(lessonService.updateLesson(id, lessonDto));
     }
-
-    @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
-    @GetMapping(params = {"courseEditionId", "lessonId"})
-    public ResponseEntity<String> forkLessons(@RequestParam(value = "courseEditionId", required = true) Long courseEditionId,
-                                                                     @RequestParam(value = "lessonId", required = true) Long lessonId) {
-
-        lessonService.forkLessons(courseEditionId, lessonId);
-        return ResponseEntity.ok("ok");
-    }
 }

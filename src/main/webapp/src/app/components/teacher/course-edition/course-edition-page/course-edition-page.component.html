@@ -35,7 +35,7 @@
               <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson view</button>
               <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due date</button>
 
-              <div *ngFor="let task of courseMap.get(lesson)">
+              <div *ngFor="let task of courseMap.get(lesson.id)">
                 <br>
                 <h5 (click)="changeVisibilityForSubmissions(task)">{{task.title}}</h5>
 

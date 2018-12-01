@@ -229,26 +229,6 @@ public class LessonService {
                 .orElseThrow(() -> new LessonNotFoundException(id));
     }
 
-    public List<StudentLessonRepository> forkLessons(Long courseEditionId, Long lessonId) {
-        // TODO: 14.11.18 remove me
-        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonNotFoundException(lessonId));
-        CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
-        try {
-            return forkModelLesson(courseEdition, lesson)
-                    .whenComplete(((studentLessonRepositories, throwable) -> {
-//                        studentLessonRepositoryRepository.saveAll(studentLessonRepositories);
-                        log.info(String.format("Created %d repositories", studentLessonRepositories.size()));
-                    }))
-                    .exceptionally(ex -> {
-                        log.error(String.format("Error while forking lesson with id %d for courseEdition with id %d", lesson.getId(), courseEdition.getId()), ex);
-                        return Collections.emptyList();
-                    }).get();
-        } catch (Exception e) {
-            log.error("Cannot fork: " + courseEditionId + " " + lessonId, e);
-        }
-        return new LinkedList<>();
-    }
-
     public String getLessonRepositoryUrl(Long lessonId) {
         return lessonRepository.findById(lessonId)
                 .map(Lesson::getRepositoryName)

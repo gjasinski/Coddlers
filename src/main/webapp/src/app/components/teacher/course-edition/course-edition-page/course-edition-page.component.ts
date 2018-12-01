@@ -28,7 +28,7 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
   course: Course;
   courseEdition: CourseEdition;
   showLesson: boolean[];
-  courseMap: Map<Lesson, Task[]> = new Map<Lesson, Task[]>();
+  courseMap: Map<number, Task[]> = new Map<number, Task[]>();
   submissionsMap: Map<Task, Submission[]> = new Map<Task, Submission[]>();
   lessonTimeMap: Map<Lesson, CourseEditionLesson> = new Map<Lesson, CourseEditionLesson>();
   showTask: Map<Task, boolean> = new Map<Task, boolean>();
@@ -101,9 +101,11 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
 
         lessons.forEach(lesson => {
           this.fillLessonTimeMap(lesson, courseEditionLessonList);
+        });
 
+        courseEditionLessonList.forEach(courseEditionLesson => {
           getTasksObs.push(
-            this.getTasks(lesson)
+            this.getTasks(courseEditionLesson)
           );
         });
 
@@ -130,11 +132,11 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
     this.lessonTimeMap.set(lesson, foundItem);
   }
 
-  getTasks(lesson: Lesson) {
-    return this.taskService.getTasks(lesson.id)
+  getTasks(courseEditionLesson: CourseEditionLesson) {
+    return this.taskService.getCourseEditionLessonTasks(courseEditionLesson.id)
       .pipe(
         tap((tasks: Task[]) => {
-          this.courseMap.set(lesson, tasks);
+          this.courseMap.set(courseEditionLesson.lessonId, tasks);
           this.showLesson = new Array(this.courseMap.size).fill(false);
 
           this.getSubmissions(tasks);
