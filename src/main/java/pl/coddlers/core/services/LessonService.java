@@ -11,23 +11,13 @@ import pl.coddlers.core.exceptions.LessonNotFoundException;
 import pl.coddlers.core.models.converters.LessonConverter;
 import pl.coddlers.core.models.dto.LessonDto;
 import pl.coddlers.core.models.entity.*;
-import pl.coddlers.core.repositories.CourseEditionRepository;
-import pl.coddlers.core.repositories.CourseRepository;
-import pl.coddlers.core.repositories.CourseVersionRepository;
-import pl.coddlers.core.repositories.LessonRepository;
-import pl.coddlers.core.repositories.StudentLessonRepositoryRepository;
-import pl.coddlers.core.repositories.TaskRepository;
-import pl.coddlers.core.repositories.UserDataRepository;
+import pl.coddlers.core.repositories.*;
 import pl.coddlers.git.models.event.ProjectDto;
 import pl.coddlers.git.services.GitLessonService;
 
+import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -45,6 +35,8 @@ public class LessonService {
     private final CourseEditionRepository courseEditionRepository;
     private final StudentLessonRepositoryRepository studentLessonRepositoryRepository;
     private final TaskRepository taskRepository;
+    private final CourseEditionLessonService courseEditionLessonService;
+    private final CourseEditionLessonRepository courseEditionLessonRepository;
 
     @Value("${gitlab.api.host}:${gitlab.api.http.port}/")
     private String gitlabUrl;
@@ -54,7 +46,11 @@ public class LessonService {
     public LessonService(UserDetailsServiceImpl userDetailsService, LessonRepository lessonRepository,
                          LessonConverter lessonConverter, CourseVersionRepository courseVersionRepository,
                          GitLessonService gitLessonService, UserDataRepository userDataRepository,
-                         CourseRepository courseRepository, SubmissionService submissionService, CourseEditionRepository courseEditionRepository, StudentLessonRepositoryRepository studentLessonRepositoryRepository, TaskRepository taskRepository) {
+                         CourseRepository courseRepository, SubmissionService submissionService,
+                         CourseEditionRepository courseEditionRepository,
+                         StudentLessonRepositoryRepository studentLessonRepositoryRepository,
+                         TaskRepository taskRepository, CourseEditionLessonService courseEditionLessonService,
+                         CourseEditionLessonRepository courseEditionLessonRepository) {
         this.userDetailsService = userDetailsService;
         this.lessonRepository = lessonRepository;
         this.lessonConverter = lessonConverter;
@@ -66,6 +62,8 @@ public class LessonService {
         this.courseEditionRepository = courseEditionRepository;
         this.studentLessonRepositoryRepository = studentLessonRepositoryRepository;
         this.taskRepository = taskRepository;
+        this.courseEditionLessonService = courseEditionLessonService;
+        this.courseEditionLessonRepository = courseEditionLessonRepository;
     }
 
     public Collection<LessonDto> getAllCourseVersionLessons(Long courseId, Integer courseVersionNumber) {
@@ -106,6 +104,18 @@ public class LessonService {
             lesson.setGitProjectId(projectDto.getId());
             lesson.setRepositoryName(projectDto.getPathWithNamespace());
             lessonRepository.save(lesson);
+
+            Collection<CourseEdition> courseEditions = courseEditionRepository.findAllByCourseVersionId(lesson.getCourseVersion().getId());
+            courseEditions.forEach(courseEdition -> {
+                Optional<CourseEditionLesson> lastCourseEditionLessonOpt = courseEditionLessonRepository
+                        .findFirstByCourseEdition_IdOrderByStartDateDesc(courseEdition.getId());
+                Timestamp startDate = courseEdition.getStartDate();
+                if (lastCourseEditionLessonOpt.isPresent()) {
+                    startDate = courseEditionLessonService.addDaysToDate(lastCourseEditionLessonOpt.get().getEndDate(), 1);
+                }
+                courseEditionLessonService.createCourseEditionLesson(courseEdition, lesson, startDate);
+            });
+
             return lesson.getId();
         } catch (Exception ex) {
             log.error("Exception while creating lesson for: " + lessonDto.toString(), ex);
@@ -219,7 +229,7 @@ public class LessonService {
                 .orElseThrow(() -> new LessonNotFoundException(id));
     }
 
-    public List<StudentLessonRepository> forkLessons(Long courseEditionId, Long lessonId){
+    public List<StudentLessonRepository> forkLessons(Long courseEditionId, Long lessonId) {
         // TODO: 14.11.18 remove me
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonNotFoundException(lessonId));
         CourseEdition courseEdition = courseEditionRepository.findById(courseEditionId).orElseThrow(() -> new CourseEditionNotFoundException(courseEditionId));
@@ -234,12 +244,12 @@ public class LessonService {
                         return Collections.emptyList();
                     }).get();
         } catch (Exception e) {
-          log.error("Cannot fork: " + courseEditionId + " " +lessonId, e);
+            log.error("Cannot fork: " + courseEditionId + " " + lessonId, e);
         }
         return new LinkedList<>();
     }
 
-    public String getLessonRepositoryUrl(Long lessonId){
+    public String getLessonRepositoryUrl(Long lessonId) {
         return lessonRepository.findById(lessonId)
                 .map(Lesson::getRepositoryName)
                 .map(repositoryPath -> this.gitlabUrl + repositoryPath)
