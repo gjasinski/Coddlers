@@ -79,7 +79,7 @@ export class AddEditionModalComponent implements OnInit, OnDestroy {
     let c = new CourseEdition(null,
       courseEdition.title,
       this.currentCourseVersion,
-      new Date(`${year}-${month}-${day}`));
+     new Date(year, month - 1, day));
     this.courseEditionService.createCourseEdition(c)
       .subscribe(() => {
         this.modalRefNgb.close('created');

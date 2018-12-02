@@ -31,7 +31,6 @@ public class CourseEditionConverter implements BaseConverter<CourseEdition, Cour
 
     @Override
     public CourseEdition convertFromDto(CourseEditionDto dto) {
-        System.out.println(dto);
         CourseEdition courseEdition = new CourseEdition();
         courseEdition.setTitle(dto.getTitle());
         courseEdition.setStartDate(dto.getStartDate());
