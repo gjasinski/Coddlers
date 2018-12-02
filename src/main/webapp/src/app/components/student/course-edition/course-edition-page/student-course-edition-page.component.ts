@@ -1,15 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {Course} from "../../../../models/course";
 import {switchMap} from "rxjs/operators";
-import {forkJoin, Observable} from "rxjs";
+import {forkJoin} from "rxjs";
 import {Lesson} from "../../../../models/lesson";
 import {CourseService} from "../../../../services/course.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
 import {LessonService} from "../../../../services/lesson.service";
 import {CourseVersionService} from "../../../../services/course-version.service";
 import {CourseEditionService} from "../../../../services/course-edition.service";
-import {EventService} from "../../../../services/event.service";
 import {CourseEdition} from "../../../../models/courseEdition";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {SubmissionService} from "../../../../services/submission.service";
@@ -29,7 +28,7 @@ export class StudentCourseEditionPageComponent implements OnInit {
   editionLessons: Map<Lesson, CourseEditionLesson> = new Map<Lesson, CourseEditionLesson>();
   submissionsStatus: Map<number, string> = new Map<number, string>();
   submissionsGrade: Map<number, number> = new Map<number, number>();
-
+  courseEditionEndDate: Date = new Date();
   submitted: number = 0;
   graded: number = 0;
 
@@ -41,9 +40,7 @@ export class StudentCourseEditionPageComponent implements OnInit {
               private lessonService: LessonService,
               private courseVersionService: CourseVersionService,
               private courseEditionService: CourseEditionService,
-              private submissionService: SubmissionService,
-              private eventService: EventService,
-              private router: Router) {
+              private submissionService: SubmissionService) {
   }
 
   ngOnInit() {
@@ -52,12 +49,12 @@ export class StudentCourseEditionPageComponent implements OnInit {
         this.courseEditionService.getCourseEdition(+params.get('courseEditionId')),
         this.courseService.getCourseByCourseEditionId(+params.get('courseEditionId')),
         this.lessonService.getLessonsByCourseEditionId(+params.get('courseEditionId')))))
-    .subscribe(([courseEdition, course, lessons]) => {
-      this.courseEdition = courseEdition;
-      this.course = course;
-      this.lessons = lessons;
-      this.getSubmissionData();
-    });
+      .subscribe(([courseEdition, course, lessons]) => {
+        this.courseEdition = courseEdition;
+        this.course = course;
+        this.lessons = lessons;
+        this.getSubmissionData();
+      });
 
     this.subscriptionManager.add(paramsSub);
   }
@@ -68,26 +65,28 @@ export class StudentCourseEditionPageComponent implements OnInit {
       const subscription = forkJoin(
         this.submissionService.getSubmissionsForLesson(this.courseEdition.id, lessonId),
         this.courseEditionService.getCourseEditionLesson(this.courseEdition.id, lessonId))
-      .subscribe(([submissions, courseEditionLesson]) => {
-        if (submissions.length === 0) {
-          this.submissionsStatus.set(lessonId, SubmissionStatusEnum.NOT_SUBMITTED.description);
-          this.submissionsGrade.set(lessonId, -1);
-        } else {
-          this.submissionsStatus.set(lessonId, _.last(submissions).submissionStatusType);
-          if (this.submissionsStatus.get(lessonId) === SubmissionStatusEnum.NOT_SUBMITTED.description) {
+        .subscribe(([submissions, courseEditionLesson]) => {
+          if (submissions.length === 0) {
+            this.submissionsStatus.set(lessonId, SubmissionStatusEnum.NOT_SUBMITTED.description);
             this.submissionsGrade.set(lessonId, -1);
           } else {
-            this.submissionsGrade.set(lessonId, _.last(submissions).points);
+            this.submissionsStatus.set(lessonId, _.last(submissions).submissionStatusType);
+            if (this.submissionsStatus.get(lessonId) === SubmissionStatusEnum.NOT_SUBMITTED.description) {
+              this.submissionsGrade.set(lessonId, -1);
+            } else {
+              this.submissionsGrade.set(lessonId, _.last(submissions).points);
+            }
           }
-        }
 
-        this.submitted = _.size(_.filter(Array.from(this.submissionsStatus.values(),
-          status => status !== SubmissionStatusEnum.NOT_SUBMITTED.description)));
-        this.graded = _.size(_.filter(Array.from(this.submissionsGrade.values()),
-          grade => grade >= 0));
+          this.submitted = _.size(_.filter(Array.from(this.submissionsStatus.values(),
+            status => status !== SubmissionStatusEnum.NOT_SUBMITTED.description)));
+          this.graded = _.size(_.filter(Array.from(this.submissionsGrade.values()),
+            grade => grade >= 0));
 
-        this.editionLessons.set(lesson, courseEditionLesson);
-      });
+          this.editionLessons.set(lesson, courseEditionLesson);
+          if (courseEditionLesson.endDate > this.courseEditionEndDate)
+            this.courseEditionEndDate = courseEditionLesson.endDate;
+        });
 
       this.subscriptionManager.add(subscription);
     })
