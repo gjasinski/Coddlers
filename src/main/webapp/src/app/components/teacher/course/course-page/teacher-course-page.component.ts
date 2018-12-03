@@ -17,6 +17,8 @@ import {EventService} from "../../../../services/event.service";
 import {Subscription} from "rxjs/internal/Subscription";
 import {Observable} from "rxjs";
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faStickyNote} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -44,6 +46,7 @@ export class TeacherCoursePageComponent implements OnInit, OnDestroy {
               private courseVersionService: CourseVersionService,
               private courseEditionService: CourseEditionService,
               private eventService: EventService) {
+    library.add(faStickyNote);
   }
 
   ngOnInit(): void {

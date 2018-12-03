@@ -18,6 +18,14 @@ import {forkJoin} from "rxjs";
 import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
 import {SubmissionStatus, SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
 import {NgbDropdownConfig} from "@ng-bootstrap/ng-bootstrap";
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {
+  faArrowDown,
+  faArrowUp,
+  faCheck, faExchangeAlt,
+  faQuestion,
+  faTimes
+} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-edition-page',
@@ -48,6 +56,7 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               config: NgbDropdownConfig) {
     config.autoClose = "outside";
+    library.add(faArrowUp, faArrowDown, faCheck, faTimes, faQuestion, faExchangeAlt);
   }
 
   ngOnInit() {
@@ -132,23 +141,23 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
 
   getTasks(lesson: Lesson) {
     return this.taskService.getTasks(lesson.id)
-      .pipe(
-        tap((tasks: Task[]) => {
-          this.courseMap.set(lesson, tasks);
-          this.showLesson = new Array(this.courseMap.size).fill(false);
+    .pipe(
+      tap((tasks: Task[]) => {
+        this.courseMap.set(lesson, tasks);
+        this.showLesson = new Array(this.courseMap.size).fill(false);
 
-          this.getSubmissions(tasks);
-        })
-      );
+        this.getSubmissions(tasks);
+      })
+    );
   }
 
   getSubmissions(tasks: Task[]): void {
     tasks.forEach(task => {
       this.showTask.set(task, false);
       let submissionSub = this.submissionService.getSubmissions(task.id, this.courseEdition.id)
-        .subscribe((submissions: Submission[]) => {
-          this.submissionsMap.set(task, submissions);
-        });
+      .subscribe((submissions: Submission[]) => {
+        this.submissionsMap.set(task, submissions);
+      });
 
       this.subscriptionManager.add(submissionSub);
     });
@@ -191,6 +200,18 @@ export class CourseEditionPageComponent implements OnInit, OnDestroy {
 
   isGraded(submission: Submission): boolean {
     return submission.submissionStatusType.toString() == SubmissionStatusEnum.GRADED.toString();
+  }
+
+  isNotSubmitted(submission: Submission): boolean {
+    return submission.submissionStatusType.toString() == SubmissionStatusEnum.NOT_SUBMITTED.toString();
+  }
+
+  isForReview(submission: Submission): boolean {
+    return submission.submissionStatusType.toString() == SubmissionStatusEnum.WAITING_FOR_REVIEW.toString();
+  }
+
+  changesRequested(submission: Submission): boolean {
+    return submission.submissionStatusType.toString() == SubmissionStatusEnum.CHANGES_REQUESTED.toString();
   }
 
   descriptionStatus(submission: Submission): string {

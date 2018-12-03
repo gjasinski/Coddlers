@@ -15,6 +15,10 @@ import {GitFileContent} from "../../../../models/gitFileContent";
 import {Submission} from "../../../../models/submission";
 import {Task} from '../../../../models/task';
 import {SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {faArrowDown, faArrowUp} from "@fortawesome/free-solid-svg-icons";
+
+
 
 @Component({
   selector: 'app-edition-page',
@@ -45,6 +49,7 @@ export class SubmissionReviewPageComponent implements OnInit {
               private taskService: TaskService,
               private courseEditionService: CourseEditionService,
               private submissionService: SubmissionService) {
+    library.add(faArrowUp, faArrowDown);
   }
 
   ngOnInit() {

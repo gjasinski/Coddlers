@@ -19,6 +19,9 @@ import {StudentLessonRepositoryService} from "../../../../services/student-lesso
 import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs/index";
 import {SubmissionStatus, SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {faArrowDown, faArrowUp} from "@fortawesome/free-solid-svg-icons";
+
 
 @Component({
   selector: 'cod-student-lesson-page',
@@ -46,6 +49,7 @@ export class StudentLessonPageComponent implements OnInit {
               private courseEditionService: CourseEditionService,
               private submissionService: SubmissionService,
               private studentLessonRepositoryService: StudentLessonRepositoryService) {
+    library.add(faArrowUp, faArrowDown);
   }
 
   ngOnInit() {

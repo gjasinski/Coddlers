@@ -48,6 +48,7 @@ import {ClipboardModule} from 'ngx-clipboard';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {InviteTeachersModalComponent} from './components/teacher/course/invite-teachers-modal/invite-teachers-modal.component';
 import {YesNoModalComponent} from './components/common/yes-no-modal/yes-no-modal.component';
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {StudentLessonPageComponent} from "./components/student/lesson/lesson-page/student-lesson-page.component";
 import {StudentCoursePageComponent} from "./components/student/course/course-page/student-course-page.component";
 import {StudentCourseEditionPageComponent} from "./components/student/course-edition/course-edition-page/student-course-edition-page.component";
@@ -107,8 +108,9 @@ import {SubmissionMenuDropdownComponent} from './components/teacher/course-editi
     NgbModule.forRoot(),
     TagInputModule,
     ClipboardModule,
+    NgxPageScrollModule,
     BrowserAnimationsModule,
-    NgxPageScrollModule
+    FontAwesomeModule
   ],
   providers: [
     CourseService,

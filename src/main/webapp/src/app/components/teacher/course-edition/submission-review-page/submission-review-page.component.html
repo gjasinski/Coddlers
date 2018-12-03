@@ -89,13 +89,13 @@
 
               <div *ngFor="let file of filesContent; let i = index">
                 <button class="btn file-button" (click)="changeVisibilityForFile(i)">
-                  <div class="float-left" [id]="'file' + i">{{file.path}}</div>
                   <div *ngIf="filesVisibility[i]">
-                    <img src='assets/img/downArrow.png' class="arrow-image"/>
+                    <fa-icon icon="arrow-up" pull="left" size="lg"></fa-icon>
                   </div>
                   <div *ngIf="!filesVisibility[i]">
-                    <img src='assets/img/downArrow.png' class="arrow-image rotate"/>
+                    <fa-icon icon="arrow-down" pull="left" size="lg"></fa-icon>
                   </div>
+                  <div class="float-left" [id]="'file' + i">{{file.path}}</div>
                 </button>
                 <div *ngIf="filesVisibility[i]">
                   <div class="col-12">

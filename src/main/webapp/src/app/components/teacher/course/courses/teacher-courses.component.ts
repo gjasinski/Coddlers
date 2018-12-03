@@ -12,7 +12,7 @@ export class TeacherCoursesComponent implements OnInit {
   private courses: Course[];
 
   constructor(private courseService: CourseService,
-              private route: ActivatedRoute,) {
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {

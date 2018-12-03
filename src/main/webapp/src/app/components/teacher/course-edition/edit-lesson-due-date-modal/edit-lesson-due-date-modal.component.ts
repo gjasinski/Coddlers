@@ -10,6 +10,8 @@ import {filter, switchMap, tap} from "rxjs/operators";
 import {forkJoin} from "rxjs/internal/observable/forkJoin";
 import {CourseEditionService} from "../../../../services/course-edition.service";
 import {CourseEditionLesson} from "../../../../models/courseEditionLesson";
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faCalendarAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'cod-edit-lesson-due-date-modal',
@@ -32,6 +34,7 @@ export class EditLessonDueDateModalComponent implements OnInit, OnDestroy {
               private eventService: EventService,
               private lessonService: LessonService,
               private courseEditionService: CourseEditionService) {
+    library.add(faCalendarAlt);
   }
 
   ngOnInit() {

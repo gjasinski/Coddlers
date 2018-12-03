@@ -1,0 +1,29 @@
+<a class="card-body" [routerLink]="['lessons/', lesson.id]">
+
+  <div class="row col-md-12 mt-1">
+    <div class="col-md-8">
+      <div class="row">
+        <h5>Lesson {{ i + 1 }}: {{ lesson.title }}</h5>
+      </div>
+      <div class="row lesson-details mt-2">
+        <div class="col-md-6"><strong>Status:</strong>
+          {{ submissionsStatus.get(lesson.id) }}
+        </div>
+        <div class="col-md-6"><strong>Result:</strong>
+          {{ submissionsStatus.get(lesson.id) === 'GRADED'
+          ? submissionsGrade.get(lesson.id) : 'NOT GRADED' }}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 lesson-details pull-right">
+      <div class="row mt-4">
+        <strong>Due date:</strong>
+        {{ editionLessons.get(lesson)?.endDate | date: 'dd MMMM yyyy' }}
+      </div>
+      <div class="row mt-2">
+        <strong>Weight:</strong>
+        {{ lesson.weight }}
+      </div>
+    </div>
+  </div>
+</a>
