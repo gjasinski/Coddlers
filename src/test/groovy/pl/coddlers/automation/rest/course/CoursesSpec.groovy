@@ -1,7 +1,9 @@
-package pl.coddlers.automation.rest.courses
+package pl.coddlers.automation.rest.course
 
 import pl.coddlers.automation.CoddlersService
+import pl.coddlers.automation.Commons
 import pl.coddlers.automation.model.Course
+import pl.coddlers.automation.model.response.Course as RespCourse
 import spock.lang.PendingFeature
 import spock.lang.Shared
 import spock.lang.Specification
@@ -88,5 +90,49 @@ class CoursesSpec extends Specification {
 
         then:
             assert resp.code() == 200
+    }
+
+    def "Should update course as a teacher"(){
+        given:
+            def course = Course.sample()
+            coddlers.createCourse(course).successful()
+
+            def courseId = coddlers.getCourses().asList()
+                .find { it -> it.title == course.title && it.description == course.description }
+                .id as Integer
+
+        when:
+            def title = Commons.uniqueName('newTitle')
+            def description = Commons.uniqueName('newDescription')
+            def updatedCourse = new RespCourse(courseId, title, description)
+            def resp = coddlers.updateCourse(updatedCourse)
+
+        then:
+            assert resp.code() == 200
+
+        and:
+            def respCourse = coddlers.getCourse(courseId).asObject() as RespCourse
+            assert respCourse != null
+            assert respCourse.title == title
+            assert respCourse.description == description
+    }
+
+    def "Should NOT update course a a student"(){
+        given:
+            def course = Course.sample()
+            coddlers.createCourse(course).successful()
+
+            def courseId = coddlers.getCourses().asList()
+                    .find { it -> it.title == course.title && it.description == course.description }
+                    .id as Integer
+
+        when:
+            def title = Commons.uniqueName('newTitle')
+            def description = Commons.uniqueName('newDescription')
+            def updatedCourse = new RespCourse(courseId, title, description)
+            def resp = coddlersStudent.updateCourse(updatedCourse)
+
+        then:
+            assert resp.code() == 403
     }
 }

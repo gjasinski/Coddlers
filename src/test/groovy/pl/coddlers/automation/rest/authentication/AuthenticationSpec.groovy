@@ -13,7 +13,7 @@ class AuthenticationSpec extends Specification {
 
         when:
             def resp = coddlers.authenticate()
-            def token = resp.parse().token as String
+            def token = resp.getToken()
 
         then:
             assert resp.code() == 200
@@ -28,7 +28,7 @@ class AuthenticationSpec extends Specification {
 
         when:
             def resp = coddlers.authenticate()
-            def token = resp.parse().token as String
+            def token = resp.getToken()
 
         then:
             assert resp.code() == 200
