@@ -23,17 +23,12 @@ class Assert {
         new Gson().toJson(parse())
     }
 
-    def toCustomJson() {
-        new GsonBuilder().registerTypeAdapter(Timestamp.class, new JsonSerializer() {
-            @Override
-            JsonElement serialize(Object src, Type typeOfSrc, JsonSerializationContext context) {
-                return
-            }
-        })
-    }
-
     def code() {
         this.response.statusCode()
+    }
+
+    def location(){
+        this.response.getHeader('Location')
     }
 
     def successful() {
