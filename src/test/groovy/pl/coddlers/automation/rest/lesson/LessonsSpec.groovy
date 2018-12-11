@@ -45,10 +45,10 @@ class LessonsSpec extends Specification {
     }
 
     @Unroll
-    def "Should get lesson by lessonId as a #who"(){
+    def "Should get lesson by id as a #who"(){
         when:
             def lesson = Lesson.sample(courseId, courseVersionNumber)
-            def resp = coddlers.createLesson(courseId, courseVersionNumber, lesson)
+            def resp = coddlers.createLesson(courseId, courseVersionNumber, lesson).successful()
             def lessonId = getLessonId(resp.location())
 
             def respLesson = service.getLesson(lessonId).asObject() as RespLesson
@@ -97,7 +97,7 @@ class LessonsSpec extends Specification {
     def "Should NOT update lesson as a Student"() {
         when: 'create lesson'
             def lesson = Lesson.sample(courseId, courseVersionNumber)
-            def resp = coddlers.createLesson(courseId, courseVersionNumber, lesson)
+            def resp = coddlers.createLesson(courseId, courseVersionNumber, lesson).successful()
             def lessonId = getLessonId(resp.location())
 
         and: 'update lesson'
@@ -110,7 +110,7 @@ class LessonsSpec extends Specification {
             assert resp.code() == 403
     }
 
-        private def getLessonId(String location){
+    private def getLessonId(String location){
         (location =~ /lessons\/(\w*)/)[0][1] as Integer
     }
 }

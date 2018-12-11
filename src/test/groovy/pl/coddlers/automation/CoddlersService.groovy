@@ -9,9 +9,12 @@ import pl.coddlers.automation.model.Account
 import pl.coddlers.automation.model.Course
 import pl.coddlers.automation.model.CourseEdition
 import pl.coddlers.automation.model.Lesson
-import pl.coddlers.automation.model.response.Lesson as RespLesson
+import pl.coddlers.automation.model.response.Task as RespTask
+import pl.coddlers.automation.model.Task
 import pl.coddlers.automation.model.response.Course as RespCourse
 import pl.coddlers.automation.model.response.CourseVersion
+import pl.coddlers.automation.model.response.Lesson as RespLesson
+
 import static io.restassured.RestAssured.given
 
 @TupleConstructor
@@ -24,10 +27,11 @@ class CoddlersService {
     private static final COURSES = '/api/courses'
     private static final COURSE_EDITIONS = '/api/editions'
     private static final INVITATION_LINK = '/api/editions/invitation-link'
-    private static final COURSE_VERSION= '/api/course-versions'
+    private static final COURSE_VERSION = '/api/course-versions'
     private static final REGISTER = '/api/account/register'
     private static final LOGIN = '/api/auth'
     private static final LESSON = '/api/lessons'
+    private static final TASK = '/api/tasks'
 
     User user
     Map<String, String> headers = [:]
@@ -109,7 +113,7 @@ class CoddlersService {
                 .response())
     }
 
-    def getCourseEditions(){
+    def getCourseEditions() {
         new CourseEditionsAssert(this.withToken()
                 .get("${CONTEXT}${COURSE_EDITIONS}")
                 .then()
@@ -117,7 +121,7 @@ class CoddlersService {
                 .response())
     }
 
-    def getCourseEdition(Integer courseEditionId){
+    def getCourseEdition(Integer courseEditionId) {
         new CourseEditionAssert(this.withToken()
                 .get("${CONTEXT}${COURSE_EDITIONS}/${courseEditionId}")
                 .then()
@@ -126,7 +130,7 @@ class CoddlersService {
     }
 
     def createCourseEdition(Integer courseId, CourseVersion courseVersion,
-                            CourseEdition courseEdition = CourseEdition.sample(courseId, courseVersion)){
+                            CourseEdition courseEdition = CourseEdition.sample(courseId, courseVersion)) {
         new Assert(this.withToken()
                 .body(courseEdition)
                 .post("${CONTEXT}${COURSE_EDITIONS}")
@@ -136,7 +140,7 @@ class CoddlersService {
         )
     }
 
-    def getInvitationLink(Integer courseEditionId){
+    def getInvitationLink(Integer courseEditionId) {
         new Assert(this.withToken()
                 .get("${CONTEXT}${INVITATION_LINK}?courseEditionId=${courseEditionId}")
                 .then()
@@ -144,7 +148,7 @@ class CoddlersService {
                 .response())
     }
 
-    def getCourseVersion(Integer courseId){
+    def getCourseVersion(Integer courseId) {
         new CourseVersionsAssert(this.withToken()
                 .get("${CONTEXT}${COURSE_VERSION}?courseId=${courseId}")
                 .then()
@@ -152,7 +156,7 @@ class CoddlersService {
                 .response())
     }
 
-    def createCourseVersion(RespCourse course){
+    def createCourseVersion(RespCourse course) {
         new CourseVersionAssert(this.withToken()
                 .body(course)
                 .post("${CONTEXT}${COURSE_VERSION}")
@@ -162,7 +166,7 @@ class CoddlersService {
     }
 
     def createLesson(Integer courseId, Integer courseVersionNumber,
-                     Lesson lesson = Lesson.sample(courseId, courseVersionNumber)){
+                     Lesson lesson = Lesson.sample(courseId, courseVersionNumber)) {
         new Assert(this.withToken()
                 .body(lesson)
                 .post("${CONTEXT}${LESSON}")
@@ -171,7 +175,7 @@ class CoddlersService {
                 .response())
     }
 
-    def getLesson(Integer lessonId){
+    def getLesson(Integer lessonId) {
         new LessonAssert(this.withToken()
                 .get("${CONTEXT}${LESSON}/${lessonId}")
                 .then()
@@ -179,10 +183,44 @@ class CoddlersService {
                 .response())
     }
 
-    def updateLesson(Integer lessonId, RespLesson lesson){
+    def updateLesson(Integer lessonId, RespLesson lesson) {
         new LessonAssert(this.withToken()
                 .body(lesson)
                 .put("${CONTEXT}${LESSON}/${lessonId}")
+                .then()
+                .extract()
+                .response())
+    }
+
+    def createTask(Integer lessonId, Task task = Task.sample(lessonId)) {
+        new Assert(this.withToken()
+                .body(task)
+                .post("${CONTEXT}${TASK}")
+                .then()
+                .extract()
+                .response())
+    }
+
+    def getTasks(Integer lessonId) {
+        new TasksAssert(this.withToken()
+                .get("${CONTEXT}${TASK}?lessonId=${lessonId}")
+                .then()
+                .extract()
+                .response())
+    }
+
+    def getTask(Integer taskId) {
+        new TaskAssert(this.withToken()
+                .get("${CONTEXT}${TASK}/${taskId}")
+                .then()
+                .extract()
+                .response())
+    }
+
+    def updateTask(Integer taskId, RespTask task) {
+        new TaskAssert(this.withToken()
+                .body(task)
+                .put("${CONTEXT}${TASK}/${taskId}")
                 .then()
                 .extract()
                 .response())
@@ -192,7 +230,7 @@ class CoddlersService {
         given().headers(this.headers)
     }
 
-    static def makeInvitationLink(String invitationLink){
+    static def makeInvitationLink(String invitationLink) {
         "${CONTEXT.replace('http://', 'http://www.')}/#/invitations?invitationToken=${invitationLink}"
     }
 }
