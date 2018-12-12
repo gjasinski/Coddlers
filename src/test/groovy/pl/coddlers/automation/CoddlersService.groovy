@@ -129,8 +129,8 @@ class CoddlersService {
                 .response())
     }
 
-    def createCourseEdition(Integer courseId, CourseVersion courseVersion,
-                            CourseEdition courseEdition = CourseEdition.sample(courseId, courseVersion)) {
+    def createCourseEdition(CourseVersion courseVersion,
+                            CourseEdition courseEdition = CourseEdition.sample(courseVersion)) {
         new Assert(this.withToken()
                 .body(courseEdition)
                 .post("${CONTEXT}${COURSE_EDITIONS}")

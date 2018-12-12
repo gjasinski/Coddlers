@@ -19,11 +19,30 @@ class CourseEdition {
         this.startDate = startDate
     }
 
-    static CourseEdition sample(Integer courseId,
-                                CourseVersion courseVersion,
+    static CourseEdition sample(CourseVersion courseVersion,
                                 String title = Commons.uniqueName('CourseEdition'),
                                 String invitationToken = Commons.uniqueName('InvitationToken'),
                                 Timestamp startDate = Timestamp.from(Instant.now())) {
         new CourseEdition(title, invitationToken, courseVersion, startDate)
+    }
+
+    CourseEdition withTitle(String title){
+        this.title = title
+        this
+    }
+
+    CourseEdition withInvitationToken(String invitationToken){
+        this.invitationToken = invitationToken
+        this
+    }
+
+    CourseEdition withCourseVersion(CourseVersion courseVersion){
+        this.courseVersion = courseVersion
+        this
+    }
+
+    CourseEdition withStartDate(Timestamp startDate){
+        this.startDate = startDate
+        this
     }
 }

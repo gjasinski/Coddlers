@@ -1,6 +1,5 @@
 package pl.coddlers.automation.rest.course.edition
 
-
 import pl.coddlers.automation.CoddlersService
 import pl.coddlers.automation.model.Course
 import pl.coddlers.automation.model.CourseEdition
@@ -46,7 +45,7 @@ class CourseEditionsSpec extends Specification {
 
     def "Should create course edition as a Teacher"(){
         when:
-            def resp = coddlers.createCourseEdition(courseId, courseVersion)
+            def resp = coddlers.createCourseEdition(courseVersion)
             courseVersion = coddlers.getCourseVersion(courseId).last()
 
         then:
@@ -55,7 +54,7 @@ class CourseEditionsSpec extends Specification {
 
     def "Should NOT create course edition as a Student"(){
         when:
-            def resp = coddlersStudent.createCourseEdition(courseId, courseVersion)
+            def resp = coddlersStudent.createCourseEdition(courseVersion)
 
         then:
             assert resp.code() == 403
@@ -63,8 +62,8 @@ class CourseEditionsSpec extends Specification {
 
     def "Should get invitation link as a Teacher"(){
         given:
-            def courseEdition = CourseEdition.sample(courseId, courseVersion)
-            def resp = coddlers.createCourseEdition(courseId, courseVersion, courseEdition)
+            def courseEdition = CourseEdition.sample(courseVersion)
+            def resp = coddlers.createCourseEdition(courseVersion, courseEdition)
             courseVersion = coddlers.getCourseVersion(courseId).last()
             def courseEditionId = getCourseEditionId(resp.location())
 
@@ -83,8 +82,8 @@ class CourseEditionsSpec extends Specification {
 
     def "Should NOT get invitation link as a Student"(){
         given:
-            def courseEdition = CourseEdition.sample(courseId, courseVersion)
-            def resp = coddlers.createCourseEdition(courseId, courseVersion, courseEdition)
+            def courseEdition = CourseEdition.sample(courseVersion)
+            def resp = coddlers.createCourseEdition(courseVersion, courseEdition)
             courseVersion = coddlers.getCourseVersion(courseId).last()
             def courseEditionId = getCourseEditionId(resp.location())
 
