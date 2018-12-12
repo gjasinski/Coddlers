@@ -64,7 +64,7 @@ public class CourseEditionController {
 
     @PreAuthorize("hasRole('ROLE_TEACHER') or hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<Void> createEdition(@RequestBody CourseEditionDto courseEditionDto) {
+    public ResponseEntity<Void> createEdition(@Valid @RequestBody CourseEditionDto courseEditionDto) {
         CourseEdition courseEdition = courseEditionService.createCourseEdition(courseEditionDto);
         courseEditionService.createCourseEditionLessons(courseEdition);
 
