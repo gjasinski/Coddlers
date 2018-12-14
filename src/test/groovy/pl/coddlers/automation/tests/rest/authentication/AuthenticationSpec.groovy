@@ -1,4 +1,4 @@
-package pl.coddlers.automation.rest.authentication
+package pl.coddlers.automation.tests.rest.authentication
 
 import pl.coddlers.automation.CoddlersService
 import pl.coddlers.automation.auth.Credentials

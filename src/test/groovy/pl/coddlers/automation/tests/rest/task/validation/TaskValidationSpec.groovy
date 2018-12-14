@@ -1,4 +1,4 @@
-package pl.coddlers.automation.rest.task.validation
+package pl.coddlers.automation.tests.rest.task.validation
 
 import org.apache.commons.lang3.RandomStringUtils
 import pl.coddlers.automation.CoddlersService
@@ -7,6 +7,8 @@ import pl.coddlers.automation.model.Task
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import static pl.coddlers.automation.Commons.retrieveLessonId
 
 class TaskValidationSpec extends Specification {
 
@@ -74,9 +76,5 @@ class TaskValidationSpec extends Specification {
 
         then:
             assert resp.code() == 400
-    }
-
-    private retrieveLessonId(String location){
-        (location =~ /lessons\/(\w*)/)[0][1] as Integer
     }
 }

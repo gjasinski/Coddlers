@@ -5,15 +5,11 @@ import groovy.transform.TupleConstructor
 import pl.coddlers.automation.asserts.*
 import pl.coddlers.automation.auth.Credentials
 import pl.coddlers.automation.auth.User
-import pl.coddlers.automation.model.Account
-import pl.coddlers.automation.model.Course
-import pl.coddlers.automation.model.CourseEdition
-import pl.coddlers.automation.model.Lesson
-import pl.coddlers.automation.model.response.Task as RespTask
-import pl.coddlers.automation.model.Task
+import pl.coddlers.automation.model.*
 import pl.coddlers.automation.model.response.Course as RespCourse
 import pl.coddlers.automation.model.response.CourseVersion
 import pl.coddlers.automation.model.response.Lesson as RespLesson
+import pl.coddlers.automation.model.response.Task as RespTask
 
 import static io.restassured.RestAssured.given
 
@@ -27,6 +23,7 @@ class CoddlersService {
     private static final COURSES = '/api/courses'
     private static final COURSE_EDITIONS = '/api/editions'
     private static final INVITATION_LINK = '/api/editions/invitation-link'
+    private static final INVITATIONS = '/invitations/emails'
     private static final COURSE_VERSION = '/api/course-versions'
     private static final REGISTER = '/api/account/register'
     private static final LOGIN = '/api/auth'
@@ -140,14 +137,6 @@ class CoddlersService {
         )
     }
 
-    def getInvitationLink(Integer courseEditionId) {
-        new Assert(this.withToken()
-                .get("${CONTEXT}${INVITATION_LINK}?courseEditionId=${courseEditionId}")
-                .then()
-                .extract()
-                .response())
-    }
-
     def getCourseVersion(Integer courseId) {
         new CourseVersionsAssert(this.withToken()
                 .get("${CONTEXT}${COURSE_VERSION}?courseId=${courseId}")
@@ -226,11 +215,28 @@ class CoddlersService {
                 .response())
     }
 
+    def getInvitationLink(Integer courseEditionId) {
+        new Assert(this.withToken()
+                .get("${CONTEXT}${INVITATION_LINK}?courseEditionId=${courseEditionId}")
+                .then()
+                .extract()
+                .response())
+    }
+
+    def sendInvite(InvitationLink invite) {
+        new Assert(this.withToken()
+                .body(invite)
+                .post("${CONTEXT}${COURSE_EDITIONS}${INVITATIONS}")
+                .then()
+                .extract()
+                .response())
+    }
+
     private def withToken() {
         given().headers(this.headers)
     }
 
-    static def makeInvitationLink(String invitationLink) {
-        "${CONTEXT.replace('http://', 'http://www.')}/#/invitations?invitationToken=${invitationLink}"
+    static def makeInvitationLink() {
+        "${CONTEXT.replace('http://', 'http://www.')}/#/invitations?invitationToken="
     }
 }

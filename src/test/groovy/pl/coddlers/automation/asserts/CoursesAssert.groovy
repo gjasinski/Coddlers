@@ -3,7 +3,6 @@ package pl.coddlers.automation.asserts
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import groovy.transform.InheritConstructors
-import io.swagger.models.auth.In
 import pl.coddlers.automation.model.response.Course
 
 @InheritConstructors

@@ -1,4 +1,4 @@
-package pl.coddlers.automation.rest.task
+package pl.coddlers.automation.tests.rest.task
 
 import org.apache.commons.lang3.RandomUtils
 import pl.coddlers.automation.CoddlersService
@@ -8,6 +8,9 @@ import pl.coddlers.automation.model.response.Task as RespTask
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import static pl.coddlers.automation.Commons.retrieveLessonId
+import static pl.coddlers.automation.Commons.retrieveTaskId
 
 class TasksSpec extends Specification {
 
@@ -153,13 +156,5 @@ class TasksSpec extends Specification {
 
         then:
             assert resp.code() == 403
-    }
-
-    private retrieveLessonId(String location){
-        (location =~ /lessons\/(\w*)/)[0][1] as Integer
-    }
-
-    private retrieveTaskId(String location){
-        (location =~ /tasks\/(\w*)/)[0][1] as Integer
     }
 }

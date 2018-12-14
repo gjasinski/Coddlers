@@ -1,4 +1,4 @@
-package pl.coddlers.automation.rest.course.version
+package pl.coddlers.automation.tests.rest.course.version
 
 import pl.coddlers.automation.CoddlersService
 import pl.coddlers.automation.model.Course
@@ -15,7 +15,7 @@ class CourseVersionSpec extends Specification {
 
     def setupSpec(){
         def course = Course.sample()
-        coddlers.createCourse(course)
+        coddlers.createCourse(course).successful()
         courseId = coddlers.getCourses().getCourse(course.title, course.description).id
     }
 
@@ -59,8 +59,8 @@ class CourseVersionSpec extends Specification {
 
         when:
             def courseVersion = coddlers.getCourseVersion(courseId).asList()
-                    .toSorted { cv1, cv2 -> cv1.versionNumber <=> cv2.versionNumber}
-                    .last()
+                                    .toSorted { cv1, cv2 -> cv1.versionNumber <=> cv2.versionNumber}
+                                    .last()
 
         then:
             assert courseVersion.versionNumber == 2

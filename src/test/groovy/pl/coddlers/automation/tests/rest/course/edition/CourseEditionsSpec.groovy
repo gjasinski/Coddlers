@@ -1,11 +1,14 @@
-package pl.coddlers.automation.rest.course.edition
+package pl.coddlers.automation.tests.rest.course.edition
 
 import pl.coddlers.automation.CoddlersService
+import pl.coddlers.automation.Commons
 import pl.coddlers.automation.model.Course
 import pl.coddlers.automation.model.CourseEdition
 import pl.coddlers.automation.model.response.CourseVersion
 import spock.lang.Shared
 import spock.lang.Specification
+
+import static pl.coddlers.automation.Commons.*
 
 class CourseEditionsSpec extends Specification {
 
@@ -65,7 +68,7 @@ class CourseEditionsSpec extends Specification {
             def courseEdition = CourseEdition.sample(courseVersion)
             def resp = coddlers.createCourseEdition(courseVersion, courseEdition)
             courseVersion = coddlers.getCourseVersion(courseId).last()
-            def courseEditionId = getCourseEditionId(resp.location())
+            def courseEditionId = retrieveCourseEditionId(resp.location())
 
         when:
             resp = coddlers.getInvitationLink(courseEditionId)
@@ -77,7 +80,8 @@ class CourseEditionsSpec extends Specification {
             def invitationLink = resp.parse().link as String
 
         then:
-            assert invitationLink == CoddlersService.makeInvitationLink(courseEdition.invitationToken)
+            assert invitationLink.contains(coddlers.makeInvitationLink())
+            assert retrieveInvitationToken(invitationLink).length() >= 0
     }
 
     def "Should NOT get invitation link as a Student"(){
@@ -85,16 +89,12 @@ class CourseEditionsSpec extends Specification {
             def courseEdition = CourseEdition.sample(courseVersion)
             def resp = coddlers.createCourseEdition(courseVersion, courseEdition)
             courseVersion = coddlers.getCourseVersion(courseId).last()
-            def courseEditionId = getCourseEditionId(resp.location())
+            def courseEditionId = retrieveCourseEditionId(resp.location())
 
         when:
             resp = coddlersStudent.getInvitationLink(courseEditionId)
 
         then:
             assert resp.code() == 403
-    }
-
-    private def getCourseEditionId(String location){
-        (location =~ /editions\/(\w*)/)[0][1] as Integer
     }
 }

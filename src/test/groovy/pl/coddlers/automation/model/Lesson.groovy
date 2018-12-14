@@ -27,4 +27,34 @@ class Lesson {
                          Integer weight = RandomUtils.nextInt(1, 100)) {
         new Lesson(courseId, courseVersionNumber, description, timeInDays, title, weight)
     }
+
+    Lesson withCourseId(Integer courseId){
+        this.courseId = courseId
+        this
+    }
+
+    Lesson withCourseVersionNumber(Integer courseVersionNumber){
+        this.courseVersionNumber = courseVersionNumber
+        this
+    }
+
+    Lesson withDescription(String description){
+        this.description = description
+        this
+    }
+
+    Lesson withTimeInDays(Integer timeInDays){
+        this.timeInDays = timeInDays
+        this
+    }
+
+    Lesson withTitle(String title){
+        this.title = title
+        this
+    }
+
+    Lesson withWeight(Integer weight){
+        this.weight = weight
+        this
+    }
 }

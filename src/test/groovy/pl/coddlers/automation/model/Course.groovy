@@ -14,4 +14,14 @@ class Course {
     static Course sample(String title = Commons.uniqueName('Course'), String description = 'Sample description') {
         new Course(title, description)
     }
+
+    Course withTitle(String title) {
+        this.title = title
+        this
+    }
+
+    Course withDescription(String description) {
+        this.description = description
+        this
+    }
 }

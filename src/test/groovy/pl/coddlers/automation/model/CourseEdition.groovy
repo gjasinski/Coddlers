@@ -8,31 +8,23 @@ import java.time.Instant
 
 class CourseEdition {
     String title
-    String invitationToken
     CourseVersion courseVersion
     Timestamp startDate
 
-    CourseEdition(String title, String invitationToken, CourseVersion courseVersion, Timestamp startDate) {
+    CourseEdition(String title, CourseVersion courseVersion, Timestamp startDate) {
         this.title = title
-        this.invitationToken = invitationToken
         this.courseVersion = courseVersion
         this.startDate = startDate
     }
 
     static CourseEdition sample(CourseVersion courseVersion,
                                 String title = Commons.uniqueName('CourseEdition'),
-                                String invitationToken = Commons.uniqueName('InvitationToken'),
                                 Timestamp startDate = Timestamp.from(Instant.now())) {
-        new CourseEdition(title, invitationToken, courseVersion, startDate)
+        new CourseEdition(title, courseVersion, startDate)
     }
 
     CourseEdition withTitle(String title){
         this.title = title
-        this
-    }
-
-    CourseEdition withInvitationToken(String invitationToken){
-        this.invitationToken = invitationToken
         this
     }
 

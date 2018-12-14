@@ -1,6 +1,5 @@
 package pl.coddlers.automation.asserts
 
-
 import groovy.transform.InheritConstructors
 
 @InheritConstructors

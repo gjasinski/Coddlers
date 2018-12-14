@@ -1,4 +1,4 @@
-package pl.coddlers.automation.rest.lesson.validation
+package pl.coddlers.automation.tests.rest.lesson.validation
 
 import org.apache.commons.lang3.RandomStringUtils
 import pl.coddlers.automation.CoddlersService

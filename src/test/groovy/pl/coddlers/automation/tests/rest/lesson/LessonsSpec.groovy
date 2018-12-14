@@ -1,4 +1,4 @@
-package pl.coddlers.automation.rest.lesson
+package pl.coddlers.automation.tests.rest.lesson
 
 import pl.coddlers.automation.CoddlersService
 import pl.coddlers.automation.model.Course
@@ -7,6 +7,8 @@ import pl.coddlers.automation.model.response.Lesson as RespLesson
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import static pl.coddlers.automation.Commons.retrieveLessonId
 
 class LessonsSpec extends Specification {
 
@@ -30,7 +32,7 @@ class LessonsSpec extends Specification {
             assert resp.code() == 201
 
         when:
-            def lessonId = getLessonId(resp.location())
+            def lessonId = retrieveLessonId(resp.location())
 
         then:
             assert lessonId >= 0
@@ -49,7 +51,7 @@ class LessonsSpec extends Specification {
         when:
             def lesson = Lesson.sample(courseId, courseVersionNumber)
             def resp = coddlers.createLesson(courseId, courseVersionNumber, lesson).successful()
-            def lessonId = getLessonId(resp.location())
+            def lessonId = retrieveLessonId(resp.location())
 
             def respLesson = service.getLesson(lessonId).asObject() as RespLesson
 
@@ -71,7 +73,7 @@ class LessonsSpec extends Specification {
         when: 'create lesson'
             def lesson = Lesson.sample(courseId, courseVersionNumber)
             def resp = coddlers.createLesson(courseId, courseVersionNumber, lesson)
-            def lessonId = getLessonId(resp.location())
+            def lessonId = retrieveLessonId(resp.location())
 
         and: 'update lesson'
             def updatedLesson = new RespLesson(lessonId, courseId, courseVersionNumber,
@@ -98,7 +100,7 @@ class LessonsSpec extends Specification {
         when: 'create lesson'
             def lesson = Lesson.sample(courseId, courseVersionNumber)
             def resp = coddlers.createLesson(courseId, courseVersionNumber, lesson).successful()
-            def lessonId = getLessonId(resp.location())
+            def lessonId = retrieveLessonId(resp.location())
 
         and: 'update lesson'
             def updatedLesson = new RespLesson(lessonId, courseId, courseVersionNumber,
@@ -108,9 +110,5 @@ class LessonsSpec extends Specification {
 
         then:
             assert resp.code() == 403
-    }
-
-    private def getLessonId(String location){
-        (location =~ /lessons\/(\w*)/)[0][1] as Integer
     }
 }

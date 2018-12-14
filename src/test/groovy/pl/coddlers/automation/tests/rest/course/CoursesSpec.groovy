@@ -1,12 +1,13 @@
-package pl.coddlers.automation.rest.course
+package pl.coddlers.automation.tests.rest.course
 
 import pl.coddlers.automation.CoddlersService
-import pl.coddlers.automation.Commons
 import pl.coddlers.automation.model.Course
 import pl.coddlers.automation.model.response.Course as RespCourse
-import spock.lang.PendingFeature
 import spock.lang.Shared
 import spock.lang.Specification
+
+import static pl.coddlers.automation.Commons.retrieveCourseId
+import static pl.coddlers.automation.Commons.uniqueName
 
 class CoursesSpec extends Specification {
 
@@ -58,35 +59,15 @@ class CoursesSpec extends Specification {
             assert resp.code() == 403
     }
 
-    @PendingFeature
-    def "Should NOT create duplicated course"(){
-        given:
-            def course = Course.sample()
-
-        when: "Create 1st time"
-            def resp = coddlers.createCourse(course)
-
-        then:
-            assert resp.code() == 201
-
-        when: "Create 2nd time"
-            resp = coddlers.createCourse(course)
-
-        then:
-            assert resp.code() == 400
-    }
-
     def "Should get course by id"(){
         given:
             def course = Course.sample()
-            coddlers.createCourse(course).successful()
+            def resp = coddlers.createCourse(course).successful()
 
-            def courseId = coddlers.getCourses().asList()
-                    .find { it -> it.title == course.title && it.description == course.description }
-                    .id as Integer
+            def courseId = retrieveCourseId(resp.location())
 
         when:
-            def resp = coddlers.getCourse(courseId)
+            resp = coddlers.getCourse(courseId)
 
         then:
             assert resp.code() == 200
@@ -95,17 +76,15 @@ class CoursesSpec extends Specification {
     def "Should update course as a teacher"(){
         given:
             def course = Course.sample()
-            coddlers.createCourse(course).successful()
+            def resp = coddlers.createCourse(course).successful()
 
-            def courseId = coddlers.getCourses().asList()
-                .find { it -> it.title == course.title && it.description == course.description }
-                .id as Integer
+            def courseId = retrieveCourseId(resp.location())
 
         when:
-            def title = Commons.uniqueName('newTitle')
-            def description = Commons.uniqueName('newDescription')
+            def title = uniqueName('newTitle')
+            def description = uniqueName('newDescription')
             def updatedCourse = new RespCourse(courseId, title, description)
-            def resp = coddlers.updateCourse(updatedCourse)
+            resp = coddlers.updateCourse(updatedCourse)
 
         then:
             assert resp.code() == 200
@@ -120,17 +99,15 @@ class CoursesSpec extends Specification {
     def "Should NOT update course a a student"(){
         given:
             def course = Course.sample()
-            coddlers.createCourse(course).successful()
+            def resp = coddlers.createCourse(course).successful()
 
-            def courseId = coddlers.getCourses().asList()
-                    .find { it -> it.title == course.title && it.description == course.description }
-                    .id as Integer
+            def courseId = retrieveCourseId(resp.location())
 
         when:
-            def title = Commons.uniqueName('newTitle')
-            def description = Commons.uniqueName('newDescription')
+            def title = uniqueName('newTitle')
+            def description = uniqueName('newDescription')
             def updatedCourse = new RespCourse(courseId, title, description)
-            def resp = coddlersStudent.updateCourse(updatedCourse)
+            resp = coddlersStudent.updateCourse(updatedCourse)
 
         then:
             assert resp.code() == 403

@@ -1,6 +1,5 @@
 package pl.coddlers.automation.model.response
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
 import java.sql.Timestamp
 

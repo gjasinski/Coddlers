@@ -1,11 +1,8 @@
 package pl.coddlers.automation.asserts
 
-import com.google.gson.*
+import com.google.gson.Gson
 import groovy.json.JsonSlurper
 import io.restassured.response.Response
-
-import java.lang.reflect.Type
-import java.sql.Timestamp
 
 class Assert {
 

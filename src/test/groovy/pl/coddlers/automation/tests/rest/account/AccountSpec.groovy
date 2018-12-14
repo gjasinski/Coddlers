@@ -1,4 +1,4 @@
-package pl.coddlers.automation.rest.account
+package pl.coddlers.automation.tests.rest.account
 
 import org.apache.commons.lang3.StringUtils
 import pl.coddlers.automation.CoddlersService
