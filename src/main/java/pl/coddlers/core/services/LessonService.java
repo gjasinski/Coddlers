@@ -137,7 +137,7 @@ public class LessonService {
     public CompletableFuture<Lesson> createNewVersionLesson(Lesson modelLesson, CourseVersion newCourseVersion) {
         try {
             Lesson lesson = lessonRepository.save(copyLessonEntity(modelLesson, newCourseVersion));
-            Collection<Task> tasks = taskRepository.findByLessonId(lesson.getId());
+            Collection<Task> tasks = taskRepository.findByLessonId(modelLesson.getId());
             Course lessonCourse = getLessonCourse(modelLesson);
             User currentUser = userDetailsService.getCurrentUserEntity();
             return gitLessonService.forkLesson(modelLesson, currentUser)
