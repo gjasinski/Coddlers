@@ -137,6 +137,7 @@ public class LessonService {
     public CompletableFuture<Lesson> createNewVersionLesson(Lesson modelLesson, CourseVersion newCourseVersion) {
         try {
             Lesson lesson = lessonRepository.save(copyLessonEntity(modelLesson, newCourseVersion));
+            Collection<Task> tasks = taskRepository.findByLessonId(lesson.getId());
             Course lessonCourse = getLessonCourse(modelLesson);
             User currentUser = userDetailsService.getCurrentUserEntity();
             return gitLessonService.forkLesson(modelLesson, currentUser)
@@ -145,7 +146,19 @@ public class LessonService {
                     .thenApply(projectDto -> {
                         lesson.setGitProjectId(projectDto.getId());
                         lesson.setRepositoryName(projectDto.getPathWithNamespace());
-                        return lessonRepository.save(lesson);
+                        Lesson savedLesson = lessonRepository.save(lesson);
+                        tasks.forEach(t -> {
+                            Task task = new Task();
+                            task.setTitle(t.getTitle());
+                            task.setDescription(t.getDescription());
+                            task.setMaxPoints(t.getMaxPoints());
+                            task.setIsCodeTask(t.getIsCodeTask());
+                            task.setBranchNamePrefix(t.getBranchNamePrefix());
+                            task.setLesson(savedLesson);
+                            //todo task.set task.setNotes();
+                            taskRepository.save(task);
+                        });
+                        return savedLesson;
                     });
         } catch (Exception ex) {
             log.error("Exception while creating new version lesson for: " + modelLesson.toString(), ex);
