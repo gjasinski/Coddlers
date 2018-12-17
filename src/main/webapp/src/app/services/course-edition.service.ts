@@ -72,6 +72,7 @@ export class CourseEditionService {
     return this.http.post('api/editions/invitations', invitationToken, this.httpOptions);
   }
 
+  // TODO this is a joke
   public getCourses(): Observable<CourseWithCourseEdition[]> {
     return this.http.get<CourseWithCourseEdition[]>('api/editions')
       .pipe(

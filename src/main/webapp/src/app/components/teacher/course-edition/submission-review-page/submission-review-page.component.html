@@ -15,7 +15,7 @@
           <ng-template ngbTabTitle>Files</ng-template>
           <ng-template ngbTabContent>
             <div class="content-container tab-border">
-              <div class="row">
+              <div class="row top-menu">
                 <div class="col-md-12">
                   <div ngbDropdown class="d-inline-block">
                     <button class="btn btn-secondary" id="jumpto-dropdown" ngbDropdownToggle>
@@ -72,15 +72,17 @@
                           </div>
                         </div>
                       </form>
-                      <button class="btn btn-secondary w-100 p-3 mb-0" id="submitReview"
-                              (click)="this.saveReview(commentTextArea.value, radioComment.checked, radioGrade.checked); commentTextArea.value = '';">
-                        Submit review
-                      </button>
+                      <div class="submit-btn-wrap">
+                        <button class="btn btn-secondary" id="submitReview"
+                                (click)="this.saveReview(commentTextArea.value, radioComment.checked, radioGrade.checked); commentTextArea.value = '';">
+                          Submit review
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="head-line"></div>
+
               <b>Submission files: {{numberOfFiles}}</b>
               <div class="code-margin" *ngFor="let file of filesContent">
                 <div class="float-left">{{file.path}}</div>
@@ -89,13 +91,13 @@
 
               <div *ngFor="let file of filesContent; let i = index">
                 <button class="btn file-button" (click)="changeVisibilityForFile(i)">
-                  <div *ngIf="filesVisibility[i]">
-                    <fa-icon icon="arrow-up" pull="left" size="lg"></fa-icon>
-                  </div>
-                  <div *ngIf="!filesVisibility[i]">
-                    <fa-icon icon="arrow-down" pull="left" size="lg"></fa-icon>
-                  </div>
                   <div class="float-left" [id]="'file' + i">{{file.path}}</div>
+                  <div class="float-right" *ngIf="filesVisibility[i]">
+                    <fa-icon icon="angle-up" pull="left" size="lg"></fa-icon>
+                  </div>
+                  <div class="float-right" *ngIf="!filesVisibility[i]">
+                    <fa-icon icon="angle-down" pull="left" size="lg"></fa-icon>
+                  </div>
                 </button>
                 <div *ngIf="filesVisibility[i]">
                   <div class="col-12">

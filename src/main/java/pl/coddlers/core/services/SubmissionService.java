@@ -19,11 +19,7 @@ import pl.coddlers.core.models.entity.SubmissionStatusType;
 import pl.coddlers.core.models.entity.SubmissionStatusTypeEnum;
 import pl.coddlers.core.models.entity.Task;
 import pl.coddlers.core.models.entity.User;
-import pl.coddlers.core.repositories.CourseEditionRepository;
-import pl.coddlers.core.repositories.StudentLessonRepositoryRepository;
-import pl.coddlers.core.repositories.SubmissionRepository;
-import pl.coddlers.core.repositories.TaskRepository;
-import pl.coddlers.core.repositories.UserDataRepository;
+import pl.coddlers.core.repositories.*;
 import pl.coddlers.git.models.GitFileDto;
 import pl.coddlers.git.services.GitFileService;
 
@@ -51,9 +47,10 @@ public class SubmissionService {
     private final GitFileService gitFileService;
     private final StudentLessonRepositoryRepository studentLessonRepositoryRepository;
     private final UserDataRepository userDataRepository;
+    private final LessonRepository lessonRepository;
 
     @Autowired
-    public SubmissionService(SubmissionRepository submissionRepository, SubmissionConverter submissionConverter, CourseEditionRepository courseEditionRepository, UserDetailsServiceImpl userDetailsService, TaskRepository taskRepository, GitFileService gitFileService, StudentLessonRepositoryRepository studentLessonRepositoryRepository, UserDataRepository userDataRepository) {
+    public SubmissionService(SubmissionRepository submissionRepository, SubmissionConverter submissionConverter, CourseEditionRepository courseEditionRepository, UserDetailsServiceImpl userDetailsService, TaskRepository taskRepository, GitFileService gitFileService, StudentLessonRepositoryRepository studentLessonRepositoryRepository, UserDataRepository userDataRepository, LessonRepository lessonRepository) {
         this.submissionRepository = submissionRepository;
         this.submissionConverter = submissionConverter;
         this.courseEditionRepository = courseEditionRepository;
@@ -62,6 +59,7 @@ public class SubmissionService {
         this.gitFileService = gitFileService;
         this.studentLessonRepositoryRepository = studentLessonRepositoryRepository;
         this.userDataRepository = userDataRepository;
+        this.lessonRepository = lessonRepository;
     }
 
     public Collection<SubmissionDto> getAllTaskSubmissions(long taskId) {
@@ -126,6 +124,37 @@ public class SubmissionService {
 
     public int countAllTask(User user, CourseEdition courseEdition) {
         return submissionRepository.countAllByUserAndCourseEdition(user, courseEdition);
+    }
+
+    public int countGradedLessonStatus(User user, CourseEdition courseEdition) {
+        return lessonRepository.getLessonsByCourseEditionIdOrderByStartDate(courseEdition.getId())
+                .stream()
+                .map(lesson -> {
+                    Collection<Submission> submissions = submissionRepository.findSubmissionForTaskAndUser(lesson.getId(), user.getId(), courseEdition);
+                    boolean graded = submissions.size() != 0 && submissions.stream()
+                            .filter(submission -> submission.getSubmissionStatusTypeEnum() == SubmissionStatusTypeEnum.GRADED)
+                            .collect(Collectors.toList()).size() == submissions.size();
+
+                    return graded ? 1 : 0;
+                })
+                .reduce((a, b) -> a + b)
+                .orElse(0);
+    }
+
+    public int countSubmittedLessonStatus(User user, CourseEdition courseEdition) {
+        return lessonRepository.getLessonsByCourseEditionIdOrderByStartDate(courseEdition.getId())
+                .stream()
+                .map(lesson -> {
+                    Collection<Submission> submissions = submissionRepository.findSubmissionForTaskAndUser(lesson.getId(), user.getId(), courseEdition);
+                    boolean submitted = submissions.size() != 0 && (submissions.stream()
+                            .filter(submission -> submission.getSubmissionStatusTypeEnum() == SubmissionStatusTypeEnum.WAITING_FOR_REVIEW ||
+                                    submission.getSubmissionStatusTypeEnum() == SubmissionStatusTypeEnum.GRADED)
+                            .collect(Collectors.toList()).size() == submissions.size());
+
+                    return submitted ? 1 : 0;
+                })
+                .reduce((a, b) -> a + b)
+                .orElse(0);
     }
 
     public Submission getSubmissionById(Long id) {

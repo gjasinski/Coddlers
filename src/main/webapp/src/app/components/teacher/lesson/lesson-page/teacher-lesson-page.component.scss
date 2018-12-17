@@ -21,3 +21,15 @@ h1 {
   background-color: $repo-url-background-color;
   border-radius: .3rem;
 }
+
+.task-content {
+  padding: 10px 10px 0;
+}
+
+.lesson-details {
+  margin-bottom: 1rem;
+
+  p {
+    margin-bottom: 0;
+  }
+}

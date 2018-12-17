@@ -12,6 +12,7 @@ import pl.coddlers.core.models.entity.Task;
 import pl.coddlers.core.repositories.TaskRepository;
 import pl.coddlers.git.services.GitTaskService;
 
+import java.text.Normalizer;
 import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -63,8 +64,14 @@ public class TaskService {
 		return Long.toString(time);
 	}
 
+	// TODO this logic should be moved to git services
 	private String createBranchNamePrefix(Task task) {
-		return String.format("%s_%s", task.getTitle().toLowerCase().replaceAll("\\s+","-"),
+		// remove accents
+		String taskName = Normalizer.normalize(task.getTitle(), Normalizer.Form.NFD);
+		taskName = taskName.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+				.replaceAll("[^\\p{ASCII}]", "");
+		// regex match also no-break spaces
+		return String.format("%s_%s", taskName.toLowerCase().replaceAll("(\\s+|[\u202F\u00A0])","-"),
 				getCurrentTimestamp());
 	}
 

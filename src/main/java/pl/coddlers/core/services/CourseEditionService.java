@@ -255,7 +255,12 @@ public class CourseEditionService {
             int allTasks = submissionService.countAllTask(currentUser, courseEdition);
             int gradedTasks = submissionService.countAllGradedTasks(currentUser, courseEdition);
             int submittedTasks = submissionService.countAllSubmittedTasks(currentUser, courseEdition);
-            return new CourseWithCourseEditionDto(courseDto, edition, submittedTasks, gradedTasks, allTasks);
+            int gradedLessons = submissionService.countGradedLessonStatus(currentUser, courseEdition);
+            int submittedLessons = submissionService.countSubmittedLessonStatus(currentUser, courseEdition);
+            int lessonsSize = lessonRepository.getLessonsByCourseEditionId(courseEdition.getId()).size();
+
+            return new CourseWithCourseEditionDto(courseDto, edition, submittedTasks, gradedTasks, allTasks,
+                    gradedLessons, submittedLessons, lessonsSize);
         };
     }
 

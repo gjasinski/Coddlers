@@ -25,21 +25,21 @@
               <div class="col-md-6" style="text-align: right">
                 <div class="row">
                   <div class="col-md-5">
-                    <h6>Submitted: {{course.submittedTasks}}/{{course.allTasks}}</h6>
+                    <h6>Submitted: {{course.submittedLessons}}/{{course.lessonsSize}}</h6>
                   </div>
                   <div class="col-md-7">
-                    <ngb-progressbar *ngIf="course.allTasks != 0" type="info"
-                                     [value]="course.submittedTasks * 100 / course.allTasks"></ngb-progressbar>
+                    <ngb-progressbar type="info"
+                                     [value]="course.submittedLessons * 100 / course.lessonsSize"></ngb-progressbar>
                     <ngb-progressbar *ngIf="course.allTasks === 0" type="info" [value]="100"></ngb-progressbar>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-5">
-                    <h6>Graded: {{ course.gradedTasks}}/{{course.allTasks}}</h6>
+                    <h6>Graded: {{course.gradedLessons }}/{{course.lessonsSize}}</h6>
                   </div>
                   <div class="col-md-7">
-                    <ngb-progressbar *ngIf="course.allTasks != 0" type="info"
-                                     [value]="course.gradedTasks * 100 / course.allTasks"></ngb-progressbar>
+                    <ngb-progressbar type="info"
+                                     [value]="course.gradedLessons * 100 / course.lessonsSize"></ngb-progressbar>
                     <ngb-progressbar *ngIf="course.allTasks === 0" type="info" [value]="100"></ngb-progressbar>
                   </div>
                 </div>

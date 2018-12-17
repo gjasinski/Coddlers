@@ -113,6 +113,7 @@ public class CourseEditionController {
         return null;
     }
 
+    // TODO it need to be refactored and rethinked
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping
     public ResponseEntity<List<CourseWithCourseEditionDto>> getCourses() {

@@ -35,7 +35,7 @@ export class AddTaskModalComponent implements OnInit, OnDestroy {
       'title': ['', Validators.compose([Validators.required, Validators.minLength(3),
         Validators.maxLength(100)])],
       'description': '',
-      'maxPoints': '',
+      'maxPoints': ['', Validators.compose([Validators.required])],
       'isCodeTask': true
     });
 

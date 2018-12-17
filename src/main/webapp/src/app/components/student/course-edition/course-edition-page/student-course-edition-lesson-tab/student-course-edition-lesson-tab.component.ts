@@ -7,9 +7,8 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class StudentCourseEditionLessonTabComponent implements OnInit {
 
+  // What is this? It's not used anywhere.
   constructor() { }
-
-
 
   ngOnInit() {
   }

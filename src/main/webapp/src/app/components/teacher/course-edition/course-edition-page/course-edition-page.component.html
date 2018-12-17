@@ -24,68 +24,73 @@
               <div class="float-right d-flex">
                 <small class="lesson-date">{{ lessonTimeMap.get(
                   lesson).startDate | date: 'dd MMMM yyyy'}} -
-                  {{ lessonTimeMap.get(lesson).endDate | date: 'dd MMMM yyyy'}}</small>
+                  {{ lessonTimeMap.get(lesson).endDate | date: 'dd MMMM yyyy'}}
+                </small>
                 <div *ngIf="showLesson[lessonIndex]">
-                  <fa-icon icon="arrow-down" pull="left" size="lg"></fa-icon>
+                  <fa-icon icon="angle-down" pull="left" size="lg"></fa-icon>
                 </div>
                 <div *ngIf="!showLesson[lessonIndex]">
-                  <fa-icon icon="arrow-up" pull="left" size="lg"></fa-icon>
+                  <fa-icon icon="angle-up" pull="left" size="lg"></fa-icon>
                 </div>
               </div>
             </button>
 
-            <div *ngIf="showLesson[lessonIndex]">
-              <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson
-                view
-              </button>
-              <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due
-                date
-              </button>
+            <div class="lesson-details" *ngIf="showLesson[lessonIndex]">
+              <div class="lesson-details-btns">
+                <button class="btn in-table-button" (click)="navigateToLesson(lesson)">Go to lesson
+                  view
+                </button>
+                <button class="btn" (click)="openEditLessonDueDateModal(lesson)">Edit lesson due
+                  date
+                </button>
+              </div>
 
-              <div *ngFor="let task of courseMap.get(lesson)">
-                <br>
-                <h5 (click)="changeVisibilityForSubmissions(task)">{{task.title}}</h5>
+              <div class="tasks-list">
+                <div class="tasks-list-item card" *ngFor="let task of courseMap.get(lesson)">
+                  <h5 [ngClass]="{'tasks-list-item-opened': showTask.get(task)}" (click)="changeVisibilityForSubmissions(task)">{{task.title}}</h5>
 
-                <table *ngIf="showTask.get(task)" class="table tasks-table">
-                  <thead>
-                  <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Author</th>
-                    <th scope="col">Submission time</th>
-                    <th scope="col">Status</th>
-                    <th>&nbsp;</th>
-                    <th scope="col">Points</th>
-                    <th>&nbsp;</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr
-                    *ngFor="let submission of submissionsMap.get(task); let submissionIndex = index"
-                    [attr.data-index]="submissionIndex">
-                    <td>{{submissionIndex + 1}}</td>
-                    <td>{{submission.userFullName}}</td>
-                    <td>{{(submission.submissionTime !== null)
-                      ? (submission.submissionTime | date: 'dd MMMM yyyy') : '-'}}</td>
-                    <td>{{submission.submissionStatusType}}</td>
-                    <td>
-                      <fa-icon *ngIf="isGraded(submission)"
-                               icon="check" pull="left" size="lg"></fa-icon>
-                      <fa-icon *ngIf="isNotSubmitted(submission)"
-                               icon="times" pull="left" size="lg"></fa-icon>
-                      <fa-icon *ngIf="isForReview(submission)"
-                        icon="question" pull="left" size="lg"></fa-icon>
-                      <fa-icon *ngIf="changesRequested(submission)"
-                        icon="exchange-alt" pull="left" size="lg"></fa-icon>
-                    </td>
-                    <td *ngIf="isGraded(submission)">{{submission.points}}</td>
-                    <td *ngIf="!isGraded(submission)">-</td>
-                    <td>
-                      <cod-submission-menu-dropdown
-                        [submission]="submission"></cod-submission-menu-dropdown>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
+                  <table *ngIf="showTask.get(task)" class="table tasks-table">
+                    <thead>
+                    <tr>
+                      <th scope="col">No</th>
+                      <th scope="col">Author</th>
+                      <th scope="col">Submission time</th>
+                      <th scope="col">Status</th>
+                      <th>&nbsp;</th>
+                      <th scope="col">Points</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr
+                      *ngFor="let submission of submissionsMap.get(task); let submissionIndex = index"
+                      [attr.data-index]="submissionIndex">
+                      <td>{{submissionIndex + 1}}</td>
+                      <td>{{submission.userFullName}}</td>
+                      <td>{{(submission.submissionTime !== null)
+                        ? (submission.submissionTime | date: 'dd MMMM yyyy') : '-'}}
+                      </td>
+                      <td>{{submission.submissionStatusType}}</td>
+                      <td>
+                        <fa-icon *ngIf="isGraded(submission)"
+                                 icon="check" pull="left" size="lg"></fa-icon>
+                        <fa-icon *ngIf="isNotSubmitted(submission)"
+                                 icon="times" pull="left" size="lg"></fa-icon>
+                        <fa-icon *ngIf="isForReview(submission)"
+                                 icon="question" pull="left" size="lg"></fa-icon>
+                        <fa-icon *ngIf="changesRequested(submission)"
+                                 icon="exchange-alt" pull="left" size="lg"></fa-icon>
+                      </td>
+                      <td *ngIf="isGraded(submission)">{{submission.points}}</td>
+                      <td *ngIf="!isGraded(submission)">-</td>
+                      <td>
+                        <cod-submission-menu-dropdown
+                          [submission]="submission"></cod-submission-menu-dropdown>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

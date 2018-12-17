@@ -96,7 +96,6 @@ public class CourseService {
 
     public void updateCourse(final CourseDto courseDto) {
         Course course = courseConverter.convertFromDto(courseDto);
-        course.setId(courseDto.getId());
         courseRepository.save(course);
     }
 

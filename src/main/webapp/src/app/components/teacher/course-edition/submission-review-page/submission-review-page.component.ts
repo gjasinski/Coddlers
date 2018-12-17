@@ -16,8 +16,7 @@ import {Submission} from "../../../../models/submission";
 import {Task} from '../../../../models/task';
 import {SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
 import {library} from "@fortawesome/fontawesome-svg-core";
-import {faArrowDown, faArrowUp} from "@fortawesome/free-solid-svg-icons";
-
+import {faAngleDown, faAngleUp} from "@fortawesome/free-solid-svg-icons";
 
 
 @Component({
@@ -27,19 +26,19 @@ import {faArrowDown, faArrowUp} from "@fortawesome/free-solid-svg-icons";
 })
 export class SubmissionReviewPageComponent implements OnInit {
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
-  private courseEdition: CourseEdition;
   private course: Course;
   private submissionId: number;
-  private filesContent: GitFileContent[] = [];
-  private filesVisibility: boolean[] = new Array(this.filesContent.length);
-  private submission: Submission;
-  private fullName: string;
-  private numberOfFiles: number;
-  private task: Task = null;
-  private gradePoints: number = 0;
-  private showWarning: boolean = false;
-  private warningMessage: string = "";
-  private disableRequestChanges = false;
+  courseEdition: CourseEdition;
+  filesContent: GitFileContent[] = [];
+  filesVisibility: boolean[] = new Array(this.filesContent.length);
+  submission: Submission;
+  fullName: string;
+  numberOfFiles: number;
+  task: Task = null;
+  gradePoints: number = 0;
+  showWarning: boolean = false;
+  warningMessage: string = "";
+  disableRequestChanges = false;
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -49,7 +48,7 @@ export class SubmissionReviewPageComponent implements OnInit {
               private taskService: TaskService,
               private courseEditionService: CourseEditionService,
               private submissionService: SubmissionService) {
-    library.add(faArrowUp, faArrowDown);
+    library.add(faAngleUp, faAngleDown);
   }
 
   ngOnInit() {

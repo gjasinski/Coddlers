@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {EventService} from "../../../services/event.service";
 import {Event} from "../../../models/event";
 import {Subscription} from "rxjs";
@@ -18,7 +18,8 @@ export class AfterAddToCourseModalComponent implements OnInit {
   private bodyMsg: string;
 
   constructor(private modalService: NgbModal,
-              private eventService: EventService) { }
+              private eventService: EventService) {
+  }
 
   ngOnInit() {
     this.eventSubscription = this.eventService.events.subscribe((event: Event) => {
@@ -26,11 +27,11 @@ export class AfterAddToCourseModalComponent implements OnInit {
         if (event.eventData) {
           this.headerMsg = "Welcome in new course";
           this.bodyMsg = "You have been successfully added to course!";
-        }
-        else {
+        } else {
           this.headerMsg = "Something went wrong :(";
           this.bodyMsg = "You haven not been added to any course. Some error occurred. Check your invitation link and check if you are not a member of this course."
         }
+
         this.open();
       }
     });

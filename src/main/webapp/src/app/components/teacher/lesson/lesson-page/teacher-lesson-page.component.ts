@@ -4,7 +4,7 @@ import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {Lesson} from "../../../../models/lesson";
 import {Course} from "../../../../models/course";
 import {CourseService} from "../../../../services/course.service";
-import {filter, map, switchMap, tap} from "rxjs/operators";
+import {filter, switchMap, tap} from "rxjs/operators";
 import {Observable} from "rxjs/internal/Observable";
 import {Location} from "@angular/common";
 import {Task} from "../../../../models/task";
@@ -15,9 +15,7 @@ import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs/index";
 import {StudentLessonRepositoryService} from "../../../../services/student-lesson-repository.service";
 import {library} from '@fortawesome/fontawesome-svg-core';
-import {faStickyNote} from '@fortawesome/free-solid-svg-icons';
-import {faArrowUp} from '@fortawesome/free-solid-svg-icons';
-import {faArrowDown} from '@fortawesome/free-solid-svg-icons';
+import {faAngleDown, faAngleUp, faStickyNote} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'cod-teacher-lesson-page',
@@ -25,12 +23,12 @@ import {faArrowDown} from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./teacher-lesson-page.component.scss']
 })
 export class TeacherLessonPageComponent implements OnInit, OnDestroy {
-  private lesson: Lesson;
-  private course: Course;
-  private tasks: Task[] = [];
-  private tasksVisibility: boolean[] = new Array(this.tasks.length);
+  lesson: Lesson;
+  course: Course;
+  tasks: Task[] = [];
+  tasksVisibility: boolean[] = new Array(this.tasks.length);
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
-  private repoUrl: string;
+  repoUrl: string;
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -40,7 +38,7 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
               private taskService: TaskService,
               private eventService: EventService,
               private studentLessonRepositoryService: StudentLessonRepositoryService) {
-    library.add(faStickyNote, faArrowUp, faArrowDown);
+    library.add(faStickyNote, faAngleUp, faAngleDown);
   }
 
   ngOnInit() {
@@ -55,7 +53,7 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
 
     let routeParamsSub = this.route.parent.params.subscribe(params =>
       this.courseService.getCourse(params.courseId)
-      .subscribe((course: Course) => this.course = course));
+        .subscribe((course: Course) => this.course = course));
     this.subscriptionManager.add(routeParamsSub);
   }
 
@@ -65,15 +63,15 @@ export class TeacherLessonPageComponent implements OnInit, OnDestroy {
 
   private getLessonsAndTasks(): Observable<any> {
     return this.route.paramMap
-    .pipe(switchMap((params) => forkJoin(
-      this.lessonService.getLesson(+params.get('lessonId')),
-      this.studentLessonRepositoryService.getTeacherLessonRepositoryUrl(+params.get('lessonId'))
-      )),
-      switchMap(([lesson, repositoryUrl]) => {
-        this.lesson = lesson;
-        this.repoUrl = "git clone " + repositoryUrl + " \"" + this.lesson.title + "\"";
-        return this.getTasks(lesson.id);
-      }));
+      .pipe(switchMap((params) => forkJoin(
+        this.lessonService.getLesson(+params.get('lessonId')),
+        this.studentLessonRepositoryService.getTeacherLessonRepositoryUrl(+params.get('lessonId'))
+        )),
+        switchMap(([lesson, repositoryUrl]) => {
+          this.lesson = lesson;
+          this.repoUrl = "git clone " + repositoryUrl + " \"" + this.lesson.title + "\"";
+          return this.getTasks(lesson.id);
+        }));
   }
 
   private getTasks(lessonId: number): Observable<any> {

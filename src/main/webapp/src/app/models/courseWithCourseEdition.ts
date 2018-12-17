@@ -7,14 +7,20 @@ export class CourseWithCourseEdition {
   private _submittedTasks: Number;
   private _gradedTasks: Number;
   private _allTasks: Number;
+  private _submittedLessons: Number;
+  private _gradedLessons: Number;
+  private _lessonsSize: Number;
 
-
-  constructor(course: Course, courseEdition: CourseEdition, submittedTasks: Number, gradedTasks: Number, allTasks: Number) {
+  constructor(course: Course, courseEdition: CourseEdition, submittedTasks: Number, gradedTasks: Number,
+              allTasks: Number, submittedLessons: Number, gradedLessons: Number, lessonsSize: Number) {
     this._course = course;
     this._courseEdition = courseEdition;
     this._submittedTasks = submittedTasks;
     this._gradedTasks = gradedTasks;
     this._allTasks = allTasks;
+    this._submittedLessons = submittedLessons;
+    this._gradedLessons = gradedLessons;
+    this._lessonsSize = lessonsSize;
   }
 
   get course(): Course {
@@ -24,7 +30,6 @@ export class CourseWithCourseEdition {
   get courseEdition(): CourseEdition {
     return this._courseEdition;
   }
-
 
   get submittedTasks(): Number {
     return this._submittedTasks;
@@ -38,8 +43,23 @@ export class CourseWithCourseEdition {
     return this._allTasks;
   }
 
+  get submittedLessons(): Number {
+    return this._submittedLessons;
+  }
+
+  get gradedLessons(): Number {
+    return this._gradedLessons;
+  }
+
+  get lessonsSize(): Number {
+    return this._lessonsSize;
+  }
+
   public static fromJSON(jsonObj: any): CourseWithCourseEdition {
-    return new CourseWithCourseEdition(jsonObj.course, jsonObj.courseEdition, jsonObj.submittedTasks, jsonObj.gradedTasks, jsonObj.allTasks);
+    console.log(jsonObj);
+
+    return new CourseWithCourseEdition(jsonObj.course, jsonObj.courseEdition, jsonObj.submittedTasks, jsonObj.gradedTasks, jsonObj.allTasks,
+      jsonObj.submittedLessons, jsonObj.gradedLessons, jsonObj.lessonsSize);
   }
 
   public toJSON() {
@@ -48,7 +68,10 @@ export class CourseWithCourseEdition {
       courseEdition: this.courseEdition,
       submittedTasks: this.submittedTasks,
       gradedTasks: this.gradedTasks,
-      allTasks: this.allTasks
+      allTasks: this.allTasks,
+      submittedLessons: this.submittedLessons,
+      gradedLessons: this.gradedLessons,
+      lessonsSize: this.lessonsSize
     }
   }
 }

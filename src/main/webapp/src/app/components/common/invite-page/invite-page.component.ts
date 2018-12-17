@@ -28,10 +28,10 @@ export class InvitePageComponent implements OnInit, OnDestroy {
       this.invitationToken = params.get('invitationToken');
       return this.editionService.addToCourseEdition(this.invitationToken);
     }))
-      .subscribe(result => {
-        this.principalService.redirectToRoleRootRoute();
-        this.openModal(result);
-      });
+    .subscribe(result => {
+      this.principalService.redirectToRoleRootRoute();
+      this.openModal(result);
+    });
 
     this.subscriptionManager.add(sub);
   }

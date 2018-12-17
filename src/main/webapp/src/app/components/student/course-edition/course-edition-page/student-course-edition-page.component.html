@@ -1,6 +1,8 @@
-<div *ngIf="route.children.length === 0" class="content-container">
+<div *ngIf="route.children.length === 0">
 
-  <h2> {{course?.title}} </h2>
+  <div class="col-md-12">
+    <h1>{{course?.title}}</h1>
+  </div>
 
   <ngb-tabset class="tabset-course">
     <ngb-tab>
@@ -12,7 +14,7 @@
               <div class="row">
                 <div class="col-md-9">
                   <h6><b>{{courseEdition?.startDate | date: 'dd MMMM yyyy'}} -
-                  {{courseEditionEndDate | date: 'dd MMM yyyy'}}</b></h6>
+                    {{courseEditionEndDate | date: 'dd MMM yyyy'}}</b></h6>
                 </div>
                 <div class="col-md-3 pull-right">
                   <button class="btn btn-secondary">My course results</button>
@@ -34,21 +36,21 @@
                       <div class="col-md-6 text-right mt-4">
                         <div class="row">
                           <div class="col-md-5">
-                            <h6>Submitted: {{ submitted }}/{{ submissionsStatus.size }}</h6>
+                            <h6>Submitted: {{ submitted }}/{{ lessons.length }}</h6>
                           </div>
                           <div class="col-md-7">
-                            <ngb-progressbar *ngIf="submissionsStatus.size != 0" type="success"
-                                             [value]="submitted * 100 / submissionsStatus.size" [showValue]="true">
+                            <ngb-progressbar type="info"
+                                             [value]="progressSubmitted" [showValue]="false">
                             </ngb-progressbar>
                           </div>
                         </div>
                         <div class="row">
                           <div class="col-md-5">
-                            <h6>Graded: {{ graded }}/{{ submissionsGrade.size }}</h6>
+                            <h6>Graded: {{ graded }}/{{ lessons.length }}</h6>
                           </div>
                           <div class="col-md-7">
-                            <ngb-progressbar *ngIf="submissionsGrade.size != 0" type="success"
-                                             [value]="graded * 100 / submissionsGrade.size" [showValue]="true">
+                            <ngb-progressbar type="info"
+                                             [value]="progressGraded" [showValue]="false">
                             </ngb-progressbar>
                           </div>
                         </div>
@@ -64,22 +66,25 @@
                                   <h5>Lesson {{ i + 1 }}: {{ lesson.title }}</h5>
                                 </div>
                                 <div class="row lesson-details mt-2">
-                                  <div class="col-md-6"><strong>Status:</strong>
-                                    {{ submissionsStatus.get(lesson.id) }}
-                                  </div>
-                                  <div class="col-md-6"><strong>Result:</strong>
-                                    {{ submissionsStatus.get(lesson.id) === 'GRADED'
-                                    ? submissionsGrade.get(lesson.id) : 'NOT GRADED' }}
+                                  <!-- TODO Lessons has different statuses -->
+                                  <!--<div class="col-md-6">-->
+                                    <!--<strong>Status:</strong>-->
+                                    <!--{{ submissionsStatus.get(lesson.id) }}-->
+                                  <!--</div>-->
+                                  <div class="col-md-6">
+                                    <strong>Result: </strong>
+                                    {{ lessonGradeStatus.get(lesson.id) === 'GRADED'
+                                    ? lessonGrade.get(lesson.id) + "%" : 'NOT GRADED' }}
                                   </div>
                                 </div>
                               </div>
                               <div class="col-md-4 lesson-details pull-right">
-                                <div class="row mt-4">
-                                  <strong>Due date:</strong>
+                                <div class="mt-4">
+                                  <strong>Due date: </strong>
                                   {{ editionLessons.get(lesson)?.endDate | date: 'dd MMMM yyyy' }}
                                 </div>
-                                <div class="row mt-2">
-                                  <strong>Weight:</strong>
+                                <div class="mt-2">
+                                  <strong>Weight: </strong>
                                   {{ lesson.weight }}
                                 </div>
                               </div>
@@ -115,14 +120,15 @@
     <ngb-tab>
       <ng-template ngbTabTitle>Discussion</ng-template>
       <ng-template ngbTabContent>
-        <div class="row mt-3">
-          <div class="col-md-3">
-            <button id="add-new-thread" class="btn btn-secondary">
-              Add new thread
-            </button>
+        <div class="content-container">
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <button id="add-new-thread" class="btn btn-secondary">
+                Add new thread
+              </button>
+            </div>
           </div>
         </div>
-
       </ng-template>
     </ngb-tab>
 

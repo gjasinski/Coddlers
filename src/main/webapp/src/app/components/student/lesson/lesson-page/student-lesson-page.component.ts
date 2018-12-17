@@ -1,4 +1,3 @@
-///<reference path="../../../../../../node_modules/rxjs/internal/Observable.d.ts"/>
 import {Component, OnInit} from '@angular/core';
 import {Lesson} from "../../../../models/lesson";
 import {Task} from "../../../../models/task";
@@ -20,7 +19,7 @@ import {SubscriptionManager} from "../../../../utils/SubscriptionManager";
 import {forkJoin} from "rxjs/index";
 import {SubmissionStatus, SubmissionStatusEnum} from "../../../../models/submissionStatusEnum";
 import {library} from "@fortawesome/fontawesome-svg-core";
-import {faArrowDown, faArrowUp} from "@fortawesome/free-solid-svg-icons";
+import {faAngleDown, faAngleUp} from "@fortawesome/free-solid-svg-icons";
 
 
 @Component({
@@ -30,15 +29,15 @@ import {faArrowDown, faArrowUp} from "@fortawesome/free-solid-svg-icons";
 })
 export class StudentLessonPageComponent implements OnInit {
   private subscriptionManager: SubscriptionManager = new SubscriptionManager();
-  private courseEditionLesson: CourseEditionLesson;
-  private lesson: Lesson;
-  private courseEdition: CourseEdition;
-  private course: Course;
-  private tasks: Task[] = [];
-  private tasksVisibility: boolean[] = new Array(this.tasks.length);
-  private submissions: Submission[];
-  private repoUrl: String;
   private courseEditionId: number = 0;
+  courseEditionLesson: CourseEditionLesson;
+  lesson: Lesson;
+  courseEdition: CourseEdition;
+  course: Course;
+  tasks: Task[] = [];
+  tasksVisibility: boolean[] = new Array(this.tasks.length);
+  submissions: Submission[];
+  repoUrl: String;
 
   constructor(private courseService: CourseService,
               private lessonService: LessonService,
@@ -49,7 +48,7 @@ export class StudentLessonPageComponent implements OnInit {
               private courseEditionService: CourseEditionService,
               private submissionService: SubmissionService,
               private studentLessonRepositoryService: StudentLessonRepositoryService) {
-    library.add(faArrowUp, faArrowDown);
+    library.add(faAngleUp, faAngleDown);
   }
 
   ngOnInit() {
@@ -125,7 +124,6 @@ export class StudentLessonPageComponent implements OnInit {
   changeVisibilityForSubmissions(index: number) {
     this.tasksVisibility[index] = !this.tasksVisibility[index];
   }
-
 
   descriptionStatus(submissionStatus: SubmissionStatus): String {
     return SubmissionStatus.getEnumFromString(submissionStatus.toString()).toString();

@@ -34,14 +34,14 @@
             <button class="btn task-button" (click)="changeVisibilityForSubmissions(i)">
               <div class="float-left" *ngIf="!tasks[i].isCodeTask">Task {{i+1}}: {{task.title}} - no coding task</div>
               <div class="float-left" *ngIf="tasks[i].isCodeTask">Task {{i+1}}: {{task.title}} - coding task</div>
-              <div *ngIf="tasksVisibility[i]">
-                <fa-icon icon="arrow-up" pull="left" size="lg"></fa-icon>
+              <div class="float-right" *ngIf="tasksVisibility[i]">
+                <fa-icon icon="angle-up" pull="left" size="lg"></fa-icon>
               </div>
-              <div *ngIf="!tasksVisibility[i]">
-                <fa-icon icon="arrow-down" pull="left" size="lg"></fa-icon>
+              <div class="float-right" *ngIf="!tasksVisibility[i]">
+                <fa-icon icon="angle-down" pull="left" size="lg"></fa-icon>
               </div>
             </button>
-            <div *ngIf="tasksVisibility[i]">
+            <div class="task-details" *ngIf="tasksVisibility[i]">
               <div class="col-12">
                 <div class="row">
                   <div class="col-10">
@@ -52,7 +52,7 @@
                     <button class="btn btn-secondary">Notes</button>
                   </div>
                 </div>
-                <div *ngIf="!this.isGraded(i)">
+                <div *ngIf="!!submissions[i] !== false && !this.isGraded(i)">
                   <h4>Master branch - you should push your work to this branch</h4>
                   <div class="repo-url">
                     Useful commands:<br>
@@ -69,9 +69,15 @@
                     <code>git push origin {{task.branchNamePrefix}}-develop</code>
                   </div>
                 </div>
-                <h5>Max points for task: {{task.maxPoints}}</h5>
-                <h4>Status</h4>
-                <div class="row" *ngIf="this.isGraded(i)">
+                <p>Max points for task: {{task.maxPoints}}</p>
+                <h4>Status:</h4>
+                <div class="row" *ngIf="!!submissions[i] === false">
+                  <div class="col-md-3">
+                    <h4><b>Not forked yet</b></h4>
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="!!submissions[i] !== false && this.isGraded(i)">
                   <div class="col-md-2">
                     <h4><b>{{descriptionStatus(submissions[i].submissionStatusType)}}</b></h4>
                   </div>
@@ -79,10 +85,10 @@
                     <button class="btn btn-secondary">Show review</button>
                   </div>
                 </div>
-                <div *ngIf="!this.isGraded(i)">
+                <div *ngIf="!!submissions[i] !== false && !this.isGraded(i)">
                   <h4><b>{{descriptionStatus(submissions[i].submissionStatusType)}}</b></h4>
                 </div>
-                <div *ngIf="this.isGraded(i)">
+                <div *ngIf="!!submissions[i] !== false && this.isGraded(i)">
                   <h4><b>Points: {{submissions[i].points}}/{{tasks[i].maxPoints}}</b></h4>
                 </div>
                 <br>

@@ -19,4 +19,10 @@ public class CourseWithCourseEditionDto {
     private int gradedTasks;
 
     private int allTasks;
+
+    private int gradedLessons;
+
+    private int submittedLessons;
+
+    private int lessonsSize;
 }

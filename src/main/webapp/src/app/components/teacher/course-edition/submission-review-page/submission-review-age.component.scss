@@ -18,11 +18,25 @@
 }
 
 .tab-border {
-  border: 1px solid;
-  border-radius: .3rem;
+  border: 1px #dee2e6 solid;
+  border-bottom-left-radius: .3rem;
+  border-bottom-right-radius: .3rem;
 }
 
-.head-line {
-  border: 0.5px solid;
+.top-menu {
+  border-bottom: 0.5px #dee2e6 solid;
+  margin-bottom: 10px;
 }
 
+:host ::ng-deep ul.nav-tabs {
+  border-bottom: none;
+}
+
+.submit-btn-wrap {
+  padding: 10px 10px 0;
+}
+
+#submitReview {
+  width: 100%;
+  padding: 10px 10px;
+}

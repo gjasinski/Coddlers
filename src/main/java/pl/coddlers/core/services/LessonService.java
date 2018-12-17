@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import pl.coddlers.core.exceptions.CourseEditionNotFoundException;
-import pl.coddlers.core.exceptions.CourseVersionNotFound;
-import pl.coddlers.core.exceptions.LessonAlreadyExists;
-import pl.coddlers.core.exceptions.LessonNotFoundException;
+import pl.coddlers.core.exceptions.*;
 import pl.coddlers.core.models.converters.LessonConverter;
 import pl.coddlers.core.models.dto.LessonDto;
 import pl.coddlers.core.models.entity.*;
@@ -97,9 +94,13 @@ public class LessonService {
             Lesson lesson = lessonConverter.convertFromDto(lessonDto);
             lessonRepository.save(lesson);
             User currentUser = userDetailsService.getCurrentUserEntity();
-            Course byCourseVersionId = getLessonCourse(lesson);
+            Course lessonCourse = getLessonCourse(lesson);
+            if (lessonCourse.getGitGroupId() == null) {
+                log.error(String.format("GitGroupId is null. Git group for course %s (id=%d) probably doesn't exists.", lessonCourse.getTitle(), lessonCourse.getId()));
+                throw new InternalServerErrorException(String.format("There was a internal problem while creating a lesson"));
+            }
             CompletableFuture<ProjectDto> gitLessonIdFuture = gitLessonService.createLesson(currentUser.getGitUserId(), createRepositoryName(lesson))
-                    .thenCompose(projectDto -> gitLessonService.transferRepositoryToGroup(projectDto.getId(), byCourseVersionId.getGitGroupId()));
+                    .thenCompose(projectDto -> gitLessonService.transferRepositoryToGroup(projectDto.getId(), lessonCourse.getGitGroupId()));
             ProjectDto projectDto = gitLessonIdFuture.get();
             lesson.setGitProjectId(projectDto.getId());
             lesson.setRepositoryName(projectDto.getPathWithNamespace());
@@ -117,6 +118,8 @@ public class LessonService {
             });
 
             return lesson.getId();
+        } catch (InternalServerErrorException ex) {
+            throw ex;
         } catch (Exception ex) {
             log.error("Exception while creating lesson for: " + lessonDto.toString(), ex);
             throw new LessonAlreadyExists(ex.getMessage());
