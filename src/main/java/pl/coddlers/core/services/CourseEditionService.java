@@ -211,7 +211,7 @@ public class CourseEditionService {
         String invitationToken = getInvitationTokenFromInvitationLink(invitationLink);
         CourseEdition courseEdition = courseEditionRepository.findByInvitationToken(invitationToken)
                 .orElseThrow(() -> new CourseEditionNotFoundException(invitationToken));
-        String emailTitle = "InvitationLinkDto to course \"" + courseEdition.getTitle() + "\" on Coddlers.pl";
+        String emailTitle = "Invitation to course \"" + courseEdition.getTitle() + "\" on Coddlers.pl";
         String htmlMessage = "You have been invited to course \"" + courseEdition.getTitle() + "\" on www.Coddlers.pl. " +
                 "Click on link below to join the course!<br>" + invitationLink;
 
