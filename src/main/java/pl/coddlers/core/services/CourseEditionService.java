@@ -127,7 +127,7 @@ public class CourseEditionService {
 
     private String createGroupName(CourseEditionDto courseEditionDto, Long courseEditionId) {
         Long courseVersionId = courseEditionDto.getCourseVersion().getId();
-        return courseVersionId + "_" + courseEditionId + "_" + Long.toString(Instant.now().getEpochSecond());
+        return courseVersionId + "_" + courseEditionId + "_" + Instant.now().getEpochSecond();
     }
 
     public List<CourseEditionLesson> createCourseEditionLessons(CourseEdition courseEdition) {
@@ -203,7 +203,7 @@ public class CourseEditionService {
         return host;
     }
 
-    public void sendInvitationLinkByMail(String invitationLink, List<InternetAddress> students) throws AddressException {
+    public void sendInvitationLinkByMail(String invitationLink, List<InternetAddress> students) {
         MailInitializer mailInitializer = new MailInitializer();
         MailScheduler mailScheduler = mailInitializer.initialize();
 
@@ -215,7 +215,12 @@ public class CourseEditionService {
         String htmlMessage = "You have been invited to course \"" + courseEdition.getTitle() + "\" on www.Coddlers.pl. " +
                 "Click on link below to join the course!<br>" + invitationLink;
 
-        InternetAddress from = new InternetAddress(Objects.requireNonNull(environment.getProperty(INVITATION_FROM_EMAIL)));
+        InternetAddress from = null;
+        try {
+            from = new InternetAddress(Objects.requireNonNull(environment.getProperty(INVITATION_FROM_EMAIL)));
+        } catch (AddressException e) {
+            e.printStackTrace();
+        }
         Mail mail = new Mail(from, students, emailTitle, htmlMessage);
         mailScheduler.scheduleMail(mail);
     }
